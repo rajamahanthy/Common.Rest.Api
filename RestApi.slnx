@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/Services/" />
+  <Folder Name="/Services/Address/">
+    <Project Path="src\Services\Address\Address.Api\Address.Api.csproj" />
+    <Project Path="src\Services\Address\Address.Application\Address.Application.csproj" />
+    <Project Path="src\Services\Address\Address.Domain\Address.Domain.csproj" />
+    <Project Path="src\Services\Address\Address.Infrastructure\Address.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/Address/Address.Tests/">
+    <Project Path="src\Services\Address\Address.Tests\Address.Api.Tests\Address.Api.Tests.csproj" />
+    <Project Path="src\Services\Address\Address.Tests\Address.Application.Tests\Address.Application.Tests.csproj" />
+    <Project Path="src\Services\Address\Address.Tests\Address.Domain.Tests\Address.Domain.Tests.csproj" />
+    <Project Path="src\Services\Address\Address.Tests\Address.Infrastructure.Tests\Address.Infrastructure.Tests.csproj" />
+	<Project Path="src\Services\Address\Address.Tests\Address.Integration.Tests\Address.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Services/SurveyData/">
+    <Project Path="src\Services\SurveyData\SurveyData.Api\SurveyData.Api.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Application\SurveyData.Application.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Domain\SurveyData.Domain.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Infrastructure\SurveyData.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/SurveyData/SureyData.Tests/">
+    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Api.Tests\SurveyData.Api.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Application.Tests\SurveyData.Application.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Domain.Tests\SurveyData.Domain.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Infrastructure.Tests\SurveyData.Infrastructure.Tests.csproj" />
+	<Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Integration.Tests\SurveyData.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="src\Shared\RestApi.Shared\RestApi.Shared.csproj" />
+	<Project Path="src\Shared\RestApi.Shared.Tests\RestApi.Shared.Tests.csproj" />
+  </Folder>
+</Solution>
