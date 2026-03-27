@@ -6,3 +6,5 @@ global using SurveyData.Domain.Entities;
 global using SurveyData.Application.Interfaces;
 global using RestApi.Shared.Models;
 global using RestApi.Shared.Extensions;
+global using System.Text.Json;
+global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

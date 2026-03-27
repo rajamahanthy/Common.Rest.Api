@@ -28,6 +28,7 @@ public class Survey : BaseEntity
     public string? FloorAreaUnit { get; set; }
     public string? PropertyType { get; set; }
     public string? PropertySubType { get; set; }
+    public SurveyInfo? SurveyJson { get; set; }
 
     // Navigation
     public ICollection<SurveyDetail> Details => _details;
