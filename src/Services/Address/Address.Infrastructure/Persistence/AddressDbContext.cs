@@ -35,8 +35,6 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                   .HasConversion(converter)
                   .HasColumnType("NVARCHAR(MAX)");
 
-
-
             // Indices
             entity.HasIndex(e => e.Uprn).IsUnique();
             entity.HasIndex(e => e.Postcode);
@@ -55,7 +53,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                     Town = "London",
                     Postcode = "SW1A 2AA",
                     Country = "United Kingdom",
-                    CreatedAt = DateTimeOffset.UtcNow,
+                    CreatedAt = new DateTimeOffset(2026, 3, 27, 0, 0, 0, TimeSpan.Zero),
                     AddressJson = new AddressInfo
                     {
                         Uprn = "100023336491",
@@ -79,7 +77,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                     Town = "Edinburgh",
                     Postcode = "EH1 1AA",
                     Country = "United Kingdom",
-                    CreatedAt = DateTimeOffset.UtcNow,
+                    CreatedAt = new DateTimeOffset(2026, 3, 27, 0, 0, 0, TimeSpan.Zero),
                     AddressJson = new AddressInfo
                     {
                         Uprn = "100021234567",
