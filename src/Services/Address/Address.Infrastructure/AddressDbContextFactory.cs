@@ -1,23 +1,20 @@
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
+using RestApi.Shared.Persistence;
 using Address.Infrastructure.Persistence;
 
 namespace Address.Infrastructure;
 
-public class AddressDbContextFactory : IDesignTimeDbContextFactory<AddressDbContext>
+/// <summary>
+/// Design-time factory for the AddressDbContext.
+/// Inherits from the Shared base class to centralize configuration logic.
+/// </summary>
+public class AddressDbContextFactory : BaseDesignTimeDbContextFactory<AddressDbContext>
 {
-    public AddressDbContext CreateDbContext(string[] args)
+    public AddressDbContextFactory() : base("AddressDb")
     {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false)
-            .Build();
+    }
 
-        var optionsBuilder = new DbContextOptionsBuilder<AddressDbContext>();
-        var connectionString = configuration.GetConnectionString("AddressDb");
-
-        optionsBuilder.UseSqlServer(connectionString);
-
-        return new AddressDbContext(optionsBuilder.Options);
+    protected override AddressDbContext CreateContext(DbContextOptions<AddressDbContext> options)
+    {
+        return new AddressDbContext(options);
     }
 }

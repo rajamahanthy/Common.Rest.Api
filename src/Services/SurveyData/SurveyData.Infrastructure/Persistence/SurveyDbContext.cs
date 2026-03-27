@@ -57,7 +57,7 @@ public sealed class SurveyDbContext(DbContextOptions<SurveyDbContext> options) :
                     PostCode = "SW1A 2AA",
                     LocalAuthority = "Westminster",
                     SurveyType = "Valuation",
-                    SurveyDate = DateTimeOffset.UtcNow,
+                    SurveyDate = new DateTimeOffset(2025, 3, 27, 0, 0, 0, TimeSpan.Zero),
                     Status = "Draft",
                     Surveyor = "John Doe",
                     Notes = "This is a test survey",

@@ -28,6 +28,8 @@ public static class DependencyInjection
                     sqlOptions.CommandTimeout(30);
                 });
             }
+
+            options.ConfigureWarnings(w => w.Default(WarningBehavior.Log));
         });
 
         // Register repositories
