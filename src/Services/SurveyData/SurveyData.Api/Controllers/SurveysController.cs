@@ -1,10 +1,3 @@
-using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using RestApi.Shared.Models;
-using SurveyData.Application.DTOs;
-using SurveyData.Application.Interfaces;
-
 namespace SurveyData.Api.Controllers;
 
 [ApiController]

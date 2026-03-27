@@ -1,9 +1,5 @@
 using Azure.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using RestApi.Shared.Repository;
-using SurveyData.Application.Interfaces;
 using SurveyData.Infrastructure.Persistence;
 
 namespace SurveyData.Infrastructure;

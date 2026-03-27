@@ -1,5 +1,3 @@
-using SurveyData.Application.DTOs;
-
 namespace SurveyData.Application.Interfaces;
 
 /// <summary>

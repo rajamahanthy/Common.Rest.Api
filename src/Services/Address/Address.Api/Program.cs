@@ -1,4 +1,3 @@
-using Address.Application.Interfaces;
 using Address.Application.Mapping;
 using Address.Application.Services;
 using Address.Infrastructure;

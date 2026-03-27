@@ -1,7 +1,4 @@
 using Address.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using RestApi.Shared.Repository;
 
 namespace Address.Infrastructure;

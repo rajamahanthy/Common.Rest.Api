@@ -1,10 +1,5 @@
-using AutoMapper;
-using Microsoft.Extensions.Logging;
 using RestApi.Shared.Exceptions;
 using RestApi.Shared.Repository;
-using SurveyData.Application.DTOs;
-using SurveyData.Application.Interfaces;
-using SurveyData.Domain.Entities;
 
 namespace SurveyData.Application.Services;
 

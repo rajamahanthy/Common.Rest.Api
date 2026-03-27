@@ -1,7 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using RestApi.Shared.Repository;
-using SurveyData.Application.Interfaces;
-using SurveyData.Domain.Entities;
 
 namespace SurveyData.Infrastructure.Persistence;
 

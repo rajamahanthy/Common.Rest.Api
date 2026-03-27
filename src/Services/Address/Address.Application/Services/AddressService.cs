@@ -1,8 +1,4 @@
-using Address.Application.Dtos;
-using Address.Application.Interfaces;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using RestApi.Shared.Models;
 using RestApi.Shared.Repository;
 
 namespace Address.Application.Services;

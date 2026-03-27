@@ -1,5 +1,3 @@
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RestApi.Shared.Middleware;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;

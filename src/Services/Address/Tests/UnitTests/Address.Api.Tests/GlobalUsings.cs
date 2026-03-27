@@ -1,0 +1,11 @@
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using FluentAssertions;
+global using NSubstitute;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Http;
+global using Address.Api.Controllers;
+global using Address.Application.DTOs;
+global using Address.Application.Interfaces;
+global using RestApi.Shared.Models;
+global using System.Net;
+global using System.Net.Http.Json;

@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using SurveyData.Domain.Entities;
-
 namespace SurveyData.Infrastructure.Persistence;
 
 /// <summary>

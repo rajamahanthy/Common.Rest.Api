@@ -1,6 +1,3 @@
-using Address.Application.Dtos;
-using RestApi.Shared.Models;
-
 namespace Address.Application.Interfaces;
 
 /// <summary>

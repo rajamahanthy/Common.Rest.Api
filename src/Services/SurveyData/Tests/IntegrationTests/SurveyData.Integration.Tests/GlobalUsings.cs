@@ -1,0 +1,10 @@
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using FluentAssertions;
+global using SurveyData.Application.DTOs;
+global using SurveyData.Infrastructure.Persistence;
+global using RestApi.Shared.Models;
+global using System.Net;
+global using System.Net.Http.Json;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;

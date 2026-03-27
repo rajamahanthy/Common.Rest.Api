@@ -6,12 +6,14 @@
     <Project Path="src\Services\Address\Address.Domain\Address.Domain.csproj" />
     <Project Path="src\Services\Address\Address.Infrastructure\Address.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/Services/Address/Address.Tests/">
-    <Project Path="src\Services\Address\Address.Tests\Address.Api.Tests\Address.Api.Tests.csproj" />
-    <Project Path="src\Services\Address\Address.Tests\Address.Application.Tests\Address.Application.Tests.csproj" />
-    <Project Path="src\Services\Address\Address.Tests\Address.Domain.Tests\Address.Domain.Tests.csproj" />
-    <Project Path="src\Services\Address\Address.Tests\Address.Infrastructure.Tests\Address.Infrastructure.Tests.csproj" />
-	<Project Path="src\Services\Address\Address.Tests\Address.Integration.Tests\Address.Integration.Tests.csproj" />
+  <Folder Name="/Services/Address/Tests/UnitTests/">
+    <Project Path="src\Services\Address\Tests\UnitTests\Address.Api.Tests\Address.Api.Tests.csproj" />
+    <Project Path="src\Services\Address\Tests\UnitTests\Address.Application.Tests\Address.Application.Tests.csproj" />
+    <Project Path="src\Services\Address\Tests\UnitTests\Address.Domain.Tests\Address.Domain.Tests.csproj" />
+    <Project Path="src\Services\Address\Tests\UnitTests\Address.Infrastructure.Tests\Address.Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Services/Address/Tests/IntegrationTests/">
+	<Project Path="src\Services\Address\Tests\IntegrationTests\Address.Integration.Tests\Address.Integration.Tests.csproj" />
   </Folder>
   <Folder Name="/Services/SurveyData/">
     <Project Path="src\Services\SurveyData\SurveyData.Api\SurveyData.Api.csproj" />
@@ -19,12 +21,14 @@
     <Project Path="src\Services\SurveyData\SurveyData.Domain\SurveyData.Domain.csproj" />
     <Project Path="src\Services\SurveyData\SurveyData.Infrastructure\SurveyData.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/Services/SurveyData/SureyData.Tests/">
-    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Api.Tests\SurveyData.Api.Tests.csproj" />
-    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Application.Tests\SurveyData.Application.Tests.csproj" />
-    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Domain.Tests\SurveyData.Domain.Tests.csproj" />
-    <Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Infrastructure.Tests\SurveyData.Infrastructure.Tests.csproj" />
-	<Project Path="src\Services\SurveyData\SurveyData.Tests\SurveyData.Integration.Tests\SurveyData.Integration.Tests.csproj" />
+  <Folder Name="/Services/SurveyData/Tests/UnitTests/">
+    <Project Path="src\Services\SurveyData\Tests\UnitTests\SurveyData.Api.Tests\SurveyData.Api.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\Tests\UnitTests\SurveyData.Application.Tests\SurveyData.Application.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\Tests\UnitTests\SurveyData.Domain.Tests\SurveyData.Domain.Tests.csproj" />
+    <Project Path="src\Services\SurveyData\Tests\UnitTests\SurveyData.Infrastructure.Tests\SurveyData.Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Services/SurveyData/Tests/IntegrationTests/">
+	<Project Path="src\Services\SurveyData\Tests\IntegrationTests\SurveyData.Integration.Tests\SurveyData.Integration.Tests.csproj" />
   </Folder>
   <Folder Name="/Shared/">
     <Project Path="src\Shared\RestApi.Shared\RestApi.Shared.csproj" />

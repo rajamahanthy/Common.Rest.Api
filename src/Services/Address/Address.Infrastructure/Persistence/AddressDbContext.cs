@@ -1,5 +1,3 @@
-using Address.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Text.Json;
 namespace Address.Infrastructure.Persistence;

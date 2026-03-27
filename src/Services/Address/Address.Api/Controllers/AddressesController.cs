@@ -1,10 +1,3 @@
-using Address.Application.Dtos;
-using Address.Application.Interfaces;
-using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using RestApi.Shared.Models;
-
 namespace Address.Api.Controllers;
 
 [ApiController]

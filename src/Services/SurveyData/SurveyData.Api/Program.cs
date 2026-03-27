@@ -1,7 +1,6 @@
 using RestApi.Shared.Health;
 using RestApi.Shared.Middleware;
 using RestApi.Shared.Extensions;
-using SurveyData.Application.Interfaces;
 using SurveyData.Application.Mapping;
 using SurveyData.Application.Services;
 using SurveyData.Infrastructure;

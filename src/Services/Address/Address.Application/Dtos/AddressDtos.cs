@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace Address.Application.Dtos;
+namespace Address.Application.DTOs;
 
 public record AddressDto(
     Guid Id,

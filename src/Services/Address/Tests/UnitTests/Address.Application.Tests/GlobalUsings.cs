@@ -1,0 +1,13 @@
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using FluentAssertions;
+global using NSubstitute;
+global using Address.Application.DTOs;
+global using Address.Application.Interfaces;
+global using Address.Domain.Entities;
+global using RestApi.Shared.Models;
+global using System.Net;
+global using System.Net.Http.Json;
+global using Address.Application.Mapping;
+global using Address.Application.Services;
+global using AutoMapper;
+global using RestApi.Shared.Repository;

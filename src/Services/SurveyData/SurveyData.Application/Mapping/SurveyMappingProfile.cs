@@ -1,7 +1,3 @@
-using AutoMapper;
-using SurveyData.Application.DTOs;
-using SurveyData.Domain.Entities;
-
 namespace SurveyData.Application.Mapping;
 
 public class SurveyMappingProfile : Profile

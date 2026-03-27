@@ -1,6 +1,3 @@
-using Address.Application.Dtos;
-using AutoMapper;
-
 namespace Address.Application.Mapping;
 
 public class AddressMappingProfile : Profile

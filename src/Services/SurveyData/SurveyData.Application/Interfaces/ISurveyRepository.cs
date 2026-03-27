@@ -1,5 +1,4 @@
 using RestApi.Shared.Repository;
-using SurveyData.Domain.Entities;
 
 namespace SurveyData.Application.Interfaces;
 
