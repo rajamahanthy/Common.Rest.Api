@@ -1,5 +1,13 @@
 namespace Address.Application.DTOs;
 
+public record AdditionalInfoDto(
+    string AddressLine1,
+    string AddressLine2,
+    string AddressLine3,
+    string AddressLine4,
+    string AddressLine5
+);
+
 public record AddressDto(
     Guid Id,
     string Uprn,
@@ -13,6 +21,7 @@ public record AddressDto(
     string Country,
     double? Latitude,
     double? Longitude,
+    AdditionalInfoDto? AdditionalInfo,
     DateTimeOffset CreatedAt
 );
 
@@ -27,7 +36,8 @@ public record CreateAddressRequest(
     [Required] string Postcode,
     string Country = "United Kingdom",
     double? Latitude = null,
-    double? Longitude = null
+    double? Longitude = null,
+    AdditionalInfoDto? AdditionalInfo = null
 );
 
 public record UpdateAddressRequest(
@@ -40,5 +50,6 @@ public record UpdateAddressRequest(
     string Postcode,
     string Country,
     double? Latitude,
-    double? Longitude
+    double? Longitude,
+    AdditionalInfoDto? AdditionalInfo
 );

@@ -9,9 +9,9 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        var converter = new ValueConverter<AddressInfo, string>(
+        var converter = new ValueConverter<AdditionalInfo, string>(
             v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-            v => JsonSerializer.Deserialize<AddressInfo>(v, (JsonSerializerOptions)null)
+            v => JsonSerializer.Deserialize<AdditionalInfo>(v, (JsonSerializerOptions)null)
         );
         // Standard configuration for Address entity
         modelBuilder.Entity<Address.Domain.Entities.Address>(entity =>
@@ -31,7 +31,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
             entity.HasQueryFilter(e => !e.IsDeleted);
 
             // Native JSON Column Mapping
-            entity.Property(e => e.AddressJson)
+            entity.Property(e => e.AdditionalInfoJson)
                   .HasConversion(converter)
                   .HasColumnType("NVARCHAR(MAX)");
 
@@ -54,15 +54,11 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                     Postcode = "SW1A 2AA",
                     Country = "United Kingdom",
                     CreatedAt = new DateTimeOffset(2026, 3, 27, 0, 0, 0, TimeSpan.Zero),
-                    AddressJson = new AddressInfo
+                    AdditionalInfoJson = new AdditionalInfo
                     {
-                        Uprn = "100023336491",
-                        SingleLineAddress = "10 Downing St, London, SW1A 2AA",
-                        BuildingName = "Prime Minister's Residence",
-                        BuildingNumber = "10",
-                        Street = "Downing St",
-                        Town = "London",
-                        Postcode = "SW1A 2AA"
+                        AddressLine1 = "10 Downing St",
+                        AddressLine2 = "London",
+                        AddressLine3 = "SW1A 2AA"
                     }
                 },
                 new Address.Domain.Entities.Address
@@ -78,15 +74,11 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                     Postcode = "EH1 1AA",
                     Country = "United Kingdom",
                     CreatedAt = new DateTimeOffset(2026, 3, 27, 0, 0, 0, TimeSpan.Zero),
-                    AddressJson = new AddressInfo
+                    AdditionalInfoJson = new AdditionalInfo
                     {
-                        Uprn = "100021234567",
-                        SingleLineAddress = "1 High St, Edinburgh, EH1 1AA",
-                        BuildingName = "Main Building",
-                        BuildingNumber = "1",
-                        Street = "High St",
-                        Town = "Edinburgh",
-                        Postcode = "EH1 1AA"
+                        AddressLine1 = "1 High St",
+                        AddressLine2 = "Edinburgh",
+                        AddressLine3 = "EH1 1AA"
                     }
                 }
             );

@@ -24,5 +24,5 @@ public class Address : BaseEntity
     /// <summary>
     /// Additional address metadata stored as a JSON column in SQL.
     /// </summary>
-    public AddressInfo? AddressJson { get; set; }
+    public AdditionalInfo? AdditionalInfoJson { get; set; }
 }
