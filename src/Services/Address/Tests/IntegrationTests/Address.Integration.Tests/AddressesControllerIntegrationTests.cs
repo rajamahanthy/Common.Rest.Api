@@ -62,10 +62,10 @@ public class AddressesControllerIntegrationTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var content = await response.Content.ReadFromJsonAsync<PagedApiResponse<AddressDto>>();
-        content.Data.Should().HaveCount(expectedCount);
-        content.Page.Should().Be(1);
-        content.PageSize.Should().Be(10);
-        content.TotalCount.Should().Be(expectedCount);
+        content?.Data.Should().HaveCount(expectedCount);
+        content?.Page.Should().Be(1);
+        content?.PageSize.Should().Be(10);
+        content?.TotalCount.Should().Be(expectedCount);
     }
 
     private async Task SeedTestAddressesAsync(int count)

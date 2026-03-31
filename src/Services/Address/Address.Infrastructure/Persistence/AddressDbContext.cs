@@ -9,9 +9,9 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        var converter = new ValueConverter<AdditionalInfo, string>(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-            v => JsonSerializer.Deserialize<AdditionalInfo>(v, (JsonSerializerOptions)null)
+        var converter = new ValueConverter<AdditionalInfo?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+            v => JsonSerializer.Deserialize<AdditionalInfo?>(v, (JsonSerializerOptions)null!)
         );
         // Standard configuration for Address entity
         modelBuilder.Entity<AddressEntity>(entity =>

@@ -11,9 +11,9 @@ public sealed class SurveyDbContext(DbContextOptions<SurveyDbContext> options) :
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        var converter = new ValueConverter<SurveyInfo, string>(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-            v => JsonSerializer.Deserialize<SurveyInfo>(v, (JsonSerializerOptions)null)
+        var converter = new ValueConverter<SurveyInfo?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+            v => JsonSerializer.Deserialize<SurveyInfo?>(v, (JsonSerializerOptions)null!)
         );
 
         modelBuilder.Entity<Survey>(entity =>
