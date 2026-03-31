@@ -7,7 +7,7 @@ public class AddressEntityTests
     public void Address_ShouldSetDefaultCountry()
     {
         // Act
-        var address = new Entities.Address();
+        var address = new Entities.AddressEntity();
 
         // Assert
         address.Country.Should().Be("United Kingdom");
@@ -17,7 +17,7 @@ public class AddressEntityTests
     public void Address_ShouldInheritFromBaseEntity()
     {
         // Act
-        var address = new Entities.Address();
+        var address = new Entities.AddressEntity();
 
         // Assert
         address.Should().BeAssignableTo<RestApi.Shared.Domain.BaseEntity>();

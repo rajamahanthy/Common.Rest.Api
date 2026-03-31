@@ -6,7 +6,7 @@ namespace SurveyData.Application.Services;
 public sealed class SurveyService(
     ISurveyRepository surveyRepository,
     IUnitOfWork unitOfWork,
-    IMapper mapper,
+    ISurveyMappingService mappingService,
     ILogger<SurveyService> logger) : ISurveyService
 {
     public async Task<SurveyDto> GetByIdAsync(Guid id, CancellationToken ct = default)
@@ -14,7 +14,7 @@ public sealed class SurveyService(
         var survey = await surveyRepository.GetWithDetailsAsync(id, ct)
                      ?? throw new NotFoundException(nameof(Survey), id);
 
-        return mapper.Map<SurveyDto>(survey);
+        return mappingService.MapToSurveyDto(survey);
     }
 
     public async Task<SurveyDto> GetByReferenceAsync(string referenceNumber, CancellationToken ct = default)
@@ -22,7 +22,7 @@ public sealed class SurveyService(
         var survey = await surveyRepository.GetByReferenceNumberAsync(referenceNumber, ct)
                      ?? throw new NotFoundException(nameof(Survey), referenceNumber);
 
-        return mapper.Map<SurveyDto>(survey);
+        return mappingService.MapToSurveyDto(survey);
     }
 
     public async Task<(IReadOnlyList<SurveyDto> Items, int TotalCount)> SearchAsync(
@@ -52,7 +52,7 @@ public sealed class SurveyService(
             request.Page, request.PageSize, predicate, orderBy: s => s.CreatedAt,
             descending: request.Descending, ct: ct);
 
-        return (mapper.Map<IReadOnlyList<SurveyDto>>(items), totalCount);
+        return (items.Select(mappingService.MapToSurveyDto).ToList().AsReadOnly(), totalCount);
     }
 
     public async Task<SurveyDto> CreateAsync(CreateSurveyRequest request, string? userId = null, CancellationToken ct = default)
@@ -61,7 +61,7 @@ public sealed class SurveyService(
         if (await surveyRepository.ExistsAsync(s => s.ReferenceNumber == request.ReferenceNumber && !s.IsDeleted, ct))
             throw new ConflictException($"Survey with reference '{request.ReferenceNumber}' already exists.");
 
-        var survey = mapper.Map<Survey>(request);
+        var survey = mappingService.MapToSurvey(request);
         survey.CreatedBy = userId;
 
         await surveyRepository.AddAsync(survey, ct);
@@ -69,7 +69,7 @@ public sealed class SurveyService(
 
         logger.LogInformation("Created survey {SurveyId} with reference {Reference}", survey.Id, survey.ReferenceNumber);
 
-        return mapper.Map<SurveyDto>(survey);
+        return mappingService.MapToSurveyDto(survey);
     }
 
     public async Task<SurveyDto> UpdateAsync(Guid id, UpdateSurveyRequest request, string? userId = null, CancellationToken ct = default)
@@ -100,7 +100,7 @@ public sealed class SurveyService(
 
         logger.LogInformation("Updated survey {SurveyId}", survey.Id);
 
-        return mapper.Map<SurveyDto>(survey);
+        return mappingService.MapToSurveyDto(survey);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken ct = default)

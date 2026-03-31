@@ -4,20 +4,20 @@ using RestApi.Shared.Repository;
 namespace Address.Application.Services;
 
 public class AddressService(
-    IRepository<Address.Domain.Entities.Address> repository,
+    IRepository<AddressEntity> repository,
     IUnitOfWork unitOfWork,
-    IMapper mapper) : IAddressService
+    IAddressMappingService mappingService) : IAddressService
 {
     public async Task<TEntity?> GetByIdAsync<TEntity>(Guid id, CancellationToken ct = default) where TEntity : class
     {
         // This helper for generic base
-        return await (repository as EfRepository<Address.Domain.Entities.Address>)!.Context.Set<TEntity>().FindAsync([id], ct);
+        return await (repository as EfRepository<AddressEntity>)!.Context.Set<TEntity>().FindAsync([id], ct);
     }
 
     public async Task<AddressDto?> GetAddressByIdAsync(Guid id, CancellationToken ct = default)
     {
         var address = await repository.GetByIdAsync(id, ct);
-        return address is null ? null : mapper.Map<AddressDto>(address);
+        return address is null ? null : mappingService.MapToAddressDto(address);
     }
 
     public async Task<PagedApiResponse<AddressDto>> GetPagedAddressesAsync(
@@ -32,16 +32,16 @@ public class AddressService(
             descending: true,
             ct: ct);
 
-        var dtos = mapper.Map<IReadOnlyList<AddressDto>>(items);
+        var dtos = items.Select(mappingService.MapToAddressDto).ToList();
         return new PagedApiResponse<AddressDto>(dtos, page, pageSize, total);
     }
 
     public async Task<AddressDto> CreateAddressAsync(CreateAddressRequest request, CancellationToken ct = default)
     {
-        var address = mapper.Map<Address.Domain.Entities.Address>(request);
+        var address = mappingService.MapToAddress(request);
         await repository.AddAsync(address, ct);
         await unitOfWork.SaveChangesAsync(ct);
-        return mapper.Map<AddressDto>(address);
+        return mappingService.MapToAddressDto(address);
     }
 
     public async Task UpdateAddressAsync(Guid id, UpdateAddressRequest request, CancellationToken ct = default)
@@ -49,7 +49,7 @@ public class AddressService(
         var address = await repository.GetByIdAsync(id, ct);
         if (address is null) return;
 
-        mapper.Map(request, address);
+        mappingService.UpdateAddressFromRequest(address, request);
         address.UpdatedAt = DateTimeOffset.UtcNow;
         
         repository.Update(address);

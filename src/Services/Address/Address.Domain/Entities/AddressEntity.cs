@@ -5,7 +5,7 @@ namespace Address.Domain.Entities;
 /// <summary>
 /// Represents a standardized address record with geolocation details.
 /// </summary>
-public class Address : BaseEntity
+public class AddressEntity : BaseEntity
 {
     public string Uprn { get; set; } = default!;
     public string SingleLineAddress { get; set; } = default!;

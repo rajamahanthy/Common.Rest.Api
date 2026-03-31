@@ -12,6 +12,7 @@ using OpenTelemetry.Trace;
 using RestApi.Shared.Middleware;
 using RestApi.Shared.Resilience;
 using System.Security.Claims;
+using OpenTelemetry.Instrumentation.EntityFrameworkCore;
 
 namespace RestApi.Shared.Extensions;
 

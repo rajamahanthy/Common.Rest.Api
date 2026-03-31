@@ -9,20 +9,20 @@ public record AdditionalInfoDto(
 );
 
 public record AddressDto(
-    Guid Id,
-    string Uprn,
-    string SingleLineAddress,
-    string BuildingName,
-    string BuildingNumber,
-    string Street,
-    string Locality,
-    string Town,
-    string Postcode,
-    string Country,
-    double? Latitude,
-    double? Longitude,
-    AdditionalInfoDto? AdditionalInfo,
-    DateTimeOffset CreatedAt
+    Guid Id = default,
+    string Uprn = "",
+    string SingleLineAddress = "",
+    string BuildingName = "",
+    string BuildingNumber = "",
+    string Street = "",
+    string Locality = "",
+    string Town = "",
+    string Postcode = "",
+    string Country = "",
+    double? Latitude = null,
+    double? Longitude = null,
+    AdditionalInfoDto? AdditionalInfo = null,
+    DateTimeOffset CreatedAt = default
 );
 
 public record CreateAddressRequest(

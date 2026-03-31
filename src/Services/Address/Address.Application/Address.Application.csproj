@@ -5,9 +5,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\RestApi.Shared\RestApi.Shared.csproj" />
     <ProjectReference Include="..\Address.Domain\Address.Domain.csproj" />
   </ItemGroup>

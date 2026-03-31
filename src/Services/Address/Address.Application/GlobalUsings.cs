@@ -3,4 +3,3 @@ global using Address.Application.DTOs;
 global using Address.Application.Interfaces;
 global using Address.Domain.Entities;
 global using RestApi.Shared.Models;
-global using AutoMapper;

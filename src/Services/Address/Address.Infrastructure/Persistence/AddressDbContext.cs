@@ -4,7 +4,7 @@ namespace Address.Infrastructure.Persistence;
 
 public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbContext(options)
 {
-    public DbSet<Address.Domain.Entities.Address> Addresses => Set<Address.Domain.Entities.Address>();
+    public DbSet<AddressEntity> Addresses => Set<AddressEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -14,7 +14,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
             v => JsonSerializer.Deserialize<AdditionalInfo>(v, (JsonSerializerOptions)null)
         );
         // Standard configuration for Address entity
-        modelBuilder.Entity<Address.Domain.Entities.Address>(entity =>
+        modelBuilder.Entity<AddressEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Uprn).IsRequired().HasMaxLength(20);
@@ -41,7 +41,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
 
             // Seed Data
             entity.HasData(
-                new Address.Domain.Entities.Address
+                new AddressEntity
                 {
                     Id = Guid.Parse("f62e8b2a-8c88-4c8d-8d9e-1f2a3c4d5e6f"),
                     Uprn = "100023336491",
@@ -61,7 +61,7 @@ public class AddressDbContext(DbContextOptions<AddressDbContext> options) : DbCo
                         AddressLine3 = "SW1A 2AA"
                     }
                 },
-                new Address.Domain.Entities.Address
+                new AddressEntity
                 {
                     Id = Guid.Parse("a1b2c3d4-e5f6-4a5b-6c7d-8e9f0a1b2c3d"),
                     Uprn = "100021234567",

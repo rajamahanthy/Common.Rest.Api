@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" />
+    <ProjectReference Include="..\..\..\Shared\RestApi.Shared\RestApi.Shared.csproj" />
+    <ProjectReference Include="..\SurveyData.Domain\SurveyData.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\RestApi.Shared\RestApi.Shared.csproj" />
-    <ProjectReference Include="..\SurveyData.Domain\SurveyData.Domain.csproj" />
+    <Folder Include="Interfaces\Mapping\" />
   </ItemGroup>
 
 </Project>

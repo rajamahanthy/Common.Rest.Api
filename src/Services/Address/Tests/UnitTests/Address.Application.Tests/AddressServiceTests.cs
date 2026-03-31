@@ -3,20 +3,18 @@ namespace Address.Application.Tests;
 [TestClass]
 public class AddressServiceTests
 {
-    private readonly IRepository<Address.Domain.Entities.Address> _repository;
+    private readonly IRepository<AddressEntity> _repository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly IAddressMappingService _mappingService;
     private readonly AddressService _sut;
 
     public AddressServiceTests()
     {
-        _repository = Substitute.For<IRepository<Address.Domain.Entities.Address>>();
+        _repository = Substitute.For<IRepository<AddressEntity>>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
-        
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<AddressMappingProfile>());
-        _mapper = config.CreateMapper();
+        _mappingService = new AddressMappingService();
 
-        _sut = new AddressService(_repository, _unitOfWork, _mapper);
+        _sut = new AddressService(_repository, _unitOfWork, _mappingService);
     }
 
     [TestMethod]
@@ -24,7 +22,7 @@ public class AddressServiceTests
     {
         // Arrange
         var addressId = Guid.NewGuid();
-        var address = new Address.Domain.Entities.Address { Id = addressId, SingleLineAddress = "123 Test St" };
+        var address = new AddressEntity { Id = addressId, SingleLineAddress = "123 Test St" };
         _repository.GetByIdAsync(addressId, Arg.Any<CancellationToken>()).Returns(address);
 
         // Act

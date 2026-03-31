@@ -18,6 +18,7 @@ public sealed record SurveyDto
     public string? PropertyType { get; init; }
     public string? PropertySubType { get; init; }
     public DateTimeOffset CreatedAt { get; init; }
+    public SurveyInfoDto? SurveyInfo { get; init; }
     public IReadOnlyList<SurveyDetailDto> Details { get; init; } = [];
 }
 
@@ -30,6 +31,18 @@ public sealed record SurveyDetailDto
     public decimal? RatePerUnit { get; init; }
     public decimal? Value { get; init; }
     public int SortOrder { get; init; }
+}
+
+public sealed record SurveyInfoDto
+{
+    public string Uprn { get; init; } = string.Empty;
+    public string SingleLineAddress { get; init; } = string.Empty;
+    public string BuildingName { get; init; } = string.Empty;
+    public string BuildingNumber { get; init; } = string.Empty;
+    public string Street { get; init; } = string.Empty;
+    public string Locality { get; init; } = string.Empty;
+    public string Town { get; init; } = string.Empty;
+    public string Postcode { get; init; } = string.Empty;
 }
 
 public sealed record CreateSurveyRequest

@@ -14,7 +14,7 @@ public class AddressDbContextTests
             .Options;
 
         using var context = new AddressDbContext(options);
-        var address = new Domain.Entities.Address
+        var address = new Domain.Entities.AddressEntity
         {
             Uprn = "10001",
             SingleLineAddress = "1 High St",

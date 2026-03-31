@@ -1,7 +1,6 @@
 using RestApi.Shared.Health;
 using RestApi.Shared.Middleware;
 using RestApi.Shared.Extensions;
-using SurveyData.Application.Mapping;
 using SurveyData.Application.Services;
 using SurveyData.Infrastructure;
 
@@ -16,7 +15,7 @@ builder.Services.AddStandardValidation();
 builder.Services.AddStandardResilience(builder.Configuration);
 
 // ── Application Services ────────────────────────────────────────────────
-builder.Services.AddAutoMapper(typeof(SurveyMappingProfile).Assembly);
+builder.Services.AddScoped<ISurveyMappingService, SurveyMappingService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
 
 // ── Infrastructure (EF Core, Repositories, UoW) ────────────────────────
@@ -39,27 +38,13 @@ else
 // ── Controllers & Swagger ───────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new()
-    {
-        Title = "Survey Data API",
-        Version = "v1",
-        Description = "Microservice for managing survey data records."
-    });
-});
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 // ── Middleware pipeline ─────────────────────────────────────────────────
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Survey Data API v1"));
-}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

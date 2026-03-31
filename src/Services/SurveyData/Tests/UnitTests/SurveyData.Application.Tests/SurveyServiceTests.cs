@@ -1,6 +1,4 @@
-using AutoMapper;
 using RestApi.Shared.Repository;
-using SurveyData.Application.Mapping;
 using SurveyData.Application.Services;
 
 namespace SurveyData.Application.Tests;
@@ -10,7 +8,7 @@ public class SurveyServiceTests
 {
     private readonly ISurveyRepository _surveyRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly ISurveyMappingService _mappingService;
     private readonly ILogger<SurveyService> _logger;
     private readonly SurveyService _sut;
 
@@ -19,11 +17,9 @@ public class SurveyServiceTests
         _surveyRepository = Substitute.For<ISurveyRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _logger = Substitute.For<ILogger<SurveyService>>();
-        
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<SurveyMappingProfile>());
-        _mapper = config.CreateMapper();
+        _mappingService = new SurveyMappingService();
 
-        _sut = new SurveyService(_surveyRepository, _unitOfWork, _mapper, _logger);
+        _sut = new SurveyService(_surveyRepository, _unitOfWork, _mappingService, _logger);
     }
 
     [TestMethod]
@@ -42,3 +38,4 @@ public class SurveyServiceTests
         result.Id.Should().Be(surveyId);
     }
 }
+

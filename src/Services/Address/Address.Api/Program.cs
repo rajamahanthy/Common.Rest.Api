@@ -1,4 +1,3 @@
-using Address.Application.Mapping;
 using Address.Application.Services;
 using Address.Infrastructure;
 using RestApi.Shared.Extensions;
@@ -15,7 +14,7 @@ builder.Services.AddStandardValidation();
 builder.Services.AddStandardResilience(builder.Configuration);
 
 // ── Application Services ────────────────────────────────────────────────
-builder.Services.AddAutoMapper(typeof(AddressMappingProfile).Assembly);
+builder.Services.AddScoped<IAddressMappingService, AddressMappingService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 
 // ── Infrastructure ───────────────────────────────────────────────────
@@ -37,27 +36,13 @@ else
 // ── Controllers & Swagger ───────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new()
-    {
-        Title = "Address API",
-        Version = "v1",
-        Description = "Microservice for managing standardized address records."
-    });
-});
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 // ── Middleware pipeline ─────────────────────────────────────────────────
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Address API v1"));
-}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

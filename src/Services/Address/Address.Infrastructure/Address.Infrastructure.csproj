@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\RestApi.Shared\RestApi.Shared.csproj" />
-    <ProjectReference Include="..\Address.Application\Address.Application.csproj" />
     <ProjectReference Include="..\Address.Domain\Address.Domain.csproj" />
   </ItemGroup>
 </Project>
