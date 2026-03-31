@@ -1,0 +1,29 @@
+Architecture Overview
+
+✅ Layered Architecture: Domain → Application → Infrastructure
+✅ Shared Cross-Cutting Concerns: Middleware (CorrelationId, ExceptionHandling), Health Checks, Auth, OpenTelemetry
+✅ Dual Database Support: SQL Server or InMemory (dev/test)
+✅ API Versioning: Built-in with Asp.Versioning
+✅ Health Checks: Liveness (/health/live) and Readiness (/health/ready) probes
+
+
+Cross-Cutting Concerns
+Implemented in RestApi.Shared:
+
+✅ Authentication - Microsoft Identity Web with dev fallback
+✅ OpenTelemetry - Distributed tracing with Azure Monitor
+✅ API Versioning - Asp.Versioning (URL + Header)
+✅ Health Checks - Liveness/Readiness probes
+✅ Resilience - Polly + HttpResilience policies
+✅ Structured Logging - Correlation IDs for request tracking
+
+Characteristic	Implementation
+Style	Clean/Layered Architecture + Microservices
+Data Access	Generic Repository + Unit of Work
+Dependency Management	Service Collection Extensions (DI Container)
+Cross-Cutting	Middleware Pipeline
+API Versioning	Header + URL-based
+Testing	Testcontainers (Integration), MSTest (Unit)
+Observability	OpenTelemetry + Azure Monitor
+Resilience	Polly + Retry Policies
+Error Handling	Custom Exception Hierarchy → HTTP Mapping
