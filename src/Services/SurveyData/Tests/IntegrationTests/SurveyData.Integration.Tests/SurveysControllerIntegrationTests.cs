@@ -17,19 +17,13 @@ public class SurveysControllerIntegrationTests
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
-                builder.ConfigureServices(services =>
+                // Override configuration to use InMemory database
+                builder.ConfigureAppConfiguration((context, config) =>
                 {
-                    // Remove the normal database and use in-memory for testing
-                    var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType == typeof(DbContextOptions<SurveyDbContext>));
-                    
-                    if (descriptor != null)
+                    config.AddInMemoryCollection(new Dictionary<string, string?>
                     {
-                        services.Remove(descriptor);
-                    }
-
-                    services.AddDbContext<SurveyDbContext>(options =>
-                        options.UseInMemoryDatabase($"SurveyIntegration_{Guid.NewGuid()}"));
+                        { "ConnectionStrings:SurveyDb", "InMemory" }
+                    });
                 });
             });
 

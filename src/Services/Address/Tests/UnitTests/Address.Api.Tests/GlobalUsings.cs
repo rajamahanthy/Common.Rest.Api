@@ -1,6 +1,6 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using FluentAssertions;
-global using NSubstitute;
+global using Moq;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Http;
 global using Address.Api.Controllers;

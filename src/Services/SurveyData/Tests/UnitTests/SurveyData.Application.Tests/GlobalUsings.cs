@@ -1,6 +1,6 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using FluentAssertions;
-global using NSubstitute;
+global using Moq;
 global using SurveyData.Application.DTOs;
 global using SurveyData.Application.Interfaces;
 global using SurveyData.Domain.Entities;

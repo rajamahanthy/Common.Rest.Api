@@ -20,19 +20,13 @@ public class AddressesControllerIntegrationTests
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
-                builder.ConfigureServices(services =>
+                // Override configuration to use InMemory database
+                builder.ConfigureAppConfiguration((context, config) =>
                 {
-                    // Remove the normal database and use in-memory for testing
-                    var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType == typeof(DbContextOptions<AddressDbContext>));
-                    
-                    if (descriptor != null)
+                    config.AddInMemoryCollection(new Dictionary<string, string?>
                     {
-                        services.Remove(descriptor);
-                    }
-
-                    services.AddDbContext<AddressDbContext>(options =>
-                        options.UseInMemoryDatabase(_testDatabaseName));
+                        { "ConnectionStrings:AddressDb", "InMemory" }
+                    });
                 });
             });
 

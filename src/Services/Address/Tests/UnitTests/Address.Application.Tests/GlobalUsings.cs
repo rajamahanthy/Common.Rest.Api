@@ -1,6 +1,6 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using FluentAssertions;
-global using NSubstitute;
+global using Moq;
 global using Address.Application.DTOs;
 global using Address.Application.Interfaces;
 global using Address.Domain.Entities;
