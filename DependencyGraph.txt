@@ -1,0 +1,15 @@
+API Layer (Entry Points)
+├── Address.Api → {Address.Application, Address.Infrastructure, RestApi.Shared}
+└── SurveyData.Api → {SurveyData.Application, SurveyData.Infrastructure, RestApi.Shared}
+
+Application Layer (Business Logic)
+├── Address.Application → {Address.Domain, RestApi.Shared}
+└── SurveyData.Application → {SurveyData.Domain, RestApi.Shared}
+
+Infrastructure Layer (Data Access)
+├── Address.Infrastructure → {Address.Application, Address.Domain, RestApi.Shared}
+└── SurveyData.Infrastructure → {SurveyData.Application, SurveyData.Domain, RestApi.Shared}
+
+Domain Layer (Entities)
+├── Address.Domain → {RestApi.Shared}
+└── SurveyData.Domain → {RestApi.Shared}
