@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/Common.Rest.SurveyData/">
+    <Project Path="SurveyData\Common.Rest.SurveyData.Api\Common.Rest.SurveyData.Api.csproj" />
+    <Project Path="SurveyData\Common.Rest.SurveyData.Application\Common.Rest.SurveyData.Application.csproj" />
+    <Project Path="SurveyData\Common.Rest.SurveyData.Domain\Common.Rest.SurveyData.Domain.csproj" />
+    <Project Path="SurveyData\Common.Rest.SurveyData.Infrastructure\Common.Rest.SurveyData.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.SurveyData/Tests/IntegrationTests/">
+	<Project Path="SurveyData\Tests\IntegrationTests\Common.Rest.SurveyData.Integration.Tests\Common.Rest.SurveyData.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.SurveyData/Tests/UnitTests/">
+    <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Api.Tests\Common.Rest.SurveyData.Api.Tests.csproj" />
+    <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Application.Tests\Common.Rest.SurveyData.Application.Tests.csproj" />
+    <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Domain.Tests\Common.Rest.SurveyData.Domain.Tests.csproj" />
+    <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Infrastructure.Tests\Common.Rest.SurveyData.Infrastructure.Tests.csproj" />
+  </Folder>
+  
+  <Folder Name="/Common.Rest.Address/">
+    <Project Path="Address\Common.Rest.Address.Api\Common.Rest.Address.Api.csproj" />
+    <Project Path="Address\Common.Rest.Address.Application\Common.Rest.Address.Application.csproj" />
+    <Project Path="Address\Common.Rest.Address.Domain\Common.Rest.Address.Domain.csproj" />
+    <Project Path="Address\Common.Rest.Address.Infrastructure\Common.Rest.Address.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.Address/Tests/UnitTests/">
+    <Project Path="Address\Tests\UnitTests\Common.Rest.Address.Api.Tests\Common.Rest.Address.Api.Tests.csproj" />
+    <Project Path="Address\Tests\UnitTests\Common.Rest.Address.Application.Tests\Common.Rest.Address.Application.Tests.csproj" />
+    <Project Path="Address\Tests\UnitTests\Common.Rest.Address.Domain.Tests\Common.Rest.Address.Domain.Tests.csproj" />
+    <Project Path="Address\Tests\UnitTests\Common.Rest.Address.Infrastructure.Tests\Common.Rest.Address.Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.Address/Tests/IntegrationTests/">
+	<Project Path="Address\Tests\IntegrationTests\Common.Rest.Address.Integration.Tests\Common.Rest.Address.Integration.Tests.csproj" />
+  </Folder>
+  <Project Path="Common.Rest.Shared\Common.Rest.Shared.csproj" />
+</Solution>
