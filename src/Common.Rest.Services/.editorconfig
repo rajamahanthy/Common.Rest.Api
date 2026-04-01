@@ -1,0 +1,121 @@
+# EditorConfig is awesome: https://EditorConfig.org
+root = true
+
+##########################
+# Default: Silent (No Warnings)
+##########################
+[*.cs]
+# Disable all by default - only exceptions below are enabled
+dotnet_diagnostic.CA1000.severity = silent
+dotnet_diagnostic.CA1001.severity = silent
+dotnet_diagnostic.CA1009.severity = silent
+dotnet_diagnostic.CA1016.severity = silent
+dotnet_diagnostic.CA1018.severity = silent
+dotnet_diagnostic.CA1021.severity = silent
+dotnet_diagnostic.CA1024.severity = silent
+dotnet_diagnostic.CA1027.severity = silent
+dotnet_diagnostic.CA1050.severity = silent
+dotnet_diagnostic.CA1200.severity = silent
+dotnet_diagnostic.CA1711.severity = silent
+dotnet_diagnostic.CA1716.severity = silent
+dotnet_diagnostic.CA1724.severity = silent
+dotnet_diagnostic.CA1725.severity = silent
+dotnet_diagnostic.CA1900.severity = silent
+dotnet_diagnostic.CA1901.severity = silent
+dotnet_diagnostic.CA2000.severity = silent
+dotnet_diagnostic.CA2001.severity = silent
+dotnet_diagnostic.CA2100.severity = silent
+dotnet_diagnostic.CA2101.severity = silent
+dotnet_diagnostic.CA2108.severity = silent
+dotnet_diagnostic.CA2111.severity = silent
+dotnet_diagnostic.CA2112.severity = silent
+dotnet_diagnostic.CA2114.severity = silent
+dotnet_diagnostic.CA2116.severity = silent
+dotnet_diagnostic.CA2117.severity = silent
+dotnet_diagnostic.CA2122.severity = silent
+dotnet_diagnostic.CA2123.severity = silent
+dotnet_diagnostic.CA2124.severity = silent
+dotnet_diagnostic.CA2126.severity = silent
+dotnet_diagnostic.CA2131.severity = silent
+dotnet_diagnostic.CA2132.severity = silent
+dotnet_diagnostic.CA2133.severity = silent
+dotnet_diagnostic.CA2134.severity = silent
+dotnet_diagnostic.CA2137.severity = silent
+dotnet_diagnostic.CA2138.severity = silent
+dotnet_diagnostic.CA2140.severity = silent
+dotnet_diagnostic.CA2141.severity = silent
+dotnet_diagnostic.CA2146.severity = silent
+dotnet_diagnostic.CA2147.severity = silent
+dotnet_diagnostic.CA2151.severity = silent
+dotnet_diagnostic.CA2202.severity = silent
+dotnet_diagnostic.CA2205.severity = silent
+dotnet_diagnostic.CA2215.severity = silent
+dotnet_diagnostic.CA2216.severity = silent
+dotnet_diagnostic.CA2220.severity = silent
+dotnet_diagnostic.CA2229.severity = silent
+dotnet_diagnostic.CA2231.severity = silent
+dotnet_diagnostic.CA2232.severity = silent
+dotnet_diagnostic.CA2235.severity = silent
+dotnet_diagnostic.CA2236.severity = silent
+dotnet_diagnostic.CA2237.severity = silent
+dotnet_diagnostic.CA2238.severity = silent
+dotnet_diagnostic.CA2239.severity = silent
+dotnet_diagnostic.CA2240.severity = silent
+dotnet_diagnostic.CA2241.severity = silent
+dotnet_diagnostic.CA2242.severity = silent
+dotnet_diagnostic.CA2243.severity = silent
+dotnet_diagnostic.CA2244.severity = silent
+dotnet_diagnostic.CA2245.severity = silent
+dotnet_diagnostic.CA2246.severity = silent
+
+##########################
+# ENABLED RULES: WARNING (First Wave - High Value)
+##########################
+
+# CA1707: Identifiers should not contain underscores
+# Enforces naming conventions for public members (PascalCase, no underscores)
+dotnet_diagnostic.CA1707.severity = warning
+
+# CA1711: Identifiers should not have incorrect suffix
+# Catches FlagAttribute enums named with 'Flag', 'Flags' suffixes
+dotnet_diagnostic.CA1711.severity = warning
+
+# CA1801: Review unused parameters
+# Detects unused method parameters to help clean up signatures
+dotnet_diagnostic.CA1801.severity = warning
+
+# CA1802: Use literals where appropriate
+# Promotes static readonly to const where possible
+dotnet_diagnostic.CA1802.severity = warning
+
+# CA1806: Do not ignore method results
+# Warns when return values are ignored (often bugs)
+dotnet_diagnostic.CA1806.severity = warning
+
+# CA1822: Mark members as static
+# Identifies instance methods that don't use 'this'
+dotnet_diagnostic.CA1822.severity = warning
+
+# CA1827: Do not use Count/LongCount when Any can be used
+# Performance: Any() is faster than Count() > 0
+dotnet_diagnostic.CA1827.severity = warning
+
+# CA1849: Call async methods when in an async context
+# Async best practice: don't call sync methods from async code
+dotnet_diagnostic.CA1849.severity = warning
+
+# CA2100: Review SQL queries for security vulnerabilities
+# SECURITY: Detects potential SQL injection risks
+dotnet_diagnostic.CA2100.severity = warning
+
+# CS1998: Async method lacks await operators
+# Flags async methods that don't actually await anything
+dotnet_diagnostic.CS1998.severity = warning
+
+# IDE0001: Simplify type names
+# Style: Remove unnecessary namespaces in type references
+dotnet_diagnostic.IDE0001.severity = warning
+
+# IDE0161: Use file-scoped namespace
+# Style: Prefer file-scoped namespaces (.NET 6+)
+dotnet_diagnostic.IDE0161.severity = warning
