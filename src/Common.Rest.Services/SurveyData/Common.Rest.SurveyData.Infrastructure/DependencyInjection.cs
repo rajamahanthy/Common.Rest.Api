@@ -1,13 +1,5 @@
 namespace Common.Rest.SurveyData.Infrastructure;
 
-using Common.Rest.SurveyData.Infrastructure.Persistence;
-using Common.Rest.SurveyData.Application.Interfaces;
-using Common.Rest.Shared.Repository;
-using Common.Rest.Shared.Resilience;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 /// <summary>
 /// DI extension methods for Infrastructure layer registration.
 /// </summary>

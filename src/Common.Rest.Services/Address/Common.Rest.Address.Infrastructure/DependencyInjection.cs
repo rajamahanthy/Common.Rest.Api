@@ -1,12 +1,5 @@
 namespace Common.Rest.Address.Infrastructure;
 
-using Common.Rest.Address.Infrastructure.Persistence;
-using Common.Rest.Shared.Repository;
-using Common.Rest.Shared.Resilience;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

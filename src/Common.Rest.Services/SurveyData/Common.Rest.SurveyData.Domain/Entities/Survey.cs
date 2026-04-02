@@ -1,5 +1,3 @@
-using Common.Rest.Shared.Domain;
-
 namespace Common.Rest.SurveyData.Domain.Entities;
 
 /// <summary>

@@ -5,12 +5,6 @@ public class AddressService(
     IUnitOfWork unitOfWork,
     IAddressMappingService mappingService) : IAddressService
 {
-    public async Task<TEntity?> GetByIdAsync<TEntity>(Guid id, CancellationToken ct = default) where TEntity : class
-    {
-        // This helper for generic base
-        return await (repository as EfRepository<AddressEntity>)!.Context.Set<TEntity>().FindAsync([id], ct);
-    }
-
     public async Task<AddressDto?> GetAddressByIdAsync(Guid id, CancellationToken ct = default)
     {
         var address = await repository.GetByIdAsync(id, ct);

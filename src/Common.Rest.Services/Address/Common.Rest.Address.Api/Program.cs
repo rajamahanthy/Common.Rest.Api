@@ -28,7 +28,7 @@ else
     healthChecks.AddCheck("mock-db", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Using InMemory DB"), tags: ["ready"]);
 }
 
-// ── Controllers & Swagger ───────────────────────────────────────────────
+// ── Controllers  ───────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
