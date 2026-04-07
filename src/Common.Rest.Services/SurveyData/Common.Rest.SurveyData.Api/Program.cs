@@ -37,8 +37,13 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // ── Middleware pipeline ─────────────────────────────────────────────────
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseWhen(
+    context => !context.Request.Path.StartsWithSegments("/openapi"),
+    appBuilder =>
+    {
+        appBuilder.UseMiddleware<CorrelationIdMiddleware>();
+        appBuilder.UseMiddleware<ExceptionHandlingMiddleware>();
+    });
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -55,6 +60,7 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
     Predicate = check => check.Tags.Contains("ready")
 });
 
+app.MapOpenApi().AllowAnonymous();
 app.MapControllers();
 
 app.Logger.LogInformation("Survey Data Service starting...");

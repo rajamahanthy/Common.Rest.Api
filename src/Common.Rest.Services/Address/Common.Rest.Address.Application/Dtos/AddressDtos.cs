@@ -9,7 +9,7 @@ public record AdditionalInfoDto(
 );
 
 public record AddressDto(
-    Guid Id = default,
+    Guid Id,
     string Uprn = "",
     string SingleLineAddress = "",
     string BuildingName = "",
@@ -22,7 +22,7 @@ public record AddressDto(
     double? Latitude = null,
     double? Longitude = null,
     AdditionalInfoDto? AdditionalInfo = null,
-    DateTimeOffset CreatedAt = default
+    DateTimeOffset? CreatedAt = null
 );
 
 public record CreateAddressRequest(
