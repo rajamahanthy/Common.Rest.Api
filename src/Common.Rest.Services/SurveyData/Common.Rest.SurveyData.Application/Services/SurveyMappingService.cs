@@ -1,3 +1,5 @@
+using Azure.Core;
+
 namespace Common.Rest.SurveyData.Application.Services;
 
 public class SurveyMappingService : ISurveyMappingService
@@ -84,18 +86,23 @@ public class SurveyMappingService : ISurveyMappingService
         };
     }
 
-    private static SurveyInfoDto MapToSurveyInfoDto(SurveyInfo surveyInfo)
+    private static SurveyInfoDto MapToSurveyInfoDto(SurveyInfo request)
     {
         return new SurveyInfoDto
         {
-            Uprn = surveyInfo.Uprn,
-            SingleLineAddress = surveyInfo.SingleLineAddress,
-            BuildingName = surveyInfo.BuildingName,
-            BuildingNumber = surveyInfo.BuildingNumber,
-            Street = surveyInfo.Street,
-            Locality = surveyInfo.Locality,
-            Town = surveyInfo.Town,
-            Postcode = surveyInfo.Postcode
+            ReferenceNumber = request.ReferenceNumber,
+            PropertyAddress = request.PropertyAddress,
+            PostCode = request.PostCode,
+            LocalAuthority = request.LocalAuthority,
+            SurveyType = request.SurveyType,
+            SurveyDate = request.SurveyDate ?? DateTimeOffset.UtcNow,
+            Surveyor = request.Surveyor,
+            Notes = request.Notes,
+            AssessedValue = request.AssessedValue,
+            FloorArea = request.FloorArea,
+            FloorAreaUnit = request.FloorAreaUnit,
+            PropertyType = request.PropertyType,
+            PropertySubType = request.PropertySubType
         };
     }
 }

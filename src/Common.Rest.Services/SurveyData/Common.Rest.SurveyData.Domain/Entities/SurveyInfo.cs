@@ -6,12 +6,18 @@ namespace Common.Rest.SurveyData.Domain.Entities;
 /// </summary>
 public record SurveyInfo
 {
-    public string Uprn { get; set; } = string.Empty;
-    public string SingleLineAddress { get; set; } = string.Empty;
-    public string BuildingName { get; set; } = string.Empty;
-    public string BuildingNumber { get; set; } = string.Empty;
-    public string Street { get; set; } = string.Empty;
-    public string Locality { get; set; } = string.Empty;
-    public string Town { get; set; } = string.Empty;
-    public string Postcode { get; set; } = string.Empty;
+    public string ReferenceNumber { get; set; } = string.Empty;
+    public string PropertyAddress { get; set; } = string.Empty;
+    public string? PostCode { get; set; }
+    public string? LocalAuthority { get; set; }
+    public string SurveyType { get; set; } = string.Empty;
+    public DateTimeOffset? SurveyDate { get; set; }
+    public string Status { get; set; } = "Draft";
+    public string? Surveyor { get; set; }
+    public string? Notes { get; set; }
+    public decimal? AssessedValue { get; set; }
+    public decimal? FloorArea { get; set; }
+    public string? FloorAreaUnit { get; set; }
+    public string? PropertyType { get; set; }
+    public string? PropertySubType { get; set; }
 }

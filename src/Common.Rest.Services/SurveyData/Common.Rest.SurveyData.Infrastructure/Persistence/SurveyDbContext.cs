@@ -68,13 +68,20 @@ public sealed class SurveyDbContext(DbContextOptions<SurveyDbContext> options) :
                     PropertySubType = "Detached",
                     SurveyJson = new SurveyInfo
                     {
-                        Uprn = "100023336491",
-                        SingleLineAddress = "10 Downing St, London, SW1A 2AA",
-                        BuildingName = "Prime Minister's Residence",
-                        BuildingNumber = "10",
-                        Street = "Downing St",
-                        Town = "London",
-                        Postcode = "SW1A 2AA"
+                        ReferenceNumber = "100023336491",
+                        PropertyAddress = "10 Downing St, London, SW1A 2AA",
+                        PostCode = "SW1A 2AA",
+                        LocalAuthority = "Westminster",
+                        SurveyType = "Valuation",
+                        SurveyDate = new DateTimeOffset(2025, 3, 27, 0, 0, 0, TimeSpan.Zero),
+                        Status = "Draft",
+                        Surveyor = "John Doe",
+                        Notes = "This is a test survey",
+                        AssessedValue = 1000000m,
+                        FloorArea = 1000m,
+                        FloorAreaUnit = "sqft",
+                        PropertyType = "House",
+                        PropertySubType = "Detached"
                     }
                 }
             );
@@ -98,13 +105,20 @@ public sealed class SurveyDbContext(DbContextOptions<SurveyDbContext> options) :
                 PropertySubType = "Detached",
                 SurveyJson = new SurveyInfo
                 {
-                    Uprn = "100021234567",
-                    SingleLineAddress = "1 High St, Edinburgh, EH1 1AA",
-                    BuildingName = "Main Building",
-                    BuildingNumber = "1",
-                    Street = "High St",
-                    Town = "Edinburgh",
-                    Postcode = "EH1 1AA"
+                    ReferenceNumber = "100021234567",
+                    PropertyAddress = "1 High St, Edinburgh, EH1 1AA",
+                    PostCode = "EH1 1AA",
+                    LocalAuthority = "Edinburgh",
+                    SurveyType = "Valuation",
+                    SurveyDate = DateTimeOffset.UtcNow,
+                    Status = "Draft",
+                    Surveyor = "John Doe",
+                    Notes = "This is a test survey",
+                    AssessedValue = 1000000m,
+                    FloorArea = 1000m,
+                    FloorAreaUnit = "sqft",
+                    PropertyType = "House",
+                    PropertySubType = "Detached"
                 }
             });
         });

@@ -35,14 +35,20 @@ public sealed record SurveyDetailDto
 
 public sealed record SurveyInfoDto
 {
-    public string Uprn { get; init; } = string.Empty;
-    public string SingleLineAddress { get; init; } = string.Empty;
-    public string BuildingName { get; init; } = string.Empty;
-    public string BuildingNumber { get; init; } = string.Empty;
-    public string Street { get; init; } = string.Empty;
-    public string Locality { get; init; } = string.Empty;
-    public string Town { get; init; } = string.Empty;
-    public string Postcode { get; init; } = string.Empty;
+    public string ReferenceNumber { get; set; } = string.Empty;
+    public string PropertyAddress { get; set; } = string.Empty;
+    public string? PostCode { get; set; }
+    public string? LocalAuthority { get; set; }
+    public string SurveyType { get; set; } = string.Empty;
+    public DateTimeOffset SurveyDate { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public string? Surveyor { get; set; }
+    public string? Notes { get; set; }
+    public decimal? AssessedValue { get; set; }
+    public decimal? FloorArea { get; set; }
+    public string? FloorAreaUnit { get; set; }
+    public string? PropertyType { get; set; }
+    public string? PropertySubType { get; set; }
 }
 
 public sealed record CreateSurveyRequest
