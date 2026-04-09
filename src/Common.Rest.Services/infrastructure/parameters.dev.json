@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "dev"
+    },
+    "location": {
+      "value": "PLACEHOLDER_REGION"
+    },
+    "resourcePrefix": {
+      "value": "VO"
+    },
+    "sqlAdminUsername": {
+      "value": "sqladmin"
+    },
+    "sqlAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/PLACEHOLDER_SUBSCRIPTIONID/resourceGroups/VO-dev-rg/providers/Microsoft.KeyVault/vaults/VOdevkv"
+        },
+        "secretName": "SqlAdminPassword"
+      }
+    },
+    "appServicePlanSku": {
+      "value": "S1"
+    },
+    "appServicePlanTier": {
+      "value": "Standard"
+    },
+    "sqlDatabaseEdition": {
+      "value": "Standard"
+    },
+    "sqlDatabaseTier": {
+      "value": "S1"
+    },
+    "appInsightsRetentionDays": {
+      "value": 7
+    },
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "project": "Common.Rest.Api",
+        "managedBy": "Bicep",
+        "costCenter": "Engineering"
+      }
+    }
+  }
+}

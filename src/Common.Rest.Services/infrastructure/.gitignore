@@ -1,0 +1,100 @@
+# Bicep and Azure Infrastructure - .gitignore
+
+# ARM Templates (generated from Bicep)
+*.json
+!parameters*.json
+!*.parameters.json
+
+# Generated deployment files
+main.json
+main.*.json
+
+# PowerShell
+*.ps1xml
+
+# Bicep cache
+.bicepproviders/
+.bicep/
+
+# Azure CLI
+.azure/
+
+# Terraform (if used in future)
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+
+# IDE and editors
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.#*
+
+# Build artifacts
+bin/
+obj/
+dist/
+
+# Package managers
+node_modules/
+package-lock.json
+yarn.lock
+
+# Sensitive information
+secrets/
+*.secret
+*.key
+*.pem
+*.pfx
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE specific
+.vs/
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# Ignore publish profiles but not bicep templates
+**/publishingProfile.xml
+!infrastructure/**/*.bicep
+
+# Misc
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Azure Storage Emulator
+*.pem
+*.cer
+
+# Keep infrastructure files
+!*.bicep
+!*.json
+!*.md
+!*.ps1
