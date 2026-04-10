@@ -5,10 +5,17 @@ global using Microsoft.Extensions.Logging;
 global using Asp.Versioning;
 
 global using Common.Rest.Shared.Models;
+global using Common.Rest.Shared.Dtos;
 global using Common.Rest.Shared.Extensions;
 global using Common.Rest.Shared.Middleware;
+global using Common.Rest.Shared.Exceptions;
+global using Common.Rest.Address.Api.Extensions;
 global using Common.Rest.Address.Application.Dtos;
 global using Common.Rest.Address.Application.Interfaces;
 global using Common.Rest.Address.Application.Services;
 global using Common.Rest.Address.Infrastructure;
+
+
+
+
 

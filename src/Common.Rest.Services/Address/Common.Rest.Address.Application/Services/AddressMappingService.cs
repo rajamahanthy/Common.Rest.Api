@@ -1,102 +1,169 @@
 namespace Common.Rest.Address.Application.Services;
 
+using Common.Rest.Address.Application.Dtos;
+using Common.Rest.Address.Application.Interfaces;
+using Common.Rest.Address.Domain.Entities;
+using Common.Rest.Shared.Domain;
+
+/// <summary>
+/// Implementation of mapping service for Address entities.
+/// Centralizes conversion logic between domain entities and DTOs.
+/// </summary>
 public class AddressMappingService : IAddressMappingService
 {
-    public AddressDto MapToAddressDto(AddressEntity address)
+    AddressDocumentDto IAddressMappingService.MapToDto(DocumentEntity<AddressEntity> document)
     {
-        return new AddressDto(
-            Id: address.Id,
-            Uprn: address.Uprn,
-            SingleLineAddress: address.SingleLineAddress,
-            BuildingName: address.BuildingName,
-            BuildingNumber: address.BuildingNumber,
-            Street: address.Street,
-            Locality: address.Locality,
-            Town: address.Town,
-            Postcode: address.Postcode,
-            Country: address.Country,
-            Latitude: address.Latitude,
-            Longitude: address.Longitude,
-            AdditionalInfo: address.AdditionalInfoJson is null ? null : MapToAdditionalInfoDto(address.AdditionalInfoJson),
-            CreatedAt: address.CreatedAt
-        );
-    }
+        var address = document.JsonData;
 
-    public AddressEntity MapToAddress(CreateAddressRequest request)
-    {
-        return new AddressEntity
+        var addressDto = new AddressDto
         {
-            Uprn = request.Uprn,
-            SingleLineAddress = request.SingleLineAddress,
-            BuildingName = request.BuildingName,
-            BuildingNumber = request.BuildingNumber,
-            Street = request.Street,
-            Locality = request.Locality,
-            Town = request.Town,
-            Postcode = request.Postcode,
-            Country = request.Country,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
-            AdditionalInfoJson = request.AdditionalInfo is null ? null : MapToAdditionalInfo(request.AdditionalInfo)
+            Uprn = address.Uprn,
+            AddressInfo = new AddressInfo
+            {
+                Organisation = address.AddressInfo.Organisation,
+                Department = address.AddressInfo.Department,
+                Sao = address.AddressInfo.Sao != null ? new AddressableObject
+                {
+                    Text = address.AddressInfo.Sao.Text,
+                    StartNumber = address.AddressInfo.Sao.StartNumber,
+                    StartSuffix = address.AddressInfo.Sao.StartSuffix,
+                    EndNumber = address.AddressInfo.Sao.EndNumber,
+                    EndSuffix = address.AddressInfo.Sao.EndSuffix
+                } : null,
+                Pao = new AddressableObject
+                {
+                    Text = address.AddressInfo.Pao.Text,
+                    StartNumber = address.AddressInfo.Pao.StartNumber,
+                    StartSuffix = address.AddressInfo.Pao.StartSuffix,
+                    EndNumber = address.AddressInfo.Pao.EndNumber,
+                    EndSuffix = address.AddressInfo.Pao.EndSuffix
+                },
+                StreetDescriptor = new StreetDescriptor
+                {
+                    StreetDescription = address.AddressInfo.StreetDescriptor.StreetDescription,
+                    Locality = address.AddressInfo.StreetDescriptor.Locality,
+                    DependentLocality = address.AddressInfo.StreetDescriptor.DependentLocality,
+                    DoubleDependentLocality = address.AddressInfo.StreetDescriptor.DoubleDependentLocality,
+                    TownName = address.AddressInfo.StreetDescriptor.TownName,
+                    PostTown = address.AddressInfo.StreetDescriptor.PostTown,
+                    AdministrativeArea = address.AddressInfo.StreetDescriptor.AdministrativeArea
+                },
+                Postcode = address.AddressInfo.Postcode
+            },
+            Geography = new Geography
+            {
+                Easting = address.Geography.Easting,
+                Northing = address.Geography.Northing
+            }
         };
+
+        return new AddressDocumentDto(document.Id, addressDto);
     }
 
-    public void UpdateAddressFromRequest(AddressEntity address, UpdateAddressRequest request)
+    DocumentEntity<AddressEntity> IAddressMappingService.MapToDomain(CreateUpdateAddress createDto)
     {
-        if (!string.IsNullOrEmpty(request.SingleLineAddress))
-            address.SingleLineAddress = request.SingleLineAddress;
-        
-        if (!string.IsNullOrEmpty(request.BuildingName))
-            address.BuildingName = request.BuildingName;
-        
-        if (!string.IsNullOrEmpty(request.BuildingNumber))
-            address.BuildingNumber = request.BuildingNumber;
-        
-        if (!string.IsNullOrEmpty(request.Street))
-            address.Street = request.Street;
-        
-        if (!string.IsNullOrEmpty(request.Locality))
-            address.Locality = request.Locality;
-        
-        if (!string.IsNullOrEmpty(request.Town))
-            address.Town = request.Town;
-        
-        if (!string.IsNullOrEmpty(request.Postcode))
-            address.Postcode = request.Postcode;
-        
-        if (!string.IsNullOrEmpty(request.Country))
-            address.Country = request.Country;
-        
-        if (request.Latitude.HasValue)
-            address.Latitude = request.Latitude;
-        
-        if (request.Longitude.HasValue)
-            address.Longitude = request.Longitude;
-        
-        if (request.AdditionalInfo is not null)
-            address.AdditionalInfoJson = MapToAdditionalInfo(request.AdditionalInfo);
-    }
+        ArgumentNullException.ThrowIfNull(createDto);
+        ArgumentNullException.ThrowIfNull(createDto.AddressInfo);
+        ArgumentNullException.ThrowIfNull(createDto.Geography);
 
-    private static AdditionalInfoDto? MapToAdditionalInfoDto(Address.Domain.Entities.AdditionalInfo additionalInfo)
-    {
-        return new AdditionalInfoDto(
-            AddressLine1: additionalInfo.AddressLine1,
-            AddressLine2: additionalInfo.AddressLine2,
-            AddressLine3: additionalInfo.AddressLine3,
-            AddressLine4: additionalInfo.AddressLine4,
-            AddressLine5: additionalInfo.AddressLine5
-        );
-    }
+        var uprn = Guid.NewGuid().ToString("N")[..12];
 
-    private static Address.Domain.Entities.AdditionalInfo MapToAdditionalInfo(AdditionalInfoDto dto)
-    {
-        return new Common.Rest.Address.Domain.Entities.AdditionalInfo
+        var addressEntity = new AddressEntity
         {
-            AddressLine1 = dto.AddressLine1,
-            AddressLine2 = dto.AddressLine2,
-            AddressLine3 = dto.AddressLine3,
-            AddressLine4 = dto.AddressLine4,
-            AddressLine5 = dto.AddressLine5
+            Uprn = uprn,
+            Usrn = null,
+            AddressInfo = new AddressInfoEntity
+            {
+                Organisation = createDto.AddressInfo.Organisation,
+                Department = createDto.AddressInfo.Department,
+                Sao = createDto.AddressInfo.Sao != null ? new AddressableObjectEntity
+                {
+                    Text = createDto.AddressInfo.Sao.Text,
+                    StartNumber = createDto.AddressInfo.Sao.StartNumber,
+                    StartSuffix = createDto.AddressInfo.Sao.StartSuffix,
+                    EndNumber = createDto.AddressInfo.Sao.EndNumber,
+                    EndSuffix = createDto.AddressInfo.Sao.EndSuffix
+                } : null,
+                Pao = new AddressableObjectEntity
+                {
+                    Text = createDto.AddressInfo.Pao.Text,
+                    StartNumber = createDto.AddressInfo.Pao.StartNumber,
+                    StartSuffix = createDto.AddressInfo.Pao.StartSuffix,
+                    EndNumber = createDto.AddressInfo.Pao.EndNumber,
+                    EndSuffix = createDto.AddressInfo.Pao.EndSuffix
+                },
+                StreetDescriptor = new StreetDescriptorEntity
+                {
+                    StreetDescription = createDto.AddressInfo.StreetDescriptor.StreetDescription,
+                    Locality = createDto.AddressInfo.StreetDescriptor.Locality,
+                    DependentLocality = createDto.AddressInfo.StreetDescriptor.DependentLocality,
+                    DoubleDependentLocality = createDto.AddressInfo.StreetDescriptor.DoubleDependentLocality,
+                    TownName = createDto.AddressInfo.StreetDescriptor.TownName,
+                    PostTown = createDto.AddressInfo.StreetDescriptor.PostTown,
+                    AdministrativeArea = createDto.AddressInfo.StreetDescriptor.AdministrativeArea
+                },
+                Postcode = createDto.AddressInfo.Postcode
+            },
+            Geography = new GeographyEntity
+            {
+                Easting = createDto.Geography.Easting,
+                Northing = createDto.Geography.Northing
+            }
         };
+
+        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = addressEntity };
+    }
+
+    public DocumentEntity<AddressEntity> UpdateDomain(DocumentEntity<AddressEntity> addressDocEntity, CreateUpdateAddress updateDto)
+    {
+        ArgumentNullException.ThrowIfNull(addressDocEntity);
+        ArgumentNullException.ThrowIfNull(updateDto);
+
+        var existing = addressDocEntity.JsonData;
+
+        var updatedEntity = new AddressEntity
+        {
+            Uprn = existing.Uprn,
+            Usrn = existing.Usrn,
+            AddressInfo = new AddressInfoEntity
+            {
+                Organisation = updateDto.AddressInfo?.Organisation ?? existing.AddressInfo.Organisation,
+                Department = updateDto.AddressInfo?.Department ?? existing.AddressInfo.Department,
+                Sao = updateDto.AddressInfo?.Sao != null ? new AddressableObjectEntity
+                {
+                    Text = updateDto.AddressInfo.Sao.Text ?? existing.AddressInfo.Sao?.Text,
+                    StartNumber = updateDto.AddressInfo.Sao.StartNumber ?? existing.AddressInfo.Sao?.StartNumber,
+                    StartSuffix = updateDto.AddressInfo.Sao.StartSuffix ?? existing.AddressInfo.Sao?.StartSuffix,
+                    EndNumber = updateDto.AddressInfo.Sao.EndNumber ?? existing.AddressInfo.Sao?.EndNumber,
+                    EndSuffix = updateDto.AddressInfo.Sao.EndSuffix ?? existing.AddressInfo.Sao?.EndSuffix
+                } : existing.AddressInfo.Sao,
+                Pao = updateDto.AddressInfo?.Pao != null ? new AddressableObjectEntity
+                {
+                    Text = updateDto.AddressInfo.Pao.Text ?? existing.AddressInfo.Pao.Text,
+                    StartNumber = updateDto.AddressInfo.Pao.StartNumber ?? existing.AddressInfo.Pao.StartNumber,
+                    StartSuffix = updateDto.AddressInfo.Pao.StartSuffix ?? existing.AddressInfo.Pao.StartSuffix,
+                    EndNumber = updateDto.AddressInfo.Pao.EndNumber ?? existing.AddressInfo.Pao.EndNumber,
+                    EndSuffix = updateDto.AddressInfo.Pao.EndSuffix ?? existing.AddressInfo.Pao.EndSuffix
+                } : existing.AddressInfo.Pao,
+                StreetDescriptor = updateDto.AddressInfo?.StreetDescriptor != null ? new StreetDescriptorEntity
+                {
+                    StreetDescription = updateDto.AddressInfo.StreetDescriptor.StreetDescription ?? existing.AddressInfo.StreetDescriptor.StreetDescription,
+                    Locality = updateDto.AddressInfo.StreetDescriptor.Locality ?? existing.AddressInfo.StreetDescriptor.Locality,
+                    DependentLocality = updateDto.AddressInfo.StreetDescriptor.DependentLocality ?? existing.AddressInfo.StreetDescriptor.DependentLocality,
+                    DoubleDependentLocality = updateDto.AddressInfo.StreetDescriptor.DoubleDependentLocality ?? existing.AddressInfo.StreetDescriptor.DoubleDependentLocality,
+                    TownName = updateDto.AddressInfo.StreetDescriptor.TownName ?? existing.AddressInfo.StreetDescriptor.TownName,
+                    PostTown = updateDto.AddressInfo.StreetDescriptor.PostTown ?? existing.AddressInfo.StreetDescriptor.PostTown,
+                    AdministrativeArea = updateDto.AddressInfo.StreetDescriptor.AdministrativeArea ?? existing.AddressInfo.StreetDescriptor.AdministrativeArea
+                } : existing.AddressInfo.StreetDescriptor,
+                Postcode = updateDto.AddressInfo?.Postcode ?? existing.AddressInfo.Postcode
+            },
+            Geography = updateDto.Geography != null ? new GeographyEntity
+            {
+                Easting = updateDto.Geography.Easting,
+                Northing = updateDto.Geography.Northing
+            } : existing.Geography
+        };
+
+        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = updatedEntity };
     }
 }
