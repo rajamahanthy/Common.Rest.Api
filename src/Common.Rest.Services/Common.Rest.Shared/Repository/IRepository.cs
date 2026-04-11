@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 namespace Common.Rest.Shared.Repository;
 
 /// <summary>
@@ -10,9 +8,11 @@ public interface IRepository<T> where T : class
     Task<T?> GetByIdAsync(Guid id, CancellationToken ct = default);
     Task<IReadOnlyList<T>> GetAllAsync(CancellationToken ct = default);
     Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default);
+    Task<IReadOnlyList<T>> FindAsync(ISpecification<T> specification, CancellationToken ct = default);
     Task<(IReadOnlyList<T> Items, int TotalCount)> GetPagedAsync(
         int page, int pageSize,
         Expression<Func<T, bool>>? predicate = null,
+        ISpecification<T>? specification = null,
         Expression<Func<T, object>>? orderBy = null,
         bool descending = false,
         CancellationToken ct = default);

@@ -1,4 +1,4 @@
-namespace Common.Rest.Address.Api.Extensions;
+namespace Common.Rest.Shared.Extensions;
 
 /// <summary>
 /// Extension methods for controller operations.

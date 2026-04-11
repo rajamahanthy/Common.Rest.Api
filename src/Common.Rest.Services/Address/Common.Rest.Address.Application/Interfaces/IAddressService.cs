@@ -1,7 +1,5 @@
 namespace Common.Rest.Address.Application.Interfaces;
 
-using Common.Rest.Address.Application.Dtos;
-
 /// <summary>
 /// Domain service for managing  address records.
 /// </summary>

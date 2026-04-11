@@ -15,6 +15,7 @@ global using Common.Rest.Shared.Extensions;
 global using Common.Rest.Shared.Repository;
 global using Common.Rest.Shared.Resilience;
 global using Common.Rest.Shared.Persistence;
+global using Common.Rest.Shared.Specification;
 
 
 

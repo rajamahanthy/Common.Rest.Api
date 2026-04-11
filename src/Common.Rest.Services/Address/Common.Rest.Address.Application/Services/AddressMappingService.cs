@@ -1,17 +1,12 @@
 namespace Common.Rest.Address.Application.Services;
 
-using Common.Rest.Address.Application.Dtos;
-using Common.Rest.Address.Application.Interfaces;
-using Common.Rest.Address.Domain.Entities;
-using Common.Rest.Shared.Domain;
-
 /// <summary>
 /// Implementation of mapping service for Address entities.
 /// Centralizes conversion logic between domain entities and DTOs.
 /// </summary>
 public class AddressMappingService : IAddressMappingService
 {
-    AddressDocumentDto IAddressMappingService.MapToDto(DocumentEntity<AddressEntity> document)
+    public AddressDocumentDto MapToDto(AddressDocumentEntity document)
     {
         var address = document.JsonData;
 
@@ -60,7 +55,7 @@ public class AddressMappingService : IAddressMappingService
         return new AddressDocumentDto(document.Id, addressDto);
     }
 
-    DocumentEntity<AddressEntity> IAddressMappingService.MapToDomain(CreateUpdateAddress createDto)
+    public AddressDocumentEntity MapToDomain(CreateUpdateAddress createDto)
     {
         ArgumentNullException.ThrowIfNull(createDto);
         ArgumentNullException.ThrowIfNull(createDto.AddressInfo);
@@ -111,10 +106,10 @@ public class AddressMappingService : IAddressMappingService
             }
         };
 
-        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = addressEntity };
+        return new AddressDocumentEntity { DocumentType = "Address", JsonData = addressEntity };
     }
 
-    public DocumentEntity<AddressEntity> UpdateDomain(DocumentEntity<AddressEntity> addressDocEntity, CreateUpdateAddress updateDto)
+    public AddressDocumentEntity UpdateDomain(AddressDocumentEntity addressDocEntity, CreateUpdateAddress updateDto)
     {
         ArgumentNullException.ThrowIfNull(addressDocEntity);
         ArgumentNullException.ThrowIfNull(updateDto);
@@ -164,6 +159,6 @@ public class AddressMappingService : IAddressMappingService
             } : existing.Geography
         };
 
-        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = updatedEntity };
+        return new AddressDocumentEntity { DocumentType = "Address", JsonData = updatedEntity };
     }
 }

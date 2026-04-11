@@ -1,9 +1,6 @@
-using System.Text.Json.Serialization;
-
 namespace Common.Rest.Address.Application.Dtos;
 
 public record AddressDocumentDto(Guid Id, AddressDto AddressDetails);
-
 
 public class AddressDto
 {

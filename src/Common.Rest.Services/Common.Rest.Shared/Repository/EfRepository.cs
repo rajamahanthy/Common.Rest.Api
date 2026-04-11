@@ -1,3 +1,5 @@
+using System;
+
 namespace Common.Rest.Shared.Repository;
 
 /// <summary>
@@ -17,28 +19,27 @@ public class EfRepository<TEntity>(DbContext context) : IRepository<TEntity> whe
     public virtual async Task<IReadOnlyList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
         => await DbSet.AsNoTracking().Where(predicate).ToListAsync(ct);
 
+    public virtual async Task<IReadOnlyList<TEntity>> FindAsync(ISpecification<TEntity> specification, CancellationToken ct = default)
+        => await DbSet.AsNoTracking().Where(specification.ToExpression()).ToListAsync(ct);
+
     public virtual async Task<(IReadOnlyList<TEntity> Items, int TotalCount)> GetPagedAsync(
         int page, int pageSize,
         Expression<Func<TEntity, bool>>? predicate = null,
+        ISpecification<TEntity>? specification = null,
         Expression<Func<TEntity, object>>? orderBy = null,
         bool descending = false,
         CancellationToken ct = default)
     {
         IQueryable<TEntity> query = DbSet.AsNoTracking();
-
-        if (predicate is not null)
-            query = query.Where(predicate);
-
+        if (specification is not null)
+            query = query.Where(specification.ToExpression());
         var totalCount = await query.CountAsync(ct);
-
         if (orderBy is not null)
             query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
-
         var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);
-
         return (items, totalCount);
     }
 
