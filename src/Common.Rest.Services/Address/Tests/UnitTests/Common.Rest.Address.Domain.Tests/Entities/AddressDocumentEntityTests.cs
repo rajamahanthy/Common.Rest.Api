@@ -44,10 +44,10 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.Id.Should().Be(_testId);
-        entity.DocumentType.Should().Be("Address");
-        entity.JsonData.Should().NotBeNull();
-        entity.IsDeleted.Should().BeFalse();
+        Assert.AreEqual(_testId, entity.Id);
+        Assert.AreEqual("Address", entity.DocumentType);
+        Assert.IsNotNull(entity.JsonData);
+        Assert.IsFalse(entity.IsDeleted);
     }
 
     [TestMethod]
@@ -66,11 +66,11 @@ public class AddressDocumentEntityTests
             PostTownIndex = "Test Town"
         };
 
-        entity.UprnIndex.Should().Be("123456789");
-        entity.PostcodeIndex.Should().Be("T1 1ST");
-        entity.PostTownIndex.Should().Be("Test Town");
-        entity.CreatedAt.Should().Be(createdTime);
-        entity.CreatedBy.Should().Be("test-user");
+        Assert.AreEqual("123456789", entity.UprnIndex);
+        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
+        Assert.AreEqual("Test Town", entity.PostTownIndex);
+        Assert.AreEqual(createdTime, entity.CreatedAt);
+        Assert.AreEqual("test-user", entity.CreatedBy);
     }
 
     [TestMethod]
@@ -82,9 +82,9 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.UprnIndex.Should().BeNull();
-        entity.PostcodeIndex.Should().BeNull();
-        entity.PostTownIndex.Should().BeNull();
+        Assert.IsNull(entity.UprnIndex);
+        Assert.IsNull(entity.PostcodeIndex);
+        Assert.IsNull(entity.PostTownIndex);
     }
 
     #endregion
@@ -103,7 +103,7 @@ public class AddressDocumentEntityTests
 
         entity.IsDeleted = true;
 
-        entity.IsDeleted.Should().BeTrue();
+        Assert.IsTrue(entity.IsDeleted);
     }
 
     [TestMethod]
@@ -118,7 +118,7 @@ public class AddressDocumentEntityTests
 
         entity.IsDeleted = false;
 
-        entity.IsDeleted.Should().BeFalse();
+        Assert.IsFalse(entity.IsDeleted);
     }
 
     [TestMethod]
@@ -130,7 +130,7 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.IsDeleted.Should().BeFalse();
+        Assert.IsFalse(entity.IsDeleted);
     }
 
     #endregion
@@ -149,8 +149,8 @@ public class AddressDocumentEntityTests
             CreatedBy = "creator-user"
         };
 
-        entity.CreatedAt.Should().Be(now);
-        entity.CreatedBy.Should().Be("creator-user");
+        Assert.AreEqual(now, entity.CreatedAt);
+        Assert.AreEqual("creator-user", entity.CreatedBy);
     }
 
     [TestMethod]
@@ -169,9 +169,9 @@ public class AddressDocumentEntityTests
             UpdatedBy = "updater"
         };
 
-        entity.UpdatedAt.Should().Be(updatedTime);
-        entity.UpdatedBy.Should().Be("updater");
-        entity.UpdatedAt.Should().BeAfter(entity.CreatedAt);
+        Assert.AreEqual(updatedTime, entity.UpdatedAt);
+        Assert.AreEqual("updater", entity.UpdatedBy);
+        Assert.IsTrue(entity.UpdatedAt > entity.CreatedAt);
     }
 
     [TestMethod]
@@ -183,8 +183,8 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.UpdatedAt.Should().BeNull();
-        entity.UpdatedBy.Should().BeNull();
+        Assert.IsNull(entity.UpdatedAt);
+        Assert.IsNull(entity.UpdatedBy);
     }
 
     [TestMethod]
@@ -204,8 +204,8 @@ public class AddressDocumentEntityTests
         entity.UpdatedAt = secondUpdate;
         entity.UpdatedBy = "user2";
 
-        entity.UpdatedBy.Should().Be("user2");
-        entity.UpdatedAt.Should().Be(secondUpdate);
+        Assert.AreEqual("user2", entity.UpdatedBy);
+        Assert.AreEqual(secondUpdate, entity.UpdatedAt);
     }
 
     #endregion
@@ -221,7 +221,7 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.DocumentType.Should().Be("Address");
+        Assert.AreEqual("Address", entity.DocumentType);
     }
 
     #endregion
@@ -238,8 +238,8 @@ public class AddressDocumentEntityTests
             JsonData = addressData
         };
 
-        entity.JsonData.Should().Be(addressData);
-        entity.JsonData.Uprn.Should().Be("123456789");
+        Assert.AreEqual(addressData, entity.JsonData);
+        Assert.AreEqual("123456789", entity.JsonData.Uprn);
     }
 
     [TestMethod]
@@ -254,7 +254,7 @@ public class AddressDocumentEntityTests
         var updatedData = CreateTestAddressEntity("987654321");
         entity.JsonData = updatedData;
 
-        entity.JsonData.Uprn.Should().Be("987654321");
+        Assert.AreEqual("987654321", entity.JsonData.Uprn);
     }
 
     #endregion
@@ -277,13 +277,13 @@ public class AddressDocumentEntityTests
             DependentLocalityIndex = "Ward"
         };
 
-        entity.UprnIndex.Should().Be("123456789");
-        entity.PostcodeIndex.Should().Be("T1 1ST");
-        entity.PostTownIndex.Should().Be("Test Town");
-        entity.OrganisationIndex.Should().Be("Test Org");
-        entity.ThoroughfareIndex.Should().Be("Main Street");
-        entity.LocalityIndex.Should().Be("City");
-        entity.DependentLocalityIndex.Should().Be("Ward");
+        Assert.AreEqual("123456789", entity.UprnIndex);
+        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
+        Assert.AreEqual("Test Town", entity.PostTownIndex);
+        Assert.AreEqual("Test Org", entity.OrganisationIndex);
+        Assert.AreEqual("Main Street", entity.ThoroughfareIndex);
+        Assert.AreEqual("City", entity.LocalityIndex);
+        Assert.AreEqual("Ward", entity.DependentLocalityIndex);
     }
 
     [TestMethod]
@@ -296,7 +296,7 @@ public class AddressDocumentEntityTests
             UprnIndex = "123456789"
         };
 
-        entity.UprnIndex.Should().Be("123456789");
+        Assert.AreEqual("123456789", entity.UprnIndex);
     }
 
     [TestMethod]
@@ -309,7 +309,7 @@ public class AddressDocumentEntityTests
             PostcodeIndex = "T1 1ST"
         };
 
-        entity.PostcodeIndex.Should().Be("T1 1ST");
+        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
     }
 
     #endregion
@@ -330,9 +330,9 @@ public class AddressDocumentEntityTests
             IsDeleted = false
         };
 
-        entity.IsDeleted.Should().BeFalse();
-        entity.Id.Should().NotBe(Guid.Empty);
-        entity.CreatedBy.Should().Be("test-user");
+        Assert.IsFalse(entity.IsDeleted);
+        Assert.AreNotEqual(Guid.Empty, entity.Id);
+        Assert.AreEqual("test-user", entity.CreatedBy);
     }
 
     [TestMethod]
@@ -348,8 +348,8 @@ public class AddressDocumentEntityTests
             IsDeleted = true
         };
 
-        entity.IsDeleted.Should().BeTrue();
-        entity.CreatedBy.Should().Be("creator");
+        Assert.IsTrue(entity.IsDeleted);
+        Assert.AreEqual("creator", entity.CreatedBy);
     }
 
     #endregion
@@ -372,7 +372,7 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity("987654321")
         };
 
-        entity1.Id.Should().NotBe(entity2.Id);
+        Assert.AreNotEqual(entity1.Id, entity2.Id);
     }
 
     [TestMethod]
@@ -386,7 +386,7 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity()
         };
 
-        entity.Id.Should().Be(testId);
+        Assert.AreEqual(testId, entity.Id);
     }
 
     [TestMethod]
@@ -399,7 +399,7 @@ public class AddressDocumentEntityTests
             PartitionKey = "test-key"
         };
 
-        entity.PartitionKey.Should().Be("test-key");
+        Assert.AreEqual("test-key", entity.PartitionKey);
     }
 
     #endregion

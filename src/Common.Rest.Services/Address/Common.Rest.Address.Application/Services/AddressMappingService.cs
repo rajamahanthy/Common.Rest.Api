@@ -121,7 +121,6 @@ public class AddressMappingService : IAddressMappingService
         ArgumentNullException.ThrowIfNull(addressDocEntity.JsonData);
         ArgumentNullException.ThrowIfNull(updateDto.AddressInfo);
         ArgumentNullException.ThrowIfNull(updateDto.AddressInfo.Pao);
-        ArgumentNullException.ThrowIfNull(updateDto.AddressInfo.Sao);
 
         var existing = addressDocEntity.JsonData;
 

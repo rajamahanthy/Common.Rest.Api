@@ -29,10 +29,10 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.CreateAddress(createDto);
 
-        result.Result.Should().BeOfType<CreatedAtActionResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(CreatedAtActionResult));
         var createdResult = (CreatedAtActionResult)result.Result!;
-        createdResult.ActionName.Should().Be(nameof(Controller.GetAllAddresses));
-        createdResult.StatusCode.Should().Be(StatusCodes.Status201Created);
+        Assert.AreEqual(nameof(Controller.GetAllAddresses), createdResult.ActionName);
+        Assert.AreEqual(StatusCodes.Status201Created, createdResult.StatusCode);
         
         MockAddressService.Verify(
             s => s.CreateAddressAsync(It.IsAny<CreateUpdateAddress>(), "test-user", It.IsAny<CancellationToken>()),
@@ -72,7 +72,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.GetAddressById(_testId);
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         MockAddressService.Verify(
             s => s.GetAddressByIdAsync(_testId, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -86,9 +86,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.GetAddressByIdAsync(invalidId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((AddressDocumentDto?)null);
 
-        Func<Task> act = () => Controller.GetAddressById(invalidId);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.GetAddressById(invalidId));
     }
 
     #endregion
@@ -111,7 +109,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.GetAllAddresses();
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         MockAddressService.Verify(
             s => s.GetAllAddressesAsync(1, 10, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -149,7 +147,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.UpdateAddress(_testId, updateDto);
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         MockAddressService.Verify(
             s => s.UpdateAddressAsync(_testId, It.IsAny<CreateUpdateAddress>(), "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -165,9 +163,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.UpdateAddressAsync(invalidId, It.IsAny<CreateUpdateAddress>(), "test-user", It.IsAny<CancellationToken>()))
             .ReturnsAsync((AddressDocumentDto?)null);
 
-        Func<Task> act = () => Controller.UpdateAddress(invalidId, updateDto);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.UpdateAddress(invalidId, updateDto));
     }
 
     #endregion
@@ -183,7 +179,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.DeleteAddress(_testId);
 
-        result.Should().BeOfType<NoContentResult>();
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
         MockAddressService.Verify(
             s => s.DeleteAddressAsync(_testId, "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -197,9 +193,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.DeleteAddressAsync(invalidId, "test-user", It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        Func<Task> act = () => Controller.DeleteAddress(invalidId);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.DeleteAddress(invalidId));
     }
 
     #endregion
@@ -215,7 +209,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.PermanentlyDeleteAddress(_testId);
 
-        result.Should().BeOfType<NoContentResult>();
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
     }
 
     [TestMethod]
@@ -226,9 +220,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.PermanentlyDeleteAddressAsync(invalidId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        Func<Task> act = () => Controller.PermanentlyDeleteAddress(invalidId);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.PermanentlyDeleteAddress(invalidId));
     }
 
     #endregion
@@ -247,19 +239,15 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.SearchByUprn(uprn);
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
 
     [TestMethod]
     public async Task SearchByUprn_EmptyUprn_ThrowsValidationException()
     {
-        Func<Task> actEmpty = () => Controller.SearchByUprn("");
-        Func<Task> actNull = () => Controller.SearchByUprn(null!);
-        Func<Task> actWhitespace = () => Controller.SearchByUprn("   ");
-
-        await actEmpty.Should().ThrowAsync<ValidationException>();
-        await actNull.Should().ThrowAsync<ValidationException>();
-        await actWhitespace.Should().ThrowAsync<ValidationException>();
+        await Assert.ThrowsExceptionAsync<ValidationException>(() => Controller.SearchByUprn(""));
+        await Assert.ThrowsExceptionAsync<ValidationException>(() => Controller.SearchByUprn(null!));
+        await Assert.ThrowsExceptionAsync<ValidationException>(() => Controller.SearchByUprn("   "));
     }
 
     [TestMethod]
@@ -270,9 +258,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.GetAddressByUprnAsync(uprn, It.IsAny<CancellationToken>()))
             .ReturnsAsync((AddressDocumentDto?)null);
 
-        Func<Task> act = () => Controller.SearchByUprn(uprn);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.SearchByUprn(uprn));
     }
 
     #endregion
@@ -301,7 +287,7 @@ public class AddressControllerTests : ControllerTestBase
             page: 1,
             pageSize: 10);
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
 
     [TestMethod]
@@ -338,7 +324,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.GetAddressCount();
 
-        result.Result.Should().BeOfType<OkObjectResult>();
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         MockAddressService.Verify(
             s => s.GetAddressCountAsync(It.IsAny<CancellationToken>()),
             Times.Once);
@@ -357,7 +343,7 @@ public class AddressControllerTests : ControllerTestBase
 
         var result = await Controller.RestoreAddress(_testId);
 
-        result.Should().BeOfType<NoContentResult>();
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
     }
 
     [TestMethod]
@@ -368,9 +354,7 @@ public class AddressControllerTests : ControllerTestBase
             .Setup(s => s.RestoreAddressAsync(invalidId, "test-user", It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        Func<Task> act = () => Controller.RestoreAddress(invalidId);
-
-        await act.Should().ThrowAsync<NotFoundException>();
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => Controller.RestoreAddress(invalidId));
     }
 
     #endregion

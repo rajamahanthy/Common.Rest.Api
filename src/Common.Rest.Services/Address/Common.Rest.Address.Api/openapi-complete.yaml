@@ -1,0 +1,1161 @@
+openapi: 3.0.0
+info:
+  title: Common.Rest.Address API
+  description: >
+    Comprehensive REST API for managing address entities with full CRUD operations,
+    advanced search capabilities, soft delete, and restore functionality.
+    All requests require Bearer token authentication.
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://github.com/rajamahanthy/Common.Rest.Api
+  license:
+    name: MIT
+
+servers:
+  - url: https://localhost:5011
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server (when deployed)
+
+tags:
+  - name: Create Address
+    description: Create new address records
+  - name: Read Address
+    description: Retrieve address records
+  - name: Search Address
+    description: Search and filter address records
+  - name: Update Address
+    description: Update existing address records
+  - name: Delete Address
+    description: Soft delete and permanent delete operations
+  - name: Restore Address
+    description: Restore previously deleted addresses
+  - name: Authentication
+    description: Authentication and authorization validation
+
+components:
+  schemas:
+    # Base DTOs
+    AddressableObject:
+      type: object
+      description: Addressable Object (SAO/PAO) information
+      properties:
+        text:
+          type: string
+          description: Descriptive text of the addressable object
+          example: "Flat 1"
+        startNumber:
+          type: integer
+          minimum: 1
+          maximum: 99999
+          description: Starting number of the address range
+          example: 1
+        startSuffix:
+          type: string
+          pattern: ^[A-Za-z]$
+          description: Single letter suffix for start number
+          example: "A"
+        endNumber:
+          type: integer
+          minimum: 1
+          maximum: 99999
+          description: Ending number of the address range
+          example: 12
+        endSuffix:
+          type: string
+          pattern: ^[A-Za-z]$
+          description: Single letter suffix for end number
+          example: "B"
+
+    StreetDescriptor:
+      type: object
+      required:
+        - streetDescription
+      description: Street and locality information
+      properties:
+        streetDescription:
+          type: string
+          maxLength: 100
+          description: Main street/thoroughfare name
+          example: "High Street"
+        locality:
+          type: string
+          maxLength: 100
+          description: Locality/district name
+          example: "Central London"
+        dependentLocality:
+          type: string
+          maxLength: 100
+          description: Dependent locality
+          example: "Westminster"
+        doubleDependentLocality:
+          type: string
+          maxLength: 100
+          description: Double dependent locality
+          example: null
+        townName:
+          type: string
+          maxLength: 100
+          description: Town name
+          example: "London"
+        postTown:
+          type: string
+          maxLength: 100
+          description: Post town
+          example: "Westminster"
+        administrativeArea:
+          type: string
+          maxLength: 100
+          description: Administrative area
+          example: "Greater London"
+
+    AddressInfo:
+      type: object
+      required:
+        - pao
+        - streetDescriptor
+      description: Core address information
+      properties:
+        organisation:
+          type: string
+          maxLength: 120
+          description: Organisation name
+          example: "Test Organisation Ltd"
+        department:
+          type: string
+          maxLength: 100
+          description: Department within organisation
+          example: "Planning Department"
+        sao:
+          $ref: "#/components/schemas/AddressableObject"
+          description: Secondary Addressable Object (flat, unit, etc.)
+        pao:
+          $ref: "#/components/schemas/AddressableObject"
+          description: Primary Addressable Object
+        streetDescriptor:
+          $ref: "#/components/schemas/StreetDescriptor"
+        postcode:
+          type: string
+          pattern: ^([A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}|GIR\s?0AA)$
+          description: Valid UK postcode format
+          example: "SW1A 1AA"
+
+    Geography:
+      type: object
+      required:
+        - easting
+        - northing
+      description: Geographic coordinates (British National Grid)
+      properties:
+        easting:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+          description: Easting coordinate
+          example: 530000
+        northing:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+          description: Northing coordinate
+          example: 180000
+
+    CreateAddressRequest:
+      type: object
+      required:
+        - address
+        - geography
+      description: Request body for creating a new address
+      properties:
+        address:
+          $ref: "#/components/schemas/AddressInfo"
+        geography:
+          $ref: "#/components/schemas/Geography"
+
+    UpdateAddressRequest:
+      type: object
+      description: Request body for updating an address (all fields optional)
+      properties:
+        address:
+          $ref: "#/components/schemas/AddressInfo"
+          nullable: true
+        geography:
+          $ref: "#/components/schemas/Geography"
+          nullable: true
+
+    AddressResponse:
+      type: object
+      description: Address response with metadata
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        address:
+          $ref: "#/components/schemas/AddressInfo"
+        geography:
+          $ref: "#/components/schemas/Geography"
+        uprn:
+          type: string
+          description: Unique Property Reference Number
+          example: "123456789012"
+        usrn:
+          type: string
+          description: Unique Street Reference Number
+          example: "999999999"
+        documentType:
+          type: string
+          description: Type of document
+          example: "Address"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when created
+          example: "2026-04-11T12:40:38Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when last updated
+          example: "2026-04-11T12:40:38Z"
+        isDeleted:
+          type: boolean
+          description: Soft delete flag
+          example: false
+
+    PagedResponse:
+      type: object
+      description: Paginated list response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddressResponse"
+        pageNumber:
+          type: integer
+          description: Current page number
+          example: 1
+        pageSize:
+          type: integer
+          description: Number of items per page
+          example: 10
+        totalCount:
+          type: integer
+          description: Total number of records
+          example: 42
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 5
+        hasNextPage:
+          type: boolean
+          description: Whether there is a next page
+          example: true
+        hasPreviousPage:
+          type: boolean
+          description: Whether there is a previous page
+          example: false
+
+    ApiResponse:
+      type: object
+      description: Standard API response wrapper
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        message:
+          type: string
+          description: Response message
+          example: "Address created successfully"
+        data:
+          oneOf:
+            - $ref: "#/components/schemas/AddressResponse"
+            - $ref: "#/components/schemas/PagedResponse"
+            - type: integer
+          nullable: true
+          description: Response data
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Field with validation error
+              message:
+                type: string
+                description: Error message
+          description: Validation errors if any
+
+    ErrorResponse:
+      type: object
+      description: Error response
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Address not found"
+        data:
+          type: null
+        errors:
+          type: array
+          items:
+            type: object
+
+  responses:
+    Success201:
+      description: Created successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiResponse"
+
+    Success200:
+      description: Request successful
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiResponse"
+
+    Success204:
+      description: No content - operation successful
+
+    BadRequest400:
+      description: Bad request - validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Unauthorized401:
+      description: Unauthorized - authentication required or invalid token
+
+    NotFound404:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer token authentication
+
+  headers:
+    X-Correlation-ID:
+      description: Correlation ID for request tracing
+      schema:
+        type: string
+        format: uuid
+
+paths:
+  /api/v1/Address:
+    post:
+      tags:
+        - Create Address
+      summary: Create a new address
+      description: >
+        Create a new address record with complete or minimal information.
+        All validation rules are applied.
+      operationId: createAddress
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAddressRequest"
+            examples:
+              valid_complete:
+                summary: Create with all fields
+                value:
+                  address:
+                    organisation: "Test Organisation Ltd"
+                    department: "Planning Department"
+                    sao:
+                      text: "Flat 1"
+                      startNumber: 1
+                      startSuffix: "A"
+                    pao:
+                      text: "10 Downing Street"
+                      startNumber: 10
+                      endNumber: 12
+                    streetDescriptor:
+                      streetDescription: "High Street"
+                      locality: "Central London"
+                      dependentLocality: "Westminster"
+                      townName: "London"
+                      postTown: "Westminster"
+                      administrativeArea: "Greater London"
+                    postcode: "SW1A 1AA"
+                  geography:
+                    easting: 530000
+                    northing: 180000
+              valid_minimal:
+                summary: Create with minimal required fields
+                value:
+                  address:
+                    pao:
+                      text: "5 High Street"
+                    streetDescriptor:
+                      streetDescription: "Main Street"
+                  geography:
+                    easting: 500000
+                    northing: 150000
+              invalid_postcode:
+                summary: Invalid postcode format
+                value:
+                  address:
+                    pao:
+                      text: "10 High Street"
+                    streetDescriptor:
+                      streetDescription: "High Street"
+                    postcode: "INVALID123"
+                  geography:
+                    easting: 530000
+                    northing: 180000
+      responses:
+        "201":
+          description: Address created successfully
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/X-Correlation-ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                success: true
+                message: "Address created successfully"
+                data:
+                  id: "123e4567-e89b-12d3-a456-426614174000"
+                  address:
+                    organisation: "Test Organisation Ltd"
+                    department: "Planning Department"
+                    pao:
+                      text: "10 Downing Street"
+                      startNumber: 10
+                    streetDescriptor:
+                      streetDescription: "High Street"
+                    postcode: "SW1A 1AA"
+                  geography:
+                    easting: 530000
+                    northing: 180000
+                  uprn: "123456789012"
+                  usrn: "999999999"
+                  documentType: "Address"
+                  createdAt: "2026-04-11T12:40:38Z"
+                  updatedAt: null
+                  isDeleted: false
+        "400":
+          $ref: "#/components/responses/BadRequest400"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+    get:
+      tags:
+        - Read Address
+      summary: Get all addresses with pagination
+      description: >
+        Retrieve all active (non-deleted) addresses with pagination support.
+        Defaults to page 1 with 10 items per page.
+      operationId: getAllAddresses
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          example: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+        - name: X-Correlation-ID
+          in: header
+          description: Correlation ID for tracing
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of addresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                success: true
+                message: "Addresses retrieved successfully"
+                data:
+                  data:
+                    - id: "123e4567-e89b-12d3-a456-426614174000"
+                      address:
+                        organisation: "Test Organisation Ltd"
+                        pao:
+                          text: "10 Downing Street"
+                        streetDescriptor:
+                          streetDescription: "High Street"
+                      geography:
+                        easting: 530000
+                        northing: 180000
+                      isDeleted: false
+                  pageNumber: 1
+                  pageSize: 10
+                  totalCount: 42
+                  totalPages: 5
+                  hasNextPage: true
+                  hasPreviousPage: false
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/{id}:
+    get:
+      tags:
+        - Read Address
+      summary: Get address by ID
+      description: Retrieve a specific address by its unique identifier.
+      operationId: getAddressById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Address ID (UUID)
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Address retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Invalid UUID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: "Invalid ID format"
+                errors:
+                  - field: "id"
+                    message: "ID must be a valid GUID"
+        "404":
+          $ref: "#/components/responses/NotFound404"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+    put:
+      tags:
+        - Update Address
+      summary: Update an address
+      description: >
+        Update an existing address. Both address and geography fields are optional
+        for partial updates. Only provided fields will be updated.
+      operationId: updateAddress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAddressRequest"
+            examples:
+              full_update:
+                summary: Update all fields
+                value:
+                  address:
+                    organisation: "Updated Organisation Ltd"
+                    pao:
+                      text: "20 Downing Street"
+                    streetDescriptor:
+                      streetDescription: "Updated Street"
+                      postTown: "Updated Town"
+                    postcode: "SW1A 2AA"
+                  geography:
+                    easting: 531000
+                    northing: 181000
+              partial_update:
+                summary: Update only geography
+                value:
+                  address: null
+                  geography:
+                    easting: 532000
+                    northing: 182000
+      responses:
+        "200":
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest400"
+        "404":
+          $ref: "#/components/responses/NotFound404"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+    delete:
+      tags:
+        - Delete Address
+      summary: Soft delete an address
+      description: >
+        Soft delete an address by marking it as deleted without removing data.
+        The address can be restored using the restore endpoint.
+      operationId: softDeleteAddress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "204":
+          $ref: "#/components/responses/Success204"
+        "404":
+          $ref: "#/components/responses/NotFound404"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/{id}/permanent:
+    delete:
+      tags:
+        - Delete Address
+      summary: Permanently delete an address
+      description: >
+        Permanently delete an address from the database.
+        This operation cannot be undone. Use soft delete for non-destructive removal.
+      operationId: permanentlyDeleteAddress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "204":
+          $ref: "#/components/responses/Success204"
+        "404":
+          $ref: "#/components/responses/NotFound404"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/{id}/restore:
+    post:
+      tags:
+        - Restore Address
+      summary: Restore a deleted address
+      description: >
+        Restore a previously soft-deleted address. 
+        The address will be marked as active and become visible in queries.
+      operationId: restoreAddress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "204":
+          $ref: "#/components/responses/Success204"
+        "404":
+          $ref: "#/components/responses/NotFound404"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/search/uprn:
+    get:
+      tags:
+        - Search Address
+      summary: Search address by UPRN
+      description: >
+        Search for an address by Unique Property Reference Number (UPRN).
+        UPRN is a unique identifier assigned to every building in the UK.
+      operationId: searchByUprn
+      parameters:
+        - name: uprn
+          in: query
+          required: true
+          description: Unique Property Reference Number
+          schema:
+            type: string
+            minLength: 1
+          example: "123456789012"
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Address found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: UPRN is required and cannot be empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No address found with the provided UPRN
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/search/advanced:
+    get:
+      tags:
+        - Search Address
+      summary: Advanced search with multiple criteria
+      description: >
+        Perform advanced search using multiple filter criteria.
+        All parameters are optional. Searches are case-insensitive.
+        Multiple criteria are combined with AND logic.
+      operationId: advancedSearch
+      parameters:
+        - name: postcode
+          in: query
+          description: UK postcode (e.g., SW1A 1AA)
+          schema:
+            type: string
+          example: "SW1A 1AA"
+        - name: postTown
+          in: query
+          description: Post town name
+          schema:
+            type: string
+          example: "Westminster"
+        - name: organisation
+          in: query
+          description: Organisation name
+          schema:
+            type: string
+          example: "Test Organisation"
+        - name: thoroughfare
+          in: query
+          description: Street description/thoroughfare
+          schema:
+            type: string
+          example: "High Street"
+        - name: locality
+          in: query
+          description: Locality name
+          schema:
+            type: string
+          example: "Central London"
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          example: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              examples:
+                by_postcode:
+                  summary: Search by postcode
+                  value:
+                    success: true
+                    message: "Search completed successfully"
+                    data:
+                      data:
+                        - id: "123e4567-e89b-12d3-a456-426614174000"
+                          address:
+                            postcode: "SW1A 1AA"
+                            postTown: "Westminster"
+                          isDeleted: false
+                      pageNumber: 1
+                      pageSize: 10
+                      totalCount: 5
+                      totalPages: 1
+                multiple_criteria:
+                  summary: Search with multiple criteria
+                  value:
+                    success: true
+                    message: "Search completed successfully"
+                    data:
+                      data:
+                        - id: "123e4567-e89b-12d3-a456-426614174000"
+                          address:
+                            postcode: "SW1A 1AA"
+                            postTown: "Westminster"
+                            locality: "Central London"
+                          isDeleted: false
+                      pageNumber: 1
+                      pageSize: 10
+                      totalCount: 1
+                      totalPages: 1
+        "401":
+          $ref: "#/components/responses/Unauthorized401"
+
+  /api/v1/Address/count:
+    get:
+      tags:
+        - Search Address
+      summary: Get total address count
+      description: Get the total count of non-deleted addresses in the system.
+      operationId: getAddressCount
+      parameters:
+        - name: X-Correlation-ID
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Count retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                success: true
+                message: "Count retrieved successfully"
+                data: 42
+
+security:
+  - BearerAuth: []
+
+x-test-cases:
+  create_valid_complete:
+    endpoint: POST /api/v1/Address
+    scenario: Create address with all valid data
+    expected_status: 201
+    expected_result: Address created with all fields populated
+
+  create_valid_minimal:
+    endpoint: POST /api/v1/Address
+    scenario: Create address with only required fields
+    expected_status: 201
+    expected_result: Address created with minimal data
+
+  create_invalid_postcode:
+    endpoint: POST /api/v1/Address
+    scenario: Create with invalid postcode format
+    expected_status: 400
+    expected_error: Postcode regex validation fails
+
+  create_invalid_easting:
+    endpoint: POST /api/v1/Address
+    scenario: Create with negative easting value
+    expected_status: 400
+    expected_error: Easting must be >= 0
+
+  create_invalid_northing:
+    endpoint: POST /api/v1/Address
+    scenario: Create with northing out of range
+    expected_status: 400
+    expected_error: Northing exceeds maximum allowed value
+
+  create_max_length_exceeded:
+    endpoint: POST /api/v1/Address
+    scenario: Organisation exceeds MaxLength(120)
+    expected_status: 400
+    expected_error: Organisation MaxLength validation fails
+
+  create_invalid_suffix:
+    endpoint: POST /api/v1/Address
+    scenario: Invalid StartSuffix (not single letter)
+    expected_status: 400
+    expected_error: StartSuffix must be single letter
+
+  create_invalid_start_number:
+    endpoint: POST /api/v1/Address
+    scenario: StartNumber out of range (> 99999)
+    expected_status: 400
+    expected_error: StartNumber exceeds maximum 99999
+
+  create_special_postcode:
+    endpoint: POST /api/v1/Address
+    scenario: Valid special postcode (GIR 0AA)
+    expected_status: 201
+    expected_result: Address created with special postcode
+
+  get_all_default_pagination:
+    endpoint: GET /api/v1/Address
+    scenario: Get all addresses with default pagination
+    expected_status: 200
+    expected_result: Paginated list (page 1, size 10)
+
+  get_all_custom_pagination:
+    endpoint: GET /api/v1/Address?page=2&pageSize=5
+    scenario: Get all addresses with custom pagination
+    expected_status: 200
+    expected_result: Paginated list (page 2, size 5)
+
+  get_by_id_valid:
+    endpoint: GET /api/v1/Address/{id}
+    scenario: Get address by valid ID
+    expected_status: 200
+    expected_result: Address details returned
+
+  get_by_id_not_found:
+    endpoint: GET /api/v1/Address/{id}
+    scenario: Get address with non-existent ID
+    expected_status: 404
+    expected_error: Address not found
+
+  get_by_id_invalid_format:
+    endpoint: GET /api/v1/Address/{id}
+    scenario: Get address with invalid GUID format
+    expected_status: 400
+    expected_error: Invalid ID format
+
+  search_uprn_valid:
+    endpoint: GET /api/v1/Address/search/uprn?uprn={uprn}
+    scenario: Search by valid UPRN
+    expected_status: 200
+    expected_result: Address matching UPRN returned
+
+  search_uprn_empty:
+    endpoint: GET /api/v1/Address/search/uprn?uprn=
+    scenario: Search with empty UPRN
+    expected_status: 400
+    expected_error: UPRN is required
+
+  search_uprn_not_found:
+    endpoint: GET /api/v1/Address/search/uprn?uprn={invalid}
+    scenario: Search with non-existent UPRN
+    expected_status: 404
+    expected_error: No address found
+
+  search_advanced_by_postcode:
+    endpoint: GET /api/v1/Address/search/advanced?postcode=SW1A%201AA
+    scenario: Advanced search by postcode
+    expected_status: 200
+    expected_result: Addresses matching postcode returned
+
+  search_advanced_by_posttown:
+    endpoint: GET /api/v1/Address/search/advanced?postTown=Westminster
+    scenario: Advanced search by post town
+    expected_status: 200
+    expected_result: Addresses matching post town returned
+
+  search_advanced_by_organisation:
+    endpoint: GET /api/v1/Address/search/advanced?organisation=Test
+    scenario: Advanced search by organisation
+    expected_status: 200
+    expected_result: Addresses matching organisation returned
+
+  search_advanced_multiple_criteria:
+    endpoint: GET /api/v1/Address/search/advanced?postcode=SW1A%201AA&postTown=Westminster&locality=Central%20London
+    scenario: Advanced search with multiple criteria (AND logic)
+    expected_status: 200
+    expected_result: Addresses matching all criteria returned
+
+  search_advanced_no_criteria:
+    endpoint: GET /api/v1/Address/search/advanced
+    scenario: Advanced search with no criteria (all records)
+    expected_status: 200
+    expected_result: All addresses returned with pagination
+
+  get_count:
+    endpoint: GET /api/v1/Address/count
+    scenario: Get total address count
+    expected_status: 200
+    expected_result: Total count of non-deleted addresses
+
+  update_all_fields:
+    endpoint: PUT /api/v1/Address/{id}
+    scenario: Update all fields
+    expected_status: 200
+    expected_result: All fields updated
+
+  update_partial:
+    endpoint: PUT /api/v1/Address/{id}
+    scenario: Partial update (only geography)
+    expected_status: 200
+    expected_result: Only specified fields updated
+
+  update_not_found:
+    endpoint: PUT /api/v1/Address/{id}
+    scenario: Update non-existent address
+    expected_status: 404
+    expected_error: Address not found
+
+  update_invalid_postcode:
+    endpoint: PUT /api/v1/Address/{id}
+    scenario: Update with invalid postcode format
+    expected_status: 400
+    expected_error: Postcode validation fails
+
+  soft_delete:
+    endpoint: DELETE /api/v1/Address/{id}
+    scenario: Soft delete address
+    expected_status: 204
+    expected_result: Address marked as deleted
+
+  soft_delete_not_found:
+    endpoint: DELETE /api/v1/Address/{id}
+    scenario: Soft delete non-existent address
+    expected_status: 404
+    expected_error: Address not found
+
+  permanent_delete:
+    endpoint: DELETE /api/v1/Address/{id}/permanent
+    scenario: Permanently delete address
+    expected_status: 204
+    expected_result: Address removed from database
+
+  permanent_delete_not_found:
+    endpoint: DELETE /api/v1/Address/{id}/permanent
+    scenario: Permanently delete non-existent address
+    expected_status: 404
+    expected_error: Address not found
+
+  restore_address:
+    endpoint: POST /api/v1/Address/{id}/restore
+    scenario: Restore previously deleted address
+    expected_status: 204
+    expected_result: Address marked as active
+
+  restore_not_found:
+    endpoint: POST /api/v1/Address/{id}/restore
+    scenario: Restore non-existent address
+    expected_status: 404
+    expected_error: Address not found
+
+  restore_active_address:
+    endpoint: POST /api/v1/Address/{id}/restore
+    scenario: Restore already active address
+    expected_status: 204
+    expected_result: Operation succeeds
+
+  auth_missing_token:
+    endpoint: GET /api/v1/Address
+    scenario: Request without bearer token
+    expected_status: 401
+    expected_error: Unauthorized
+
+  auth_invalid_token:
+    endpoint: GET /api/v1/Address
+    scenario: Request with invalid token format
+    expected_status: 401
+    expected_error: Unauthorized
+
+  auth_post_missing_token:
+    endpoint: POST /api/v1/Address
+    scenario: Create address without token
+    expected_status: 401
+    expected_error: Unauthorized
+
+  edge_case_empty_strings:
+    endpoint: POST /api/v1/Address
+    scenario: Create with empty string values
+    expected_status: 400 or 201
+    expected_result: Handled gracefully based on validation rules
+
+  edge_case_null_optional_fields:
+    endpoint: POST /api/v1/Address
+    scenario: Create with all optional fields null
+    expected_status: 201
+    expected_result: Address created with null optional fields
+
+  edge_case_max_coordinates:
+    endpoint: POST /api/v1/Address
+    scenario: Create with maximum coordinate values
+    expected_status: 201
+    expected_result: Address created with max values
+
+  edge_case_case_sensitivity:
+    endpoint: POST /api/v1/Address
+    scenario: Create with lowercase postcode and posttown
+    expected_status: 201
+    expected_result: Case preserved as provided
+
+  edge_case_case_insensitive_search:
+    endpoint: GET /api/v1/Address/search/advanced?postTown=westminster
+    scenario: Search with different case than stored
+    expected_status: 200
+    expected_result: Matches found despite case difference
+
+  edge_case_special_characters:
+    endpoint: GET /api/v1/Address/search/advanced?organisation=O%27Brien%20%26%20Sons
+    scenario: Search with special characters
+    expected_status: 200
+    expected_result: Special characters handled correctly

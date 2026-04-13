@@ -93,7 +93,7 @@ public class AddressServiceTests
 
         var result = await _service.CreateAddressAsync(createDto, "test-user");
 
-        result.Should().Be(expectedDto);
+        Assert.AreEqual(expectedDto, result);
         _mockRepository.Verify(r => r.AddAsync(It.IsAny<AddressDocumentEntity>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -123,7 +123,7 @@ public class AddressServiceTests
 
         var result = await _service.GetAddressByIdAsync(_testId);
 
-        result.Should().Be(expectedDto);
+        Assert.AreEqual(expectedDto, result);
     }
 
     [TestMethod]
@@ -135,7 +135,7 @@ public class AddressServiceTests
 
         var result = await _service.GetAddressByIdAsync(_testId);
 
-        result.Should().BeNull();
+        Assert.IsNull(result);
     }
 
     [TestMethod]
@@ -150,7 +150,7 @@ public class AddressServiceTests
 
         var result = await _service.GetAddressByIdAsync(_testId);
 
-        result.Should().BeNull();
+        Assert.IsNull(result);
     }
 
     #endregion
@@ -182,8 +182,8 @@ public class AddressServiceTests
 
         var result = await _service.GetAllAddressesAsync();
 
-        result.Data.Should().HaveCount(2);
-        result.TotalCount.Should().Be(2);
+        Assert.AreEqual(2, result.Data.Count);
+        Assert.AreEqual(2, result.TotalCount);
     }
 
     [TestMethod]
@@ -233,7 +233,7 @@ public class AddressServiceTests
 
         var result = await _service.UpdateAddressAsync(_testId, updateDto, "test-user");
 
-        result.Should().Be(expectedDto);
+        Assert.AreEqual(expectedDto, result);
         _mockRepository.Verify(r => r.Update(entity), Times.Once);
     }
 
@@ -256,7 +256,7 @@ public class AddressServiceTests
 
         var result = await _service.UpdateAddressAsync(_testId, updateDto);
 
-        result.Should().BeNull();
+        Assert.IsNull(result);
     }
 
     #endregion
@@ -274,8 +274,8 @@ public class AddressServiceTests
 
         var result = await _service.DeleteAddressAsync(_testId, "test-user");
 
-        result.Should().BeTrue();
-        entity.IsDeleted.Should().BeTrue();
+        Assert.IsTrue(result);
+        Assert.IsTrue(entity.IsDeleted);
         _mockRepository.Verify(r => r.Update(entity), Times.Once);
     }
 
@@ -288,7 +288,7 @@ public class AddressServiceTests
 
         var result = await _service.DeleteAddressAsync(_testId);
 
-        result.Should().BeFalse();
+        Assert.IsFalse(result);
     }
 
     #endregion
@@ -306,7 +306,7 @@ public class AddressServiceTests
 
         var result = await _service.PermanentlyDeleteAddressAsync(_testId);
 
-        result.Should().BeTrue();
+        Assert.IsTrue(result);
         _mockRepository.Verify(r => r.Remove(entity), Times.Once);
     }
 
@@ -319,7 +319,7 @@ public class AddressServiceTests
 
         var result = await _service.PermanentlyDeleteAddressAsync(_testId);
 
-        result.Should().BeFalse();
+        Assert.IsFalse(result);
     }
 
     #endregion
@@ -342,7 +342,7 @@ public class AddressServiceTests
 
         var result = await _service.GetAddressByUprnAsync(uprn);
 
-        result.Should().Be(expectedDto);
+        Assert.AreEqual(expectedDto, result);
     }
 
     [TestMethod]
@@ -356,7 +356,7 @@ public class AddressServiceTests
 
         var result = await _service.GetAddressByUprnAsync(uprn);
 
-        result.Should().BeNull();
+        Assert.IsNull(result);
     }
 
     #endregion
@@ -382,7 +382,7 @@ public class AddressServiceTests
             postcode: "T1 1ST",
             organisation: "Test Organisation");
 
-        result.Data.Should().HaveCount(1);
+        Assert.AreEqual(1, result.Data.Count);
     }
 
     [TestMethod]
@@ -396,7 +396,7 @@ public class AddressServiceTests
 
         var result = await _service.AdvancedSearchAsync();
 
-        result.Data.Should().BeEmpty();
+        Assert.AreEqual(0, result.Data.Count);
     }
 
     #endregion
@@ -415,7 +415,7 @@ public class AddressServiceTests
 
          var result = await _service.GetAddressCountAsync();
 
-         result.Should().Be(expectedCount);
+         Assert.AreEqual(expectedCount, result);
      }
 
     #endregion
@@ -434,8 +434,8 @@ public class AddressServiceTests
 
         var result = await _service.RestoreAddressAsync(_testId, "test-user");
 
-        result.Should().BeTrue();
-        entity.IsDeleted.Should().BeFalse();
+        Assert.IsTrue(result);
+        Assert.IsFalse(entity.IsDeleted);
         _mockRepository.Verify(r => r.Update(entity), Times.Once);
     }
 
@@ -448,7 +448,7 @@ public class AddressServiceTests
 
         var result = await _service.RestoreAddressAsync(_testId);
 
-        result.Should().BeFalse();
+        Assert.IsFalse(result);
     }
 
     #endregion

@@ -3,7 +3,6 @@ global using System.Net;
 global using System.Net.Http.Json;
 
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
-global using FluentAssertions;
 global using Moq;
 
 global using Common.Rest.Address.Application.Dtos;

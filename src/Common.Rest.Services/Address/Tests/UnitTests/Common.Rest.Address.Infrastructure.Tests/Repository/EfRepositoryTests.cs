@@ -64,8 +64,8 @@ public class EfRepositoryTests
 
         var result = await _repository.GetByIdAsync(_testId);
 
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(_testId);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(_testId, result!.Id);
     }
 
     [TestMethod]
@@ -73,7 +73,7 @@ public class EfRepositoryTests
     {
         var result = await _repository.GetByIdAsync(_testId);
 
-        result.Should().BeNull();
+        Assert.IsNull(result);
     }
 
     #endregion
@@ -89,7 +89,7 @@ public class EfRepositoryTests
 
         var result = await _repository.GetAllAsync();
 
-        result.Should().HaveCount(2);
+        Assert.AreEqual(2, result.Count);
     }
 
     #endregion
@@ -105,7 +105,7 @@ public class EfRepositoryTests
 
         var result = await _repository.FindAsync(e => !e.IsDeleted);
 
-        result.Should().HaveCount(1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -120,7 +120,7 @@ public class EfRepositoryTests
 
         var result = await _repository.FindAsync(spec.Object);
 
-        result.Should().HaveCount(1);
+        Assert.AreEqual(1, result.Count);
     }
 
     #endregion
@@ -138,8 +138,8 @@ public class EfRepositoryTests
 
         var (items, totalCount) = await _repository.GetPagedAsync(page: 1, pageSize: 10);
 
-        totalCount.Should().Be(20);
-        items.Should().HaveCount(10);
+        Assert.AreEqual(20, totalCount);
+        Assert.AreEqual(10, items.Count);
     }
 
     [TestMethod]
@@ -160,8 +160,8 @@ public class EfRepositoryTests
 
         // Note: Current implementation doesn't apply predicate to query, only specification
         // This returns all items (2), not filtered by predicate
-        totalCount.Should().Be(2);
-        items.Should().HaveCount(2);
+        Assert.AreEqual(2, totalCount);
+        Assert.AreEqual(2, items.Count);
     }
 
     #endregion
@@ -177,7 +177,7 @@ public class EfRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         var result = await _dbContext.Set<AddressDocumentEntity>().FindAsync(entity.Id);
-        result.Should().NotBeNull();
+        Assert.IsNotNull(result);
     }
 
     #endregion
@@ -196,7 +196,7 @@ public class EfRepositoryTests
         _dbContext.SaveChanges();
 
         var updated = _dbContext.Set<AddressDocumentEntity>().Find(entity.Id);
-        updated!.DocumentType.Should().Be("Updated");
+        Assert.AreEqual("Updated", updated!.DocumentType);
     }
 
     #endregion
@@ -214,7 +214,7 @@ public class EfRepositoryTests
         _dbContext.SaveChanges();
 
         var removed = _dbContext.Set<AddressDocumentEntity>().Find(entity.Id);
-        removed.Should().BeNull();
+        Assert.IsNull(removed);
     }
 
     #endregion
@@ -230,7 +230,7 @@ public class EfRepositoryTests
 
         var result = await _repository.ExistsAsync(e => e.Id == _testId);
 
-        result.Should().BeTrue();
+        Assert.IsTrue(result);
     }
 
     [TestMethod]
@@ -238,7 +238,7 @@ public class EfRepositoryTests
     {
         var result = await _repository.ExistsAsync(e => e.Id == _testId);
 
-        result.Should().BeFalse();
+        Assert.IsFalse(result);
     }
 
     #endregion
@@ -256,7 +256,7 @@ public class EfRepositoryTests
 
         var result = await _repository.CountAsync();
 
-        result.Should().Be(42);
+        Assert.AreEqual(42, result);
     }
 
     [TestMethod]
@@ -274,7 +274,7 @@ public class EfRepositoryTests
 
         var result = await _repository.CountAsync(e => !e.IsDeleted);
 
-        result.Should().Be(20);
+        Assert.AreEqual(20, result);
     }
 
     #endregion
