@@ -13,7 +13,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromBody] CreateUpdateAddress createDto,
         CancellationToken ct = default)
     {
-        var result = await addressService.CreateAddressAsync(createDto, User?.FindFirst("sub")?.Value);
+        var result = await addressService.CreateAddressAsync(createDto, User?.FindFirst("sub")?.Value, ct);
         var response = ApiResponse<AddressDocumentDto>.Ok(result, this.GetCorrelationId());
         return CreatedAtAction(nameof(GetAllAddresses), response);
     }
@@ -25,7 +25,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken ct = default)
     {
-        var result = await addressService.GetAddressByIdAsync(id);
+        var result = await addressService.GetAddressByIdAsync(id, ct);
         if (result is null)
             throw new NotFoundException(nameof(AddressDocumentDto), id);
 
@@ -39,7 +39,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromQuery] int pageSize = 10,
         CancellationToken ct = default)
     {
-        var result = await addressService.GetAllAddressesAsync(page, pageSize);
+        var result = await addressService.GetAllAddressesAsync(page, pageSize, ct);
         var pagedResponse = new PagedApiResponse<AddressDocumentDto>(result.Data, page, pageSize, result.TotalCount, this.GetCorrelationId());
         return Ok(pagedResponse);
     }
@@ -53,7 +53,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromBody] CreateUpdateAddress updateDto,
         CancellationToken ct = default)
     {
-        var result = await addressService.UpdateAddressAsync(id, updateDto, User?.FindFirst("sub")?.Value);
+        var result = await addressService.UpdateAddressAsync(id, updateDto, User?.FindFirst("sub")?.Value, ct);
         if (result is null)
             throw new NotFoundException(nameof(AddressDocumentDto), id);
 
@@ -67,7 +67,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken ct = default)
     {
-        var result = await addressService.DeleteAddressAsync(id, User?.FindFirst("sub")?.Value);
+        var result = await addressService.DeleteAddressAsync(id, User?.FindFirst("sub")?.Value, ct);
         if (!result)
             throw new NotFoundException(nameof(AddressDocumentDto), id);
 
@@ -81,7 +81,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken ct = default)
     {
-        var result = await addressService.PermanentlyDeleteAddressAsync(id);
+        var result = await addressService.PermanentlyDeleteAddressAsync(id, ct);
         if (!result)
             throw new NotFoundException(nameof(AddressDocumentDto), id);
 
@@ -99,7 +99,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         if (string.IsNullOrWhiteSpace(uprn))
             throw new ValidationException("UPRN is required.");
 
-        var result = await addressService.GetAddressByUprnAsync(uprn);
+        var result = await addressService.GetAddressByUprnAsync(uprn, ct);
         if (result is null)
             throw new NotFoundException("Address", uprn);
 
@@ -125,7 +125,8 @@ public class AddressController(IAddressService addressService) : ControllerBase
             thoroughfare: thoroughfare,
             locality: locality,
             page: page,
-            pageSize: pageSize);
+            pageSize: pageSize,
+            ct: ct);
 
         var pagedResponse = new PagedApiResponse<AddressDocumentDto>(result.Data, page, pageSize, result.TotalCount, this.GetCorrelationId());
         return Ok(pagedResponse);
@@ -135,7 +136,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     public async Task<ActionResult<ApiResponse<int>>> GetAddressCount(CancellationToken ct = default)
     {
-        var result = await addressService.GetAddressCountAsync();
+        var result = await addressService.GetAddressCountAsync(ct);
         return Ok(ApiResponse<int>.Ok(result, this.GetCorrelationId()));
     }
 
@@ -146,7 +147,7 @@ public class AddressController(IAddressService addressService) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken ct = default)
     {
-        var result = await addressService.RestoreAddressAsync(id, User?.FindFirst("sub")?.Value);
+        var result = await addressService.RestoreAddressAsync(id, User?.FindFirst("sub")?.Value, ct);
         if (!result)
             throw new NotFoundException(nameof(AddressDocumentDto), id);
 

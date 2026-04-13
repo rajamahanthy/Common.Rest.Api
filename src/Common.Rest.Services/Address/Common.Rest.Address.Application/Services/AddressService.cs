@@ -13,7 +13,7 @@ public class AddressService(
     /// <summary>
     /// Creates a new address record.
     /// </summary>
-    public async Task<AddressDocumentDto> CreateAddressAsync(CreateUpdateAddress createDto, string? userId = null)
+    public async Task<AddressDocumentDto> CreateAddressAsync(CreateUpdateAddress createDto, string? userId = null, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(createDto);
 
@@ -27,8 +27,8 @@ public class AddressService(
             CreatedAt = DateTimeOffset.UtcNow
         };
 
-        await repository.AddAsync(document);
-        await unitOfWork.SaveChangesAsync();
+        await repository.AddAsync(document, ct);
+        await unitOfWork.SaveChangesAsync(ct);
 
         return mappingService.MapToDto(document);
     }
@@ -36,25 +36,26 @@ public class AddressService(
     /// <summary>
     /// Retrieves an address record by ID.
     /// </summary>
-    public async Task<AddressDocumentDto?> GetAddressByIdAsync(Guid id)
+    public async Task<AddressDocumentDto?> GetAddressByIdAsync(Guid id, CancellationToken ct = default)
     {
-        var document = await repository.GetByIdAsync(id);
+        var document = await repository.GetByIdAsync(id, ct);
         return document?.IsDeleted == true ? null : document is not null ? mappingService.MapToDto(document) : null;
     }
 
     /// <summary>
     /// Retrieves all active address records with pagination.
     /// </summary>
-    public async Task<PaginationResult<AddressDocumentDto>> GetAllAddressesAsync(int page = 1, int pageSize = 10)
+    public async Task<PaginationResult<AddressDocumentDto>> GetAllAddressesAsync(int page = 1, int pageSize = 10, CancellationToken ct = default)
     {
         if (page < 1) page = 1;
         if (pageSize < 1 || pageSize > 100) pageSize = 10;
 
         var spec = new Specifications.AddressActiveSpecification(DocumentType);
         var (items, totalCount) = await repository.GetPagedAsync(
-            page: page,
-            pageSize: pageSize,
-            specification: spec);
+            page,
+            pageSize,
+            specification: spec,
+            ct: ct);
 
         var data = items.Select(mappingService.MapToDto).ToList();
         return new PaginationResult<AddressDocumentDto>(data, totalCount);
@@ -63,11 +64,11 @@ public class AddressService(
     /// <summary>
     /// Updates an existing address record.
     /// </summary>
-    public async Task<AddressDocumentDto?> UpdateAddressAsync(Guid id, CreateUpdateAddress updateDto, string? userId = null)
+    public async Task<AddressDocumentDto?> UpdateAddressAsync(Guid id, CreateUpdateAddress updateDto, string? userId = null, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(updateDto);
 
-        var document = await repository.GetByIdAsync(id);
+        var document = await repository.GetByIdAsync(id, ct);
         if (document is null || document.IsDeleted)
             return null;
 
@@ -78,7 +79,7 @@ public class AddressService(
         document.UpdatedBy = userId;
 
         repository.Update(document);
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(ct);
 
         return mappingService.MapToDto(document);
     }
@@ -86,9 +87,9 @@ public class AddressService(
     /// <summary>
     /// Soft deletes an address record.
     /// </summary>
-    public async Task<bool> DeleteAddressAsync(Guid id, string? userId = null)
+    public async Task<bool> DeleteAddressAsync(Guid id, string? userId = null, CancellationToken ct = default)
     {
-        var document = await repository.GetByIdAsync(id);
+        var document = await repository.GetByIdAsync(id, ct);
         if (document is null || document.IsDeleted)
             return false;
 
@@ -97,7 +98,7 @@ public class AddressService(
         document.UpdatedBy = userId;
 
         repository.Update(document);
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(ct);
 
         return true;
     }
@@ -105,14 +106,14 @@ public class AddressService(
     /// <summary>
     /// Permanently deletes an address record.
     /// </summary>
-    public async Task<bool> PermanentlyDeleteAddressAsync(Guid id)
+    public async Task<bool> PermanentlyDeleteAddressAsync(Guid id, CancellationToken ct = default)
     {
-        var document = await repository.GetByIdAsync(id);
+        var document = await repository.GetByIdAsync(id, ct);
         if (document is null)
             return false;
 
         repository.Remove(document);
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(ct);
 
         return true;
     }
@@ -120,13 +121,13 @@ public class AddressService(
     /// <summary>
     /// Searches for addresses by UPRN (Unique Property Reference Number).
     /// </summary>
-    public async Task<AddressDocumentDto?> GetAddressByUprnAsync(string uprn)
+    public async Task<AddressDocumentDto?> GetAddressByUprnAsync(string uprn, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(uprn))
             return null;
 
         var spec = new Specifications.AddressUprnSpecification(DocumentType, uprn);
-        var documents = await repository.FindAsync(spec);
+        var documents = await repository.FindAsync(spec, ct);
         var document = documents.FirstOrDefault();
         return document is not null ? mappingService.MapToDto(document) : null;
     }
@@ -141,7 +142,8 @@ public class AddressService(
         string? thoroughfare = null,
         string? locality = null,
         int page = 1,
-        int pageSize = 10)
+        int pageSize = 10,
+        CancellationToken ct = default)
     {
         if (page < 1) page = 1;
         if (pageSize < 1 || pageSize > 100) pageSize = 10;
@@ -149,9 +151,10 @@ public class AddressService(
         var spec = new Specifications.AddressAdvancedSearchSpecification(
             DocumentType, postcode, postTown, organisation, thoroughfare, locality);
         var (items, totalCount) = await repository.GetPagedAsync(
-            page: page,
-            pageSize: pageSize,
-            specification: spec);
+            page,
+            pageSize,
+            specification: spec,
+            ct: ct);
 
         var data = items.Select(mappingService.MapToDto).ToList();
         return new PaginationResult<AddressDocumentDto>(data, totalCount);
@@ -160,19 +163,19 @@ public class AddressService(
     /// <summary>
     /// Gets the count of active addresses.
     /// </summary>
-    public async Task<int> GetAddressCountAsync()
+    public async Task<int> GetAddressCountAsync(CancellationToken ct = default)
     {
         var spec = new Specifications.AddressActiveSpecification(DocumentType);
-        var all = await repository.FindAsync(spec);
+        var all = await repository.FindAsync(spec, ct);
         return all.Count;
     }
 
     /// <summary>
     /// Restores a soft-deleted address record.
     /// </summary>
-    public async Task<bool> RestoreAddressAsync(Guid id, string? userId = null)
+    public async Task<bool> RestoreAddressAsync(Guid id, string? userId = null, CancellationToken ct = default)
     {
-        var document = await repository.GetByIdAsync(id);
+        var document = await repository.GetByIdAsync(id, ct);
         if (document is null || !document.IsDeleted)
             return false;
 
@@ -181,7 +184,7 @@ public class AddressService(
         document.UpdatedBy = userId;
 
         repository.Update(document);
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(ct);
 
         return true;
     }
