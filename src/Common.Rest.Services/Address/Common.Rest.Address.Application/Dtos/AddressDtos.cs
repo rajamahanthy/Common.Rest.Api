@@ -5,50 +5,50 @@ public record AddressDocumentDto(Guid Id, AddressDto AddressDetails);
 public class AddressDto
 {
     [JsonPropertyName("uprn")]
-    public string Uprn { get; set; }
+    public string Uprn { get; set; } = string.Empty;
 
     [JsonPropertyName("address")]
-    public AddressInfo AddressInfo { get; set; }
+    public required AddressInfo AddressInfo { get; set; }
 
     [JsonPropertyName("geography")]
-    public Geography Geography { get; set; }
+    public required Geography Geography { get; set; }
 }
 
 public class CreateUpdateAddress
 {
     [JsonPropertyName("address")]
     [Required]
-    public AddressInfo AddressInfo { get; set; }
+    public required AddressInfo AddressInfo { get; set; }
 
     [JsonPropertyName("geography")]
     [Required]
-    public Geography Geography { get; set; }
+    public required Geography Geography { get; set; }
 }
 
 public class AddressInfo
 {
     [JsonPropertyName("organisation")]
     [MaxLength(120)]
-    public string? Organisation { get; set; }
+    public string Organisation { get; set; } = string.Empty;
 
     [JsonPropertyName("department")]
     [MaxLength(120)]
-    public string? Department { get; set; }
+    public string Department { get; set; } = string.Empty;
 
     [JsonPropertyName("sao")]
     public AddressableObject? Sao { get; set; }
 
     [JsonPropertyName("pao")]
     [Required]
-    public AddressableObject Pao { get; set; }
+    public required AddressableObject Pao { get; set; }
 
     [JsonPropertyName("streetDescriptor")]
     [Required]
-    public StreetDescriptor StreetDescriptor { get; set; }
+    public required StreetDescriptor StreetDescriptor { get; set; }
 
     [JsonPropertyName("postcode")]
     [RegularExpression(@"^(GIR 0AA|([A-PR-UWYZ][0-9][0-9]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9]?|[A-PR-UWYZ][0-9][A-HJKSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]) [0-9][ABD-HJLNP-UW-Z]{2})$")]
-    public string? Postcode { get; set; }
+    public string Postcode { get; set; } = string.Empty;
 }
 
 public class StreetDescriptor
@@ -56,31 +56,31 @@ public class StreetDescriptor
     [JsonPropertyName("streetDescription")]
     [Required]
     [MaxLength(120)]
-    public string StreetDescription { get; set; }
+    public string StreetDescription { get; set; } = string.Empty;
 
     [JsonPropertyName("locality")]
     [MaxLength(120)]
-    public string? Locality { get; set; }
+    public string Locality { get; set; } = string.Empty;
 
     [JsonPropertyName("dependentLocality")]
     [MaxLength(120)]
-    public string? DependentLocality { get; set; }
+    public string DependentLocality { get; set; } = string.Empty;
 
     [JsonPropertyName("doubleDependentLocality")]
     [MaxLength(120)]
-    public string? DoubleDependentLocality { get; set; }
+    public string DoubleDependentLocality { get; set; } = string.Empty;
 
     [JsonPropertyName("townName")]
     [MaxLength(120)]
-    public string? TownName { get; set; }
+    public string TownName { get; set; } = string.Empty;
 
     [JsonPropertyName("postTown")]
     [MaxLength(120)]
-    public string? PostTown { get; set; }
+    public string PostTown { get; set; } = string.Empty;
 
     [JsonPropertyName("administrativeArea")]
     [MaxLength(120)]
-    public string? AdministrativeArea { get; set; }
+    public string AdministrativeArea { get; set; } = string.Empty;
 }
 
 public class Geography
@@ -100,7 +100,7 @@ public class AddressableObject
 {
     [JsonPropertyName("text")]
     [MaxLength(120)]
-    public string? Text { get; set; }
+    public string Text { get; set; } = string.Empty;
 
     [JsonPropertyName("startNumber")]
     [Range(1, 99999)]
@@ -108,7 +108,7 @@ public class AddressableObject
 
     [JsonPropertyName("startSuffix")]
     [RegularExpression(@"^[A-Za-z]$")]
-    public string? StartSuffix { get; set; }
+    public string StartSuffix { get; set; } = string.Empty;
 
     [JsonPropertyName("endNumber")]
     [Range(1, 99999)]
@@ -116,5 +116,5 @@ public class AddressableObject
 
     [JsonPropertyName("endSuffix")]
     [RegularExpression(@"^[A-Za-z]$")]
-    public string? EndSuffix { get; set; }
+    public string EndSuffix { get; set; } = string.Empty;
 }
