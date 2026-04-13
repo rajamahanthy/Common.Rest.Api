@@ -12,7 +12,4 @@
     <ProjectReference Include="..\..\..\Common.Rest.Services\Common.Rest.Shared\Common.Rest.Shared.csproj" />
     <ProjectReference Include="..\Common.Rest.Address.Domain\Common.Rest.Address.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
 </Project>

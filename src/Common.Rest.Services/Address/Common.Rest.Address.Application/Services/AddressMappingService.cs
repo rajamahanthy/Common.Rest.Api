@@ -72,7 +72,6 @@ public class AddressMappingService : IAddressMappingService
         var addressEntity = new AddressEntity
         {
             Uprn = uprn,
-            Usrn = null,
             AddressInfo = new AddressInfoEntity
             {
                 Organisation = createDto.AddressInfo.Organisation,
@@ -120,6 +119,9 @@ public class AddressMappingService : IAddressMappingService
         ArgumentNullException.ThrowIfNull(addressDocEntity);
         ArgumentNullException.ThrowIfNull(updateDto);
         ArgumentNullException.ThrowIfNull(addressDocEntity.JsonData);
+        ArgumentNullException.ThrowIfNull(updateDto.AddressInfo);
+        ArgumentNullException.ThrowIfNull(updateDto.AddressInfo.Pao);
+        ArgumentNullException.ThrowIfNull(updateDto.AddressInfo.Sao);
 
         var existing = addressDocEntity.JsonData;
 
@@ -131,33 +133,33 @@ public class AddressMappingService : IAddressMappingService
             {
                 Organisation = updateDto.AddressInfo.Organisation,
                 Department = updateDto.AddressInfo.Department,
-                Sao = updateDto.AddressInfo?.Sao != null ? new AddressableObjectEntity
+                Sao = updateDto.AddressInfo.Sao != null ? new AddressableObjectEntity
                 {
                     Text = updateDto.AddressInfo.Sao.Text,
-                    StartNumber = updateDto.AddressInfo.Sao.StartNumber ?? existing.AddressInfo?.Sao?.StartNumber,
+                    StartNumber = updateDto.AddressInfo.Sao.StartNumber,
                     StartSuffix = updateDto.AddressInfo.Sao.StartSuffix,
-                    EndNumber = updateDto.AddressInfo.Sao.EndNumber ?? existing.AddressInfo?.Sao?.EndNumber,
+                    EndNumber = updateDto.AddressInfo.Sao.EndNumber,
                     EndSuffix = updateDto.AddressInfo.Sao.EndSuffix
-                } : existing.AddressInfo?.Sao,
-                Pao = updateDto.AddressInfo.Pao != null ? new AddressableObjectEntity
+                }: null,
+                Pao = new AddressableObjectEntity
                 {
                     Text = updateDto.AddressInfo.Pao.Text,
-                    StartNumber = updateDto.AddressInfo.Pao.StartNumber ?? existing.AddressInfo?.Pao?.StartNumber,
+                    StartNumber = updateDto.AddressInfo.Pao.StartNumber,
                     StartSuffix = updateDto.AddressInfo.Pao.StartSuffix,
-                    EndNumber = updateDto.AddressInfo.Pao.EndNumber ?? existing.AddressInfo?.Pao?.EndNumber,
+                    EndNumber = updateDto.AddressInfo.Pao.EndNumber,
                     EndSuffix = updateDto.AddressInfo.Pao.EndSuffix
-                } : existing.AddressInfo?.Pao,
-                StreetDescriptor = updateDto.AddressInfo?.StreetDescriptor != null ? new StreetDescriptorEntity
+                },
+                StreetDescriptor = new StreetDescriptorEntity
                 {
-                    StreetDescription = updateDto.AddressInfo.StreetDescriptor.StreetDescription ?? existing.AddressInfo?.StreetDescriptor?.StreetDescription,
-                    Locality = updateDto.AddressInfo.StreetDescriptor.Locality ?? existing.AddressInfo?.StreetDescriptor?.Locality,
-                    DependentLocality = updateDto.AddressInfo.StreetDescriptor.DependentLocality ?? existing.AddressInfo?.StreetDescriptor?.DependentLocality,
-                    DoubleDependentLocality = updateDto.AddressInfo.StreetDescriptor.DoubleDependentLocality ?? existing.AddressInfo?.StreetDescriptor?.DoubleDependentLocality,
-                    TownName = updateDto.AddressInfo.StreetDescriptor.TownName ?? existing.AddressInfo?.StreetDescriptor?.TownName,
-                    PostTown = updateDto.AddressInfo.StreetDescriptor.PostTown ?? existing.AddressInfo?.StreetDescriptor?.PostTown,
-                    AdministrativeArea = updateDto.AddressInfo.StreetDescriptor.AdministrativeArea ?? existing.AddressInfo?.StreetDescriptor?.AdministrativeArea
-                } : existing.AddressInfo?.StreetDescriptor,
-                Postcode = updateDto.AddressInfo?.Postcode ?? existing.AddressInfo?.Postcode
+                    StreetDescription = updateDto.AddressInfo.StreetDescriptor.StreetDescription,
+                    Locality = updateDto.AddressInfo.StreetDescriptor.Locality,
+                    DependentLocality = updateDto.AddressInfo.StreetDescriptor.DependentLocality,
+                    DoubleDependentLocality = updateDto.AddressInfo.StreetDescriptor.DoubleDependentLocality,
+                    TownName = updateDto.AddressInfo.StreetDescriptor.TownName,
+                    PostTown = updateDto.AddressInfo.StreetDescriptor.PostTown,
+                    AdministrativeArea = updateDto.AddressInfo.StreetDescriptor.AdministrativeArea
+                },
+                Postcode = updateDto.AddressInfo.Postcode
             },
             Geography = updateDto.Geography != null ? new GeographyEntity
             {

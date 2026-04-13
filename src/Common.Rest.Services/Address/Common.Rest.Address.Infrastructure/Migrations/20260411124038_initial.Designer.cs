@@ -13,7 +13,7 @@ namespace Common.Rest.Address.Infrastructure.Migrations
 {
     [DbContext(typeof(AddressDocumentDbContext))]
     [Migration("20260411124038_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

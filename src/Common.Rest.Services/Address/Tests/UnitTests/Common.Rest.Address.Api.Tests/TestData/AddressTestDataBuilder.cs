@@ -38,7 +38,6 @@ public static class AddressTestDataBuilder
         return new AddressInfo
         {
             Organisation = "Test Organisation",
-            Department = null,
             Pao = new AddressableObject { StartNumber = 123 },
             Sao = null,
             StreetDescriptor = new StreetDescriptor
@@ -55,5 +54,40 @@ public static class AddressTestDataBuilder
     private static Geography CreateGeography()
     {
         return new Geography { Easting = 123456, Northing = 654321 };
+    }
+
+    public static AddressEntity CreateAddressEntity(string uprn = "123456789")
+    {
+        return new AddressEntity
+        {
+            Uprn = uprn,
+            Usrn = "999999999",
+            AddressInfo = CreateAddressInfoEntity(),
+            Geography = CreateGeographyEntity()
+        };
+    }
+
+    private static AddressInfoEntity CreateAddressInfoEntity()
+    {
+        return new AddressInfoEntity
+        {
+            Organisation = "Test Organisation",
+            Department = "Test Department",
+            Pao = new AddressableObjectEntity { StartNumber = 123, Text = "123" },
+            Sao = null,
+            StreetDescriptor = new StreetDescriptorEntity
+            {
+                StreetDescription = "Main Street",
+                PostTown = "Test Town",
+                Locality = "Test Locality",
+                AdministrativeArea = "Test Region"
+            },
+            Postcode = "T1 1ST"
+        };
+    }
+
+    private static GeographyEntity CreateGeographyEntity()
+    {
+        return new GeographyEntity { Easting = 123456, Northing = 654321 };
     }
 }

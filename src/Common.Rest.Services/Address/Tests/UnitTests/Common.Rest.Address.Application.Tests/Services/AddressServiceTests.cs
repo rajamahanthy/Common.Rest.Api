@@ -36,7 +36,19 @@ public class AddressServiceTests
         {
             Id = id ?? Guid.NewGuid(),
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = new AddressEntity
+            {
+                Uprn = "123456789",
+                Usrn = "999999999",
+                AddressInfo = new AddressInfoEntity
+                {
+                    Organisation = "Test Org",
+                    Pao = new AddressableObjectEntity { StartNumber = 1, Text = "1" },
+                    StreetDescriptor = new StreetDescriptorEntity { StreetDescription = "Main St", PostTown = "Test Town" },
+                    Postcode = "T1 1ST"
+                },
+                Geography = new GeographyEntity { Easting = 529904, Northing = 180994 }
+            }
         };
     }
 
@@ -44,7 +56,16 @@ public class AddressServiceTests
     {
         return new AddressDocumentDto(
             id ?? Guid.NewGuid(),
-            new AddressDto { Uprn = "123456789" });
+            new AddressDto
+            {
+                Uprn = "123456789",
+                AddressInfo = new AddressInfo
+                {
+                    Pao = new AddressableObject { Text = "1 Main St" },
+                    StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                },
+                Geography = new Geography { Easting = 123456, Northing = 654321 }
+            });
     }
 
     #region CreateAddress
@@ -54,7 +75,11 @@ public class AddressServiceTests
     {
         var createDto = new CreateUpdateAddress
         {
-            AddressInfo = new AddressInfo { Pao = new AddressableObject { Text = "1 Main St" } },
+            AddressInfo = new AddressInfo
+            {
+                Pao = new AddressableObject { Text = "1 Main St" },
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+            },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
         var expectedDto = CreateDto(_testId);
@@ -186,7 +211,11 @@ public class AddressServiceTests
     {
         var updateDto = new CreateUpdateAddress
         {
-            AddressInfo = new AddressInfo { Pao = new AddressableObject { Text = "1 Main St" } },
+            AddressInfo = new AddressInfo
+            {
+                Pao = new AddressableObject { Text = "1 Main St" },
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+            },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
         var entity = CreateEntity(_testId);
@@ -213,7 +242,11 @@ public class AddressServiceTests
     {
         var updateDto = new CreateUpdateAddress
         {
-            AddressInfo = new AddressInfo { Pao = new AddressableObject { Text = "1 Main St" } },
+            AddressInfo = new AddressInfo
+            {
+                Pao = new AddressableObject { Text = "1 Main St" },
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+            },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
 
@@ -428,7 +461,11 @@ public class AddressServiceTests
         var cts = new CancellationTokenSource();
         var createDto = new CreateUpdateAddress
         {
-            AddressInfo = new AddressInfo { Pao = new AddressableObject { Text = "1 Main St" } },
+            AddressInfo = new AddressInfo
+            {
+                Pao = new AddressableObject { Text = "1 Main St" },
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+            },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
         var expectedDto = CreateDto();

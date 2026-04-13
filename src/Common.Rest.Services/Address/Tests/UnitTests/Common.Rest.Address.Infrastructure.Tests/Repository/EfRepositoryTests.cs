@@ -37,7 +37,19 @@ public class EfRepositoryTests
         {
             Id = id ?? Guid.NewGuid(),
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = new AddressEntity
+            {
+                Uprn = "123456789",
+                Usrn = "999999999",
+                AddressInfo = new AddressInfoEntity
+                {
+                    Organisation = "Test Org",
+                    Pao = new AddressableObjectEntity { StartNumber = 1, Text = "1" },
+                    StreetDescriptor = new StreetDescriptorEntity { StreetDescription = "Main St", PostTown = "Test Town" },
+                    Postcode = "T1 1ST"
+                },
+                Geography = new GeographyEntity { Easting = 529904, Northing = 180994 }
+            }
         };
     }
 

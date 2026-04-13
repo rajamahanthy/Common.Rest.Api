@@ -15,6 +15,23 @@ public class AddressDocumentEntityTests
         _testId = Guid.NewGuid();
     }
 
+    private static AddressEntity CreateTestAddressEntity(string uprn = "123456789")
+    {
+        return new AddressEntity
+        {
+            Uprn = uprn,
+            Usrn = "999999999",
+            AddressInfo = new AddressInfoEntity
+            {
+                Organisation = "Test Org",
+                Pao = new AddressableObjectEntity { StartNumber = 1, Text = "1" },
+                StreetDescriptor = new StreetDescriptorEntity { StreetDescription = "Main St", PostTown = "Test Town" },
+                Postcode = "T1 1ST"
+            },
+            Geography = new GeographyEntity { Easting = 529904, Northing = 180994 }
+        };
+    }
+
     #region Entity Initialization
 
     [TestMethod]
@@ -24,7 +41,7 @@ public class AddressDocumentEntityTests
         {
             Id = _testId,
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.Id.Should().Be(_testId);
@@ -41,7 +58,7 @@ public class AddressDocumentEntityTests
         {
             Id = _testId,
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             CreatedAt = createdTime,
             CreatedBy = "test-user",
             UprnIndex = "123456789",
@@ -62,7 +79,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.UprnIndex.Should().BeNull();
@@ -80,7 +97,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             IsDeleted = false
         };
 
@@ -95,7 +112,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             IsDeleted = true
         };
 
@@ -110,7 +127,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.IsDeleted.Should().BeFalse();
@@ -127,7 +144,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             CreatedAt = now,
             CreatedBy = "creator-user"
         };
@@ -145,7 +162,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             CreatedAt = createdTime,
             CreatedBy = "creator",
             UpdatedAt = updatedTime,
@@ -163,7 +180,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.UpdatedAt.Should().BeNull();
@@ -176,7 +193,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         var firstUpdate = DateTimeOffset.UtcNow;
@@ -201,7 +218,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.DocumentType.Should().Be("Address");
@@ -214,7 +231,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_JsonData_StoresAddressEntity()
     {
-        var addressData = new AddressEntity { Uprn = "123456789" };
+        var addressData = CreateTestAddressEntity();
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
@@ -231,10 +248,10 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
-        var updatedData = new AddressEntity { Uprn = "987654321" };
+        var updatedData = CreateTestAddressEntity("987654321");
         entity.JsonData = updatedData;
 
         entity.JsonData.Uprn.Should().Be("987654321");
@@ -250,7 +267,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             UprnIndex = "123456789",
             PostcodeIndex = "T1 1ST",
             PostTownIndex = "Test Town",
@@ -275,7 +292,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             UprnIndex = "123456789"
         };
 
@@ -288,7 +305,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             PostcodeIndex = "T1 1ST"
         };
 
@@ -307,7 +324,7 @@ public class AddressDocumentEntityTests
         {
             Id = _testId,
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             CreatedAt = createdTime,
             CreatedBy = "test-user",
             IsDeleted = false
@@ -325,7 +342,7 @@ public class AddressDocumentEntityTests
         {
             Id = _testId,
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             CreatedAt = DateTimeOffset.UtcNow.AddDays(-1),
             CreatedBy = "creator",
             IsDeleted = true
@@ -346,13 +363,13 @@ public class AddressDocumentEntityTests
         {
             Id = Guid.NewGuid(),
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
         var entity2 = new AddressDocumentEntity
         {
             Id = Guid.NewGuid(),
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "987654321" }
+            JsonData = CreateTestAddressEntity("987654321")
         };
 
         entity1.Id.Should().NotBe(entity2.Id);
@@ -366,7 +383,7 @@ public class AddressDocumentEntityTests
         {
             Id = testId,
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" }
+            JsonData = CreateTestAddressEntity()
         };
 
         entity.Id.Should().Be(testId);
@@ -378,7 +395,7 @@ public class AddressDocumentEntityTests
         var entity = new AddressDocumentEntity
         {
             DocumentType = "Address",
-            JsonData = new AddressEntity { Uprn = "123456789" },
+            JsonData = CreateTestAddressEntity(),
             PartitionKey = "test-key"
         };
 
