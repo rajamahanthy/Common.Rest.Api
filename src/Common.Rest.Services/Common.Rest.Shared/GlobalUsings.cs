@@ -30,3 +30,6 @@ global using System.Linq.Expressions;
 global using System.Net;
 global using System.Security.Claims;
 global using System.Text.Json;
+global using System.ComponentModel.DataAnnotations;
+global using System.Reflection;
+global using System.Text.Json.Serialization;

@@ -62,7 +62,8 @@ public class AddressServiceTests
                 AddressInfo = new AddressInfo
                 {
                     Pao = new AddressableObject { Text = "1 Main St" },
-                    StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                    StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" },
+                    Postcode = "T1 1ST"
                 },
                 Geography = new Geography { Easting = 123456, Northing = 654321 }
             });
@@ -78,7 +79,8 @@ public class AddressServiceTests
             AddressInfo = new AddressInfo
             {
                 Pao = new AddressableObject { Text = "1 Main St" },
-                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" },
+                Postcode = "T1 1ST"
             },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
@@ -214,7 +216,8 @@ public class AddressServiceTests
             AddressInfo = new AddressInfo
             {
                 Pao = new AddressableObject { Text = "1 Main St" },
-                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" },
+                Postcode = "T1 1ST"
             },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
@@ -245,7 +248,8 @@ public class AddressServiceTests
             AddressInfo = new AddressInfo
             {
                 Pao = new AddressableObject { Text = "1 Main St" },
-                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" },
+                Postcode = "T1 1ST"
             },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };
@@ -464,7 +468,8 @@ public class AddressServiceTests
             AddressInfo = new AddressInfo
             {
                 Pao = new AddressableObject { Text = "1 Main St" },
-                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" }
+                StreetDescriptor = new StreetDescriptor { StreetDescription = "Main St", PostTown = "Test Town" },
+                Postcode = "T1 1ST"
             },
             Geography = new Geography { Easting = 529904, Northing = 180994 }
         };

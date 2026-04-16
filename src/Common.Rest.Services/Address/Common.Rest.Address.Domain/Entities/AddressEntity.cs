@@ -1,5 +1,6 @@
 namespace Common.Rest.Address.Domain.Entities;
 
+using Common.Rest.Shared.CustomValidations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -45,8 +46,9 @@ public class AddressInfoEntity
     public required StreetDescriptorEntity StreetDescriptor { get; set; }
 
     [JsonPropertyName("postcode")]
-    [RegularExpression(@"^(GIR 0AA|([A-PR-UWYZ][0-9][0-9]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9]?|[A-PR-UWYZ][0-9][A-HJKSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]) [0-9][ABD-HJLNP-UW-Z]{2})$")]
-    public string Postcode { get; set; } = string.Empty;
+    [RegularExpression(@"^(GIR 0AA)|((?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) ?[0-9][ABD-HJLNP-UW-Z]{2})$")]
+    [Required]
+    public required string Postcode { get; set; } = string.Empty;
 }
 
 public class StreetDescriptorEntity
@@ -94,6 +96,7 @@ public class GeographyEntity
     public int Northing { get; set; }
 }
 
+[AnyOf(nameof(Text), nameof(StartNumber))]
 public class AddressableObjectEntity
 {
     [JsonPropertyName("text")]

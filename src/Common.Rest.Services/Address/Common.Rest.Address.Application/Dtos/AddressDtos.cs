@@ -2,17 +2,31 @@ namespace Common.Rest.Address.Application.Dtos;
 
 public record AddressDocumentDto(Guid Id, AddressDto AddressDetails);
 
+
+[NoAdditionalProperties]
 public class AddressDto
 {
     [JsonPropertyName("uprn")]
-    public string Uprn { get; set; } = string.Empty;
+    [Required]
+    [RegularExpression(@"^[1-9][0-9]{0,11}$")]
+    public required string Uprn { get; set; } = string.Empty;
+
+    [JsonPropertyName("usrn")]
+    [RegularExpression(@"^[1-9][0-9]{0,11}$")]
+    public string Usrn { get; set; } = string.Empty;
 
     [JsonPropertyName("address")]
+    [Required]
     public required AddressInfo AddressInfo { get; set; }
 
     [JsonPropertyName("geography")]
+    [Required]
     public required Geography Geography { get; set; }
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
+
 
 public class CreateUpdateAddress
 {
@@ -25,6 +39,8 @@ public class CreateUpdateAddress
     public required Geography Geography { get; set; }
 }
 
+
+[NoAdditionalProperties]
 public class AddressInfo
 {
     [JsonPropertyName("organisation")]
@@ -47,10 +63,17 @@ public class AddressInfo
     public required StreetDescriptor StreetDescriptor { get; set; }
 
     [JsonPropertyName("postcode")]
-    [RegularExpression(@"^(GIR 0AA|([A-PR-UWYZ][0-9][0-9]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9]?|[A-PR-UWYZ][0-9][A-HJKSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]) [0-9][ABD-HJLNP-UW-Z]{2})$")]
-    public string Postcode { get; set; } = string.Empty;
+    [Required]
+    [RegularExpression(@"^(GIR 0AA)|((?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) ?[0-9][ABD-HJLNP-UW-Z]{2})$")]
+    public required string Postcode { get; set; } = string.Empty;
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
 
+
+
+[NoAdditionalProperties]
 public class StreetDescriptor
 {
     [JsonPropertyName("streetDescription")]
@@ -81,8 +104,14 @@ public class StreetDescriptor
     [JsonPropertyName("administrativeArea")]
     [MaxLength(120)]
     public string AdministrativeArea { get; set; } = string.Empty;
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
 
+
+
+[NoAdditionalProperties]
 public class Geography
 {
     [JsonPropertyName("easting")]
@@ -94,13 +123,20 @@ public class Geography
     [Required]
     [Range(0, int.MaxValue)]
     public int Northing { get; set; }
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
 
+
+
+[AnyOf(nameof(Text), nameof(StartNumber))]
+[NoAdditionalProperties]
 public class AddressableObject
 {
     [JsonPropertyName("text")]
     [MaxLength(120)]
-    public string Text { get; set; } = string.Empty;
+    public string? Text { get; set; }
 
     [JsonPropertyName("startNumber")]
     [Range(1, 99999)]
@@ -117,4 +153,7 @@ public class AddressableObject
     [JsonPropertyName("endSuffix")]
     [RegularExpression(@"^[A-Za-z]$")]
     public string EndSuffix { get; set; } = string.Empty;
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
