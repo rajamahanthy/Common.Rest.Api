@@ -46,7 +46,7 @@ public class AddressInfoEntity
     public required StreetDescriptorEntity StreetDescriptor { get; set; }
 
     [JsonPropertyName("postcode")]
-    [RegularExpression(@"^(GIR 0AA)|((?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) ?[0-9][ABD-HJLNP-UW-Z]{2})$")]
+    [RegularExpression(@"^(GIR 0AA|(?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) [0-9][ABD-HJLNP-UW-Z]{2})$")]
     [Required]
     public required string Postcode { get; set; } = string.Empty;
 }

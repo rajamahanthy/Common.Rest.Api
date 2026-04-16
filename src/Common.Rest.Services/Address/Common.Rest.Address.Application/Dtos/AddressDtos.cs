@@ -64,7 +64,7 @@ public class AddressInfo
 
     [JsonPropertyName("postcode")]
     [Required]
-    [RegularExpression(@"^(GIR 0AA)|((?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) ?[0-9][ABD-HJLNP-UW-Z]{2})$")]
+    [RegularExpression(@"^(GIR 0AA|(?:[A-PR-UWYZ][0-9][0-9A-HJKSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9ABEHMNPRVWXY]?) [0-9][ABD-HJLNP-UW-Z]{2})$")]
     public required string Postcode { get; set; } = string.Empty;
 
     [JsonExtensionData]
