@@ -31,5 +31,21 @@
     <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Domain.Tests\Common.Rest.SurveyData.Domain.Tests.csproj" />
     <Project Path="SurveyData\Tests\UnitTests\Common.Rest.SurveyData.Infrastructure.Tests\Common.Rest.SurveyData.Infrastructure.Tests.csproj" />
   </Folder>
+    <Folder Name="/Common.Rest.Hereditament/">
+    <Project Path="Hereditament\Common.Rest.Hereditament.Api\Common.Rest.Hereditament.Api.csproj" />
+    <Project Path="Hereditament\Common.Rest.Hereditament.Application\Common.Rest.Hereditament.Application.csproj" />
+    <Project Path="Hereditament\Common.Rest.Hereditament.Domain\Common.Rest.Hereditament.Domain.csproj" />
+    <Project Path="Hereditament\Common.Rest.Hereditament.Infrastructure\Common.Rest.Hereditament.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.Hereditament/Tests/" />
+  <Folder Name="/Common.Rest.Hereditament/Tests/IntegrationTests/">
+    <Project Path="Hereditament\Tests\IntegrationTests\Common.Rest.Hereditament.Integration.Tests\Common.Rest.Hereditament.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Common.Rest.Hereditament/Tests/UnitTests/">
+    <Project Path="Hereditament\Tests\UnitTests\Common.Rest.Hereditament.Api.Tests\Common.Rest.Hereditament.Api.Tests.csproj" />
+    <Project Path="Hereditament\Tests\UnitTests\Common.Rest.Hereditament.Application.Tests\Common.Rest.Hereditament.Application.Tests.csproj" />
+    <Project Path="Hereditament\Tests\UnitTests\Common.Rest.Hereditament.Domain.Tests\Common.Rest.Hereditament.Domain.Tests.csproj" />
+    <Project Path="Hereditament\Tests\UnitTests\Common.Rest.Hereditament.Infrastructure.Tests\Common.Rest.Hereditament.Infrastructure.Tests.csproj" />
+  </Folder>
   <Project Path="Common.Rest.Shared\Common.Rest.Shared.csproj" />
 </Solution>

@@ -1,5 +1,4 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
-global using FluentAssertions;
 global using Moq;
 global using Microsoft.AspNetCore.Mvc;
 global using Common.Rest.SurveyData.Application.Dtos;

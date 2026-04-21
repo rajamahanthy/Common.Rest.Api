@@ -1,0 +1,13 @@
+global using Common.Rest.Hereditament.Api.Controllers;
+global using Common.Rest.Hereditament.Api.Tests.Fixtures;
+global using Common.Rest.Hereditament.Api.Tests.TestData;
+global using Common.Rest.Hereditament.Application.Dtos;
+global using Common.Rest.Hereditament.Application.Interfaces;
+global using Common.Rest.Hereditament.Domain.Entities;
+global using Common.Rest.Shared.Dtos;
+global using Common.Rest.Shared.Exceptions;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Moq;
+global using System.Security.Claims;

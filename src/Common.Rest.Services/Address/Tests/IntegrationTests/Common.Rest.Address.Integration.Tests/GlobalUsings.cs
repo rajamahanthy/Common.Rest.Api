@@ -6,7 +6,6 @@ global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
-global using FluentAssertions;
 
 global using Common.Rest.Address.Application.Dtos;
 global using Common.Rest.Address.Application.Interfaces;

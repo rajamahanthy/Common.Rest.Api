@@ -1,6 +1,5 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Microsoft.AspNetCore.Mvc.Testing;
-global using FluentAssertions;
 global using Common.Rest.SurveyData.Application.Dtos;
 global using Common.Rest.SurveyData.Application.Interfaces;
 global using Common.Rest.SurveyData.Application.Services;

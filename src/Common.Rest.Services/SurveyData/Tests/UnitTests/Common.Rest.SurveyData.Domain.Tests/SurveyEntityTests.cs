@@ -14,7 +14,7 @@ public class SurveyEntityTests
         survey.Details.Add(detail);
 
         // Assert
-        survey.Details.Should().Contain(detail);
-        detail.Survey.Should().Be(survey);
+        Assert.Contains(detail, survey.Details);
+        Assert.Equals(detail.Survey, survey);
     }
 }

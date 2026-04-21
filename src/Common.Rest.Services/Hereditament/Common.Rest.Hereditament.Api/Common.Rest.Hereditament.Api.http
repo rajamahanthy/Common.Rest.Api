@@ -1,0 +1,804 @@
+﻿@Common.Rest.Hereditament.Api_HostHereditament = https://localhost:5011
+### Hereditament API Test Suite
+### REST Client test requests for all endpoints and validations
+### Use VS Code REST Client extension to execute these requests
+### Comprehensive testing of CRUD operations, search, filtering, and validation
+
+### Variables
+@BaseUrl = https://localhost:5011
+@ApiVersion = 1
+@ContentType = application/json
+
+### Authentication
+@Token = your-bearer-token-here
+### Example Bearer Token (replace with actual):
+### @Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### Correlation ID (optional - middleware generates if not provided)
+@CorrelationId = correlation-trace-{{$timestamp}}
+
+### Valid Test Data - Standard UK Hereditament
+@ValidPostcode = SW1A 1AA
+@ValidPostTown = Westminster
+@ValidOrganisation = Test Organisation Ltd
+@ValidLocality = Central London
+@ValidStreetDescription = High Street
+@ValidEasting = 530000
+@ValidNorthing = 180000
+
+### Invalid Test Data for Validation Testing
+@InvalidPostcode = INVALID123
+@InvalidNorthing = 99999999999
+@MaxLengthString = ThisIsAVeryLongStringThatExceedsTheMaximumAllowedLengthOfOnehundredandtwentyCharactersAndShouldFailValidation1234567890
+@InvalidSuffix = AB
+@InvalidUprn = 00000000000
+
+### Test IDs (populated after successful creates)
+@CreatedHereditamentId = 00000000-0000-0000-0000-000000000000
+@TestUprn = 123456789012
+
+###############################################################################
+### 1. CREATE Hereditament TESTS
+###############################################################################
+
+### 1.1 Create Hereditament - Valid Request (SUCCESS 201)
+### Expected: Should create Hereditament with all valid data
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": "{{ValidOrganisation}}",
+    "department": "Planning Department",
+    "sao": {
+      "text": "Flat 1",
+      "startNumber": 1,
+      "startSuffix": "A"
+    },
+    "pao": {
+      "text": "10 Downing Street",
+      "startNumber": 10,
+      "endNumber": 12
+    },
+    "streetDescriptor": {
+      "streetDescription": "{{ValidStreetDescription}}",
+      "locality": "{{ValidLocality}}",
+      "dependentLocality": "Westminster",
+      "doubleDependentLocality": null,
+      "townName": "London",
+      "postTown": "{{ValidPostTown}}",
+      "administrativeArea": "Greater London"
+    },
+    "postcode": "{{ValidPostcode}}"
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.2 Create Hereditament - Minimal Valid Data
+### Expected: Should create with only required fields
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "5 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "Main Street"
+    },
+    "postcode": null
+  },
+  "geography": {
+    "easting": 500000,
+    "northing": 150000
+  }
+}
+
+### 1.3 Create Hereditament - Missing Required HereditamentInfo
+### Expected: Should fail with 400 Bad Request validation error
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": null,
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.4 Create Hereditament - Missing Required Geography
+### Expected: Should fail with 400 Bad Request validation error
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": null
+}
+
+### 1.5 Create Hereditament - Invalid Postcode Format
+### Expected: Should fail with 400 Bad Request - postcode regex validation
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    },
+    "postcode": "{{InvalidPostcode}}"
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.6 Create Hereditament - Invalid Easting (Negative - Below Minimum)
+### Expected: Should fail with 400 Bad Request - range validation [0, int.MaxValue]
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": -100,
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.7 Create Hereditament - Invalid Northing (Out of Range)
+### Expected: Should fail with 400 Bad Request - range validation
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{InvalidNorthing}}
+  }
+}
+
+### 1.8 Create Hereditament - Organisation Exceeds MaxLength
+### Expected: Should fail with 400 Bad Request - MaxLength(120)
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": "{{MaxLengthString}}",
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.9 Create Hereditament - Invalid StartSuffix (Not Single Letter)
+### Expected: Should fail with 400 Bad Request - regex validation [A-Za-z]
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street",
+      "startSuffix": "{{InvalidSuffix}}"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.10 Create Hereditament - Invalid StartNumber (Out of Range 1-99999)
+### Expected: Should fail with 400 Bad Request - range validation
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street",
+      "startNumber": 100000
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 1.11 Create Hereditament - Valid Special Postcode (GIR 0AA)
+### Expected: Should accept special postcode format
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "Houses of Parliament"
+    },
+    "streetDescriptor": {
+      "streetDescription": "Parliament Street"
+    },
+    "postcode": "GIR 0AA"
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+###############################################################################
+### 2. READ Hereditament TESTS
+###############################################################################
+
+### 2.1 Get All Hereditamentes - Default Pagination (Page 1, Size 10)
+### Expected: Should return paginated list of Hereditamentes (200 OK)
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+X-Correlation-ID: {{CorrelationId}}
+
+### 2.2 Get All Hereditamentes - Custom Pagination (Page 2, Size 5)
+### Expected: Should return 5 items from page 2
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament?page=2&pageSize=5
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 2.3 Get All Hereditamentes - Large Page Size
+### Expected: Should return up to requested page size
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament?page=1&pageSize=100
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 2.4 Get Hereditament by ID - Valid ID
+### Expected: Should return 200 OK with Hereditament details
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 2.5 Get Hereditament by ID - Non-existent ID
+### Expected: Should return 404 Not Found
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 2.6 Get Hereditament by ID - Invalid GUID Format
+### Expected: Should return 400 Bad Request
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/not-a-guid
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+###############################################################################
+### 3. SEARCH TESTS
+###############################################################################
+
+### 3.1 Search by UPRN - Valid UPRN
+### Expected: Should return Hereditament matching the UPRN (200 OK)
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/uprn?uprn={{TestUprn}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.2 Search by UPRN - Empty UPRN
+### Expected: Should return 400 Bad Request - UPRN is required
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/uprn?uprn=
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.3 Search by UPRN - Non-existent UPRN
+### Expected: Should return 404 Not Found
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/uprn?uprn=999999999999
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.4 Advanced Search - By Postcode
+### Expected: Should return paginated results for matching postcode
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?postcode=SW1A%201AA&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.5 Advanced Search - By PostTown
+### Expected: Should return paginated results for matching post town
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?postTown=Westminster&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.6 Advanced Search - By Organisation
+### Expected: Should return paginated results for matching organisation
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?organisation=Test%20Organisation&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.7 Advanced Search - By Thoroughfare (Street Description)
+### Expected: Should return paginated results for matching street
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?thoroughfare=High%20Street&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.8 Advanced Search - By Locality
+### Expected: Should return paginated results for matching locality
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?locality=Central%20London&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.9 Advanced Search - Multiple Criteria
+### Expected: Should return results matching all criteria (AND operation)
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?postcode=SW1A%201AA&postTown=Westminster&locality=Central%20London&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.10 Advanced Search - No Criteria (All Records)
+### Expected: Should return all Hereditamentes with default pagination
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 3.11 Get Hereditament Count
+### Expected: Should return total count of non-deleted Hereditamentes (200 OK)
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/count
+X-Correlation-ID: {{CorrelationId}}
+
+###############################################################################
+### 4. UPDATE Hereditament TESTS
+###############################################################################
+
+### 4.1 Update Hereditament - Valid Update with All Fields
+### Expected: Should update all fields and return 200 OK
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": "Updated Organisation Ltd",
+    "department": "Updated Department",
+    "sao": {
+      "text": "Unit 2",
+      "startNumber": 2,
+      "startSuffix": "B"
+    },
+    "pao": {
+      "text": "20 Downing Street",
+      "startNumber": 20
+    },
+    "streetDescriptor": {
+      "streetDescription": "Updated Street",
+      "locality": "Updated Locality",
+      "postTown": "Updated Town",
+      "administrativeArea": "Updated Area"
+    },
+    "postcode": "SW1A 2AA"
+  },
+  "geography": {
+    "easting": 531000,
+    "northing": 181000
+  }
+}
+
+### 4.2 Update Hereditament - Partial Update (Only Geography)
+### Expected: Should update only geography, preserve existing Hereditament info
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": null,
+  "geography": {
+    "easting": 532000,
+    "northing": 182000
+  }
+}
+
+### 4.3 Update Hereditament - Non-existent ID
+### Expected: Should return 404 Not Found
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/00000000-0000-0000-0000-000000000099
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "Updated Hereditament"
+    },
+    "streetDescriptor": {
+      "streetDescription": "Updated Street"
+    }
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+### 4.4 Update Hereditament - Invalid Postcode Format
+### Expected: Should fail with 400 Bad Request
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    },
+    "postcode": "INVALID"
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+### 4.5 Update Hereditament - Exceeds MaxLength
+### Expected: Should fail with 400 Bad Request
+PUT {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": "{{MaxLengthString}}",
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": {{ValidEasting}},
+    "northing": {{ValidNorthing}}
+  }
+}
+
+###############################################################################
+### 5. DELETE Hereditament TESTS
+###############################################################################
+
+### 5.1 Soft Delete Hereditament - Valid ID
+### Expected: Should soft delete (mark as deleted) and return 204 No Content
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 5.2 Soft Delete Hereditament - Non-existent ID
+### Expected: Should return 404 Not Found
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/00000000-0000-0000-0000-000000000099
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 5.3 Permanent Delete Hereditament - Valid ID
+### Expected: Should permanently delete and return 204 No Content
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}/permanent
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 5.4 Permanent Delete Hereditament - Non-existent ID
+### Expected: Should return 404 Not Found
+DELETE {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/00000000-0000-0000-0000-000000000099/permanent
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+###############################################################################
+### 6. RESTORE Hereditament TESTS
+###############################################################################
+
+### 6.1 Restore Hereditament - Previously Soft Deleted
+### Expected: Should restore deleted Hereditament and return 204 No Content
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}/restore
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 6.2 Restore Hereditament - Non-existent ID
+### Expected: Should return 404 Not Found
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/00000000-0000-0000-0000-000000000099/restore
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 6.3 Restore Hereditament - Active Hereditament (Not Deleted)
+### Expected: Should return success or 404 based on implementation
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/{{CreatedHereditamentId}}/restore
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+###############################################################################
+### 7. AUTHENTICATION & AUTHORIZATION TESTS
+###############################################################################
+
+### 7.1 Request Without Bearer Token
+### Expected: Should return 401 Unauthorized
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+X-Correlation-ID: {{CorrelationId}}
+
+### 7.2 Request With Invalid Bearer Token
+### Expected: Should return 401 Unauthorized
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Authorization: Bearer invalid-token-format
+X-Correlation-ID: {{CorrelationId}}
+
+### 7.3 POST Without Bearer Token
+### Expected: Should return 401 Unauthorized
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street"
+    }
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+###############################################################################
+### 8. EDGE CASES & SPECIAL SCENARIOS
+###############################################################################
+
+### 8.1 Create Hereditament - Empty String Values (Should Be Valid if Optional)
+### Expected: Should handle empty strings gracefully
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": "",
+    "department": "",
+    "pao": {
+      "text": ""
+    },
+    "streetDescriptor": {
+      "streetDescription": ""
+    }
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+### 8.2 Create Hereditament - Null Optional Fields
+### Expected: Should accept and handle null optional fields
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "organisation": null,
+    "department": null,
+    "sao": null,
+    "pao": {
+      "text": "10 High Street",
+      "startNumber": null,
+      "startSuffix": null,
+      "endNumber": null,
+      "endSuffix": null
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street",
+      "locality": null,
+      "dependentLocality": null,
+      "doubleDependentLocality": null,
+      "townName": null,
+      "postTown": null,
+      "administrativeArea": null
+    },
+    "postcode": null
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+### 8.3 Create Hereditament - Numeric Boundary Values (Max Int)
+### Expected: Should accept maximum valid values
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "Hereditament at Max Coordinates",
+      "startNumber": 99999,
+      "endNumber": 99999
+    },
+    "streetDescriptor": {
+      "streetDescription": "Test Street"
+    }
+  },
+  "geography": {
+    "easting": 2147483647,
+    "northing": 2147483647
+  }
+}
+
+### 8.4 Create Hereditament - Case Sensitivity in PostTown and Postcode
+### Expected: Should preserve case as provided
+POST {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament
+Content-Type: {{ContentType}}
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+{
+  "Hereditament": {
+    "pao": {
+      "text": "10 High Street"
+    },
+    "streetDescriptor": {
+      "streetDescription": "High Street",
+      "postTown": "london"
+    },
+    "postcode": "sw1a 1aa"
+  },
+  "geography": {
+    "easting": 530000,
+    "northing": 180000
+  }
+}
+
+### 8.5 Advanced Search - Case Insensitive Search
+### Expected: Should find matches regardless of case
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?postTown=westminster&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+### 8.6 Advanced Search - Special Characters in Search
+### Expected: Should handle special characters in search criteria
+GET {{BaseUrl}}/api/v{{ApiVersion}}/Hereditament/search/advanced?organisation=O%27Brien%20%26%20Sons&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+X-Correlation-ID: {{CorrelationId}}
+
+###############################################################################
+### NOTES FOR TESTING
+###############################################################################
+### 
+### 1. Replace {{Token}} with actual bearer token before executing requests
+### 2. Replace {{CreatedHereditamentId}} with ID from successful create response
+### 3. Replace {{TestUprn}} with valid UPRN from existing Hereditament
+### 4. Correlation IDs are auto-generated using {{$timestamp}}
+### 5. Monitor X-Correlation-ID header in responses for distributed tracing
+### 6. Check response headers for any additional metadata
+### 7. Validate error messages match expected format from ApiResponse
+### 8. Verify pagination metadata in PagedApiResponse results
+### 9. Test sequence: Create → Read → Search → Update → Delete → Restore
+### 10. Run authentication tests last to ensure other tests pass first
+###############################################################################
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###
+
+POST {{Common.Rest.Hereditament.Api_HostHereditament}}/api/v1/Hereditament/{id}/restore
+Content-Type: application/json
+
+{
+  //Guid
+}
+
+###

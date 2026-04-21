@@ -50,7 +50,7 @@ public class SurveysControllerIntegrationTests
         var response = await _client.GetAsync($"/api/v1/surveys/{invalidId}");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equals(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [TestMethod]
@@ -63,29 +63,6 @@ public class SurveysControllerIntegrationTests
         var response = await _client.GetAsync($"/api/v1/surveys/reference/{invalidReference}");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    private async Task<SurveyDto> CreateTestSurveyAsync(string referenceNumber = "TEST-REF-001")
-    {
-        var createRequest = new CreateSurveyRequest
-        {
-            ReferenceNumber = referenceNumber,
-            PropertyAddress = "10 Downing Street, London",
-            PostCode = "SW1A 2AA",
-            LocalAuthority = "Westminster",
-            SurveyType = "Valuation",
-            SurveyDate = DateTimeOffset.UtcNow.AddDays(-1),
-            Surveyor = "Test Surveyor",
-            Notes = "Integration test survey",
-            AssessedValue = 500000m,
-            FloorArea = 120.50m,
-            FloorAreaUnit = "sqm",
-            PropertyType = "Residential",
-            PropertySubType = "Terraced"
-        };
-
-        var response = await _client.PostAsJsonAsync("/api/v1/surveys", createRequest);
-        return await response.Content.ReadFromJsonAsync<SurveyDto>() ?? throw new InvalidOperationException("Failed to create test survey");
-    }
+        Assert.Equals(HttpStatusCode.NotFound, response.StatusCode);
+    }    
 }

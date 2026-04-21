@@ -35,8 +35,8 @@ public class SurveyServiceTests
         var result = await _sut.GetByIdAsync(surveyId);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Id.Should().Be(surveyId);
+        Assert.IsNotNull(result); 
+        Assert.AreEqual(surveyId, result.Id);
     }
 }
 
