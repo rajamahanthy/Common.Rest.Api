@@ -104,7 +104,10 @@ public class HereditamentDocumentDbContext(DbContextOptions<HereditamentDocument
 
         HereditamentDocumentsBuilder.Property(d => d.EffectiveFromIndex)
             .HasComputedColumnSql("JSON_VALUE([JsonData], '$.effectiveFrom')", stored: true)
-            .IsRequired(false);
+            .IsRequired(false)
+            .HasConversion(
+                v => v.HasValue ? v.Value.ToString("O") : null,
+                v => !string.IsNullOrEmpty(v) ? DateOnly.ParseExact(v, "O") : null);
 
         // Indexes
         HereditamentDocumentsBuilder.HasIndex(d => d.PartitionKey)
