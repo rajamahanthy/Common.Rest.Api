@@ -3,7 +3,6 @@ namespace Common.Rest.Address.Application.Dtos;
 public record AddressDocumentDto(Guid Id, AddressDto AddressDetails);
 
 
-[NoAdditionalProperties]
 public class AddressDto
 {
     [JsonPropertyName("uprn")]
@@ -21,13 +20,10 @@ public class AddressDto
 
     [JsonPropertyName("geography")]
     [Required]
-    public required Geography Geography { get; set; }
-
-    [JsonExtensionData]
-    public IDictionary<string, object>? ExtensionData { get; set; }
+    public required Geography Geography { get; set; }    
 }
 
-
+[NoAdditionalProperties]
 public class CreateUpdateAddress
 {
     [JsonPropertyName("address")]
@@ -37,6 +33,9 @@ public class CreateUpdateAddress
     [JsonPropertyName("geography")]
     [Required]
     public required Geography Geography { get; set; }
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }
 
 

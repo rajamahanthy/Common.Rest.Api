@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Common.Rest.Hereditament.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,9 +16,9 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NameIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.postcode')", stored: true),
-                    StatusIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.streetDescriptor.postTown')", stored: true),
-                    EffectiveFromIndex = table.Column<DateOnly>(type: "date", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.organisation')", stored: true),
+                    NameIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.name')", stored: true),
+                    StatusIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.status')", stored: true),
+                    EffectiveFromIndex = table.Column<DateOnly>(type: "date", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.effectiveFrom')", stored: true),
                     PartitionKey = table.Column<string>(type: "NVARCHAR(100)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "DATETIME2", nullable: false, defaultValueSql: "SYSUTCDATETIME()"),
                     CreatedBy = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
@@ -26,7 +26,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     UpdatedBy = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "BIT", nullable: false, defaultValue: false),
                     DocumentType = table.Column<string>(type: "NVARCHAR(100)", nullable: false),
-                    JsonData = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false, defaultValue: "{\"uarn\":\"674e7bda-1476-44eb-94fb-7788a5813bbb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-21\",\"status\":\"Draft\"}"),
+                    JsonData = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false, defaultValue: "{\"uarn\":\"0f4b398c-a598-4e51-bce5-2487b01825eb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}"),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>

@@ -20,10 +20,9 @@ public class HereditamentService(
         ArgumentNullException.ThrowIfNull(createDto);
 
         ///validate addressId exists in address service if provided
-        createDto.Status = HereditamentStatus.Draft;
-        if (createDto.AddressId.HasValue && IsValidAddress(createDto.AddressId))
+        if (!createDto.AddressId.HasValue || !IsValidAddress(createDto.AddressId))
         {
-            createDto.Status = HereditamentStatus.Active;
+            createDto.Status = HereditamentStatus.Draft;
         }
         var HereditamentData = mappingService.MapToDomain(createDto);
         

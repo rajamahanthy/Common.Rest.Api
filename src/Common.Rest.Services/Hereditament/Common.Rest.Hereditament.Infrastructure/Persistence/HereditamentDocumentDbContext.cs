@@ -95,15 +95,15 @@ public class HereditamentDocumentDbContext(DbContextOptions<HereditamentDocument
 
         // Computed Columns
         HereditamentDocumentsBuilder.Property(d => d.NameIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.postcode')", stored: true)
+            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.name')", stored: true)
             .IsRequired(false);
 
         HereditamentDocumentsBuilder.Property(d => d.StatusIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.streetDescriptor.postTown')", stored: true)
+            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.status')", stored: true)
             .IsRequired(false);
 
         HereditamentDocumentsBuilder.Property(d => d.EffectiveFromIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.organisation')", stored: true)
+            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.effectiveFrom')", stored: true)
             .IsRequired(false);
 
         // Indexes

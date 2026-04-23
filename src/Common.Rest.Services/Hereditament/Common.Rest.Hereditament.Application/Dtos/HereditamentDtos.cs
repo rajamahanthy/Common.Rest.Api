@@ -2,8 +2,6 @@ namespace Common.Rest.Hereditament.Application.Dtos;
 
 public record HereditamentDocumentDto(Guid Id, HereditamentDto HereditamentDetails);
 
-
-[NoAdditionalProperties]
 public class HereditamentDto
 {
     [JsonPropertyName("name")]
@@ -19,8 +17,6 @@ public class HereditamentDto
     [JsonPropertyName("addressId")]    
     public Guid? AddressId { get; set; }
 
-    [JsonExtensionData]
-    public IDictionary<string, object>? ExtensionData { get; set; }
 }
 
 //public struct HereditamentStatus
@@ -30,6 +26,7 @@ public class HereditamentDto
 //    public const string Removed = "Removed";
 //}
 
+[NoAdditionalProperties]
 public class CreateUpdateHereditament
 {
     [JsonPropertyName("name")]
@@ -45,4 +42,7 @@ public class CreateUpdateHereditament
 
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
+
+    [JsonExtensionData]
+    public IDictionary<string, object>? ExtensionData { get; set; }
 }

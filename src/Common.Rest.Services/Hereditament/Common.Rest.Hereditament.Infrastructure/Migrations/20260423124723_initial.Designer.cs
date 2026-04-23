@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Common.Rest.Hereditament.Infrastructure.Migrations
 {
     [DbContext(typeof(HereditamentDocumentDbContext))]
-    [Migration("20260421125622_Initial")]
-    partial class Initial
+    [Migration("20260423124723_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     b.Property<DateOnly?>("EffectiveFromIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("date")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.organisation')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.effectiveFrom')", true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -56,12 +56,12 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("NVARCHAR(MAX)")
-                        .HasDefaultValue("{\"uarn\":\"674e7bda-1476-44eb-94fb-7788a5813bbb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-21\",\"status\":\"Draft\"}");
+                        .HasDefaultValue("{\"uarn\":\"0f4b398c-a598-4e51-bce5-2487b01825eb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}");
 
                     b.Property<string>("NameIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.postcode')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.name')", true);
 
                     b.Property<string>("PartitionKey")
                         .IsRequired()
@@ -75,7 +75,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     b.Property<string>("StatusIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.streetDescriptor.postTown')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.status')", true);
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("DATETIME2");

@@ -32,7 +32,7 @@ public class HereditamentMappingService : IHereditamentMappingService
         {
             UARN = Guid.NewGuid(),
             Name = createDto.Name,
-            Status = HereditamentStatus.Draft,
+            Status = createDto.Status,
             EffectiveFrom = createDto.EffectiveFrom,
             AddressId = createDto.AddressId
         };
