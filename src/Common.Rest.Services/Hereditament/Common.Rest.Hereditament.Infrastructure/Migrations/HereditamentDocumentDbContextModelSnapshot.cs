@@ -42,7 +42,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     b.Property<DateOnly?>("EffectiveFromIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("date")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.effectiveFrom')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.effectiveFrom')", true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -53,12 +53,12 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("NVARCHAR(MAX)")
-                        .HasDefaultValue("{\"uarn\":\"0f4b398c-a598-4e51-bce5-2487b01825eb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}");
+                        .HasDefaultValue("{\"uarn\":\"6682af58-1a2a-4200-924c-351c30660de0\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}");
 
                     b.Property<string>("NameIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.name')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.name')", true);
 
                     b.Property<string>("PartitionKey")
                         .IsRequired()
@@ -72,7 +72,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     b.Property<string>("StatusIndex")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.Hereditament.status')", true);
+                        .HasComputedColumnSql("JSON_VALUE([JsonData], '$.status')", true);
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("DATETIME2");

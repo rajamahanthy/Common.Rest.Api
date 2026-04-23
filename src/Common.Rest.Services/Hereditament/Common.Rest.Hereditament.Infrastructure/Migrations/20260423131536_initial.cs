@@ -16,9 +16,9 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NameIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.name')", stored: true),
-                    StatusIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.status')", stored: true),
-                    EffectiveFromIndex = table.Column<DateOnly>(type: "date", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.Hereditament.effectiveFrom')", stored: true),
+                    NameIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.name')", stored: true),
+                    StatusIndex = table.Column<string>(type: "nvarchar(450)", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.status')", stored: true),
+                    EffectiveFromIndex = table.Column<DateOnly>(type: "date", nullable: true, computedColumnSql: "JSON_VALUE([JsonData], '$.effectiveFrom')", stored: true),
                     PartitionKey = table.Column<string>(type: "NVARCHAR(100)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "DATETIME2", nullable: false, defaultValueSql: "SYSUTCDATETIME()"),
                     CreatedBy = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
@@ -26,7 +26,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
                     UpdatedBy = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "BIT", nullable: false, defaultValue: false),
                     DocumentType = table.Column<string>(type: "NVARCHAR(100)", nullable: false),
-                    JsonData = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false, defaultValue: "{\"uarn\":\"0f4b398c-a598-4e51-bce5-2487b01825eb\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}"),
+                    JsonData = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false, defaultValue: "{\"uarn\":\"6682af58-1a2a-4200-924c-351c30660de0\",\"name\":\"\",\"effectiveFrom\":\"2026-04-23\",\"status\":\"Draft\"}"),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
