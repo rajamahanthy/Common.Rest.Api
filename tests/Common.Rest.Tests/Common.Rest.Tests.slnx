@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/IntegrationTests/">
+    <Project Path="IntegrationTests\Common.Rest.Address.Integration.Tests\Common.Rest.Address.Integration.Tests.csproj" />
+	<Project Path="IntegrationTests\Common.Rest.Hereditament.Integration.Tests\Common.Rest.Hereditament.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/UnitTests/">
+    <Project Path="UnitTests\Common.Rest.Address.Api.Tests\Common.Rest.Address.Api.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Address.Application.Tests\Common.Rest.Address.Application.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Address.Domain.Tests\Common.Rest.Address.Domain.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Address.Infrastructure.Tests\Common.Rest.Address.Infrastructure.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Hereditament.Api.Tests\Common.Rest.Hereditament.Api.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Hereditament.Application.Tests\Common.Rest.Hereditament.Application.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Hereditament.Domain.Tests\Common.Rest.Hereditament.Domain.Tests.csproj" />
+    <Project Path="UnitTests\Common.Rest.Hereditament.Infrastructure.Tests\Common.Rest.Hereditament.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>
