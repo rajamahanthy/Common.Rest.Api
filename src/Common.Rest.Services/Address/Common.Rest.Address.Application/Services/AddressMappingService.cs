@@ -78,7 +78,7 @@ public class AddressMappingService : IAddressMappingService
                 Department = createDto.AddressInfo.Department,
                 Sao = createDto.AddressInfo.Sao != null ? new AddressableObjectEntity
                 {
-                    Text = createDto.AddressInfo.Sao.Text,
+                    Text = createDto.AddressInfo.Sao.Text ?? string.Empty,
                     StartNumber = createDto.AddressInfo.Sao.StartNumber,
                     StartSuffix = createDto.AddressInfo.Sao.StartSuffix,
                     EndNumber = createDto.AddressInfo.Sao.EndNumber,
@@ -86,7 +86,7 @@ public class AddressMappingService : IAddressMappingService
                 } : null,
                 Pao = new AddressableObjectEntity
                 {
-                    Text = createDto.AddressInfo.Pao.Text,
+                    Text = createDto.AddressInfo.Pao.Text ?? string.Empty,
                     StartNumber = createDto.AddressInfo.Pao.StartNumber,
                     StartSuffix = createDto.AddressInfo.Pao.StartSuffix,
                     EndNumber = createDto.AddressInfo.Pao.EndNumber,
@@ -134,7 +134,7 @@ public class AddressMappingService : IAddressMappingService
                 Department = updateDto.AddressInfo.Department,
                 Sao = updateDto.AddressInfo.Sao != null ? new AddressableObjectEntity
                 {
-                    Text = updateDto.AddressInfo.Sao.Text,
+                    Text = updateDto.AddressInfo.Sao.Text ?? string.Empty,
                     StartNumber = updateDto.AddressInfo.Sao.StartNumber,
                     StartSuffix = updateDto.AddressInfo.Sao.StartSuffix,
                     EndNumber = updateDto.AddressInfo.Sao.EndNumber,
@@ -142,7 +142,7 @@ public class AddressMappingService : IAddressMappingService
                 }: null,
                 Pao = new AddressableObjectEntity
                 {
-                    Text = updateDto.AddressInfo.Pao.Text,
+                    Text = updateDto.AddressInfo.Pao.Text ?? string.Empty,
                     StartNumber = updateDto.AddressInfo.Pao.StartNumber,
                     StartSuffix = updateDto.AddressInfo.Pao.StartSuffix,
                     EndNumber = updateDto.AddressInfo.Pao.EndNumber,

@@ -42,7 +42,7 @@ public class HereditamentService(
         return mappingService.MapToDto(document);
     }
 
-    private bool IsValidAddress(Guid? addressId)
+    private static bool IsValidAddress(Guid? addressId)
     {
         //validate addressId exists in address service
         // This is a placeholder for actual validation logic, which would typically involve an API call to the address service.

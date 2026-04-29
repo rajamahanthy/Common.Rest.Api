@@ -13,7 +13,7 @@ namespace Common.Rest.Hereditament.Infrastructure.Migrations
 {
     [DbContext(typeof(HereditamentDocumentDbContext))]
     [Migration("20260423131536_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

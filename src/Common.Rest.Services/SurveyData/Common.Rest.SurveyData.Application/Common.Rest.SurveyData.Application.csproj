@@ -15,5 +15,9 @@
     <Folder Include="Interfaces\Mapping\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Api" />
+  </ItemGroup>
+
 </Project>
 

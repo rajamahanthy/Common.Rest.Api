@@ -7,6 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="OpenTelemetry.Api" />
+	<PackageReference Include="Microsoft.AspNetCore.DataProtection" />
+	<PackageReference Include="System.Security.Cryptography.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common.Rest.Services\Common.Rest.Shared\Common.Rest.Shared.csproj" />
