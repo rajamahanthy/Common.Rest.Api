@@ -1,4 +1,4 @@
-﻿namespace Common.Rest.Shared.CustomValidations
+namespace Common.Rest.Shared.CustomValidations
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public sealed class NoAdditionalPropertiesAttribute : ValidationAttribute

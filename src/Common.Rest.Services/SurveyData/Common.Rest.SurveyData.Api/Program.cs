@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Shared Standard Configuration ──────────────────────────────────────
+// â”€â”€ Shared Standard Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 builder.Logging.ClearProviders().AddConsole().AddDebug();
 builder.Services.AddStandardOpenTelemetry(builder.Configuration);
 builder.Services.AddStandardAuth(builder.Configuration, builder.Environment);
@@ -8,15 +8,15 @@ builder.Services.AddStandardApiVersioning();
 builder.Services.AddStandardValidation();
 builder.Services.AddStandardResilience(builder.Configuration);
 
-// ── Application Services ────────────────────────────────────────────────
+// â”€â”€ Application Services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 builder.Services.AddScoped<ISurveyMappingService, SurveyMappingService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
 
-// ── Infrastructure (EF Core, Repositories, UoW) ────────────────────────
+// â”€â”€ Infrastructure (EF Core, Repositories, UoW) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 builder.Services.AddInfrastructure(builder.Configuration);
 
 
-// ── Health Checks ───────────────────────────────────────────────────────
+// â”€â”€ Health Checks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 var healthChecks = builder.Services.AddHealthChecks();
 var dbConn = builder.Configuration.GetConnectionString("SurveyDb");
 if (!string.IsNullOrEmpty(dbConn) && !dbConn.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
@@ -29,14 +29,14 @@ else
     healthChecks.AddCheck("mock-db", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Using InMemory DB"), tags: ["ready"]);
 }
 
-// ── Controllers ───────────────────────────────────────────────
+// â”€â”€ Controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// ── Middleware pipeline ─────────────────────────────────────────────────
+// â”€â”€ Middleware pipeline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.UseWhen(
     context => !context.Request.Path.StartsWithSegments("/openapi"),
     appBuilder =>
@@ -49,7 +49,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ── Health check endpoints ──────────────────────────────────────────────
+// â”€â”€ Health check endpoints â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
     Predicate = _ => false // liveness: always return healthy

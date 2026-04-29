@@ -1,4 +1,4 @@
-﻿@Common.Rest.Hereditament.Api_HostHereditament = https://localhost:5011
+@Common.Rest.Hereditament.Api_HostHereditament = https://localhost:5011
 ### Hereditament API Test Suite
 ### REST Client test requests for all endpoints and validations
 ### Use VS Code REST Client extension to execute these requests

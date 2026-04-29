@@ -1,4 +1,4 @@
-﻿@Common.Rest.Address.Api_HostAddress = https://localhost:5011
+@Common.Rest.Address.Api_HostAddress = https://localhost:5011
 ### Address API Test Suite
 ### REST Client test requests for all endpoints and validations
 ### Use VS Code REST Client extension to execute these requests
