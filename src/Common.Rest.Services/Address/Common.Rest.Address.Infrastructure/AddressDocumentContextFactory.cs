@@ -1,5 +1,7 @@
 using Common.Rest.Address.Infrastructure.Persistence;
 using Common.Rest.Shared.Domain;
+using Common.Rest.Shared.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Common.Rest.Address.Infrastructure;
 

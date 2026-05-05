@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.SqlServer;
+
 namespace Common.Rest.Shared.Persistence;
 
 /// <summary>
@@ -39,14 +43,13 @@ public abstract class BaseDesignTimeDbContextFactory<TContext> : IDesignTimeDbCo
         }
 
         var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-        
+
         // Use SQL Server by default as it's the standard for this project's migrations
         optionsBuilder.UseSqlServer(connectionString);
-        
+
         // Suppress common warnings that block design-time tools (like database update)
-        optionsBuilder.ConfigureWarnings(w => w.Ignore(
-            Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning,
-            new EventId(10103)));
+        // RelationalEventId may not exist in some EF Core versions; use the numeric EventId instead.
+        optionsBuilder.ConfigureWarnings(w => w.Ignore(new EventId(10103)));
 
         return CreateContext(optionsBuilder.Options);
     }

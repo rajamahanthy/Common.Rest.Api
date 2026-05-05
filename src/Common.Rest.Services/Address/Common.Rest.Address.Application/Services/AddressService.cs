@@ -27,6 +27,9 @@ public class AddressService(
             CreatedAt = DateTimeOffset.UtcNow
         };
 
+        // Synchronize denormalized fields from JsonData
+        SynchronizeDocument(document);
+
         await repository.AddAsync(document, ct);
         await unitOfWork.SaveChangesAsync(ct);
 
@@ -77,6 +80,9 @@ public class AddressService(
         document.DocumentType = updatedDomain.DocumentType;
         document.UpdatedAt = DateTimeOffset.UtcNow;
         document.UpdatedBy = userId;
+
+        // Synchronize denormalized fields from updated JsonData
+        SynchronizeDocument(document);
 
         repository.Update(document);
         await unitOfWork.SaveChangesAsync(ct);
@@ -187,5 +193,39 @@ public class AddressService(
         await unitOfWork.SaveChangesAsync(ct);
 
         return true;
+    }
+
+    /// <summary>
+    /// Synchronizes denormalized index fields from JsonData.
+    /// Ensures PartitionKey (postcode) and search indexes match the source JSON.
+    /// </summary>
+    private static void SynchronizeDocument(AddressDocumentEntity document)
+    {
+        if (document?.JsonData == null)
+            return;
+
+        var json = document.JsonData;
+
+        // Extract and denormalize UPRN
+        document.UprnIndex = json.Uprn;
+
+        // Extract and denormalize postcode (also set as partition key for Cosmos)
+        document.PostcodeIndex = json.AddressInfo?.Postcode;
+        document.PartitionKey = json.AddressInfo?.Postcode;
+
+        // Extract and denormalize PostTown
+        document.PostTownIndex = json.AddressInfo?.StreetDescriptor?.PostTown;
+
+        // Extract and denormalize Organisation
+        document.OrganisationIndex = json.AddressInfo?.Organisation;
+
+        // Extract and denormalize StreetDescription (Thoroughfare)
+        document.ThoroughfareIndex = json.AddressInfo?.StreetDescriptor?.StreetDescription;
+
+        // Extract and denormalize Locality
+        document.LocalityIndex = json.AddressInfo?.StreetDescriptor?.Locality;
+
+        // Extract and denormalize DependentLocality
+        document.DependentLocalityIndex = json.AddressInfo?.StreetDescriptor?.DependentLocality;
     }
 }

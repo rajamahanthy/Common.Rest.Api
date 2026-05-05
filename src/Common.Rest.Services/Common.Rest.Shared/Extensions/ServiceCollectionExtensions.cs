@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
         {
             services.AddOpenTelemetry()
                 .UseAzureMonitor(options => options.ConnectionString = connectionString)
-                .WithTracing(tracing => tracing.AddEntityFrameworkCoreInstrumentation());
+                .WithTracing(tracing => tracing.AddAspNetCoreInstrumentation());
         }
 
         return services;

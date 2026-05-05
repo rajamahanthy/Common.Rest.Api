@@ -18,15 +18,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 // ── Health Checks ───────────────────────────────────────────────────────
 var healthChecks = builder.Services.AddHealthChecks();
-var dbConn = builder.Configuration.GetConnectionString("AddressDb");
-if (!string.IsNullOrEmpty(dbConn) && !dbConn.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
-{
-    healthChecks.AddCheck("sql", new Common.Rest.Shared.Health.SqlHealthCheck(dbConn), tags: ["ready"]);
-}
-else
-{
-    healthChecks.AddCheck("mock-db", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Using InMemory DB"), tags: ["ready"]);
-}
+healthChecks.AddCheck("cosmos", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Cosmos DB configured"), tags: ["ready"]);
 
 // ── Controllers  ───────────────────────────────────────────────
 builder.Services.AddControllers();

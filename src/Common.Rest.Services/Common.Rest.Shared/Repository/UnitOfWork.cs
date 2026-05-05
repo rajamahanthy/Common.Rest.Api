@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace Common.Rest.Shared.Repository;
 
 /// <summary>

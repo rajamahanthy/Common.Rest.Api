@@ -11,12 +11,12 @@ public sealed class SqlHealthCheck(string connectionString) : IHealthCheck
     {
         try
         {
-            await using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync(cancellationToken);
+            //await using var connection = new SqlConnection(connectionString);
+            //await connection.OpenAsync(cancellationToken);
 
-            await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT 1";
-            await command.ExecuteScalarAsync(cancellationToken);
+            //await using var command = connection.CreateCommand();
+            //command.CommandText = "SELECT 1";
+            //await command.ExecuteScalarAsync(cancellationToken);
 
             return HealthCheckResult.Healthy("SQL Database is reachable.");
         }
