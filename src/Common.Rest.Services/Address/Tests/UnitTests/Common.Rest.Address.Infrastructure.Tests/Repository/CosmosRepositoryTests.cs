@@ -1,6 +1,6 @@
 namespace Common.Rest.Address.Infrastructure.Tests.Repository;
 
-using Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Common.Rest.Address.Domain.Entities;
 using Common.Rest.Address.Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;

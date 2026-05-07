@@ -1,10 +1,11 @@
 namespace Common.Rest.Address.Domain.Entities;
 
 using Common.Rest.Shared.CustomValidations;
+using Common.Rest.Shared.Persistence.Cosmos;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-public class AddressEntity
+public class AddressEntity : IDocumentData
 {
     [JsonPropertyName("uprn")]
     [Required]

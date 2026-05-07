@@ -1,9 +1,9 @@
 namespace Common.Rest.Address.Infrastructure;
 
 using Common.Rest.Address.Domain.Entities;
-using Common.Rest.Address.Infrastructure.Configuration;
 using Common.Rest.Address.Infrastructure.Persistence;
 using Common.Rest.Shared.Repository;
+using Common.Rest.Shared.Persistence.Cosmos;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,31 +18,18 @@ public static class DependencyInjection
         var cosmosOptions = configuration.GetSection(CosmosDbOptions.SectionName).Get<CosmosDbOptions>()
             ?? throw new InvalidOperationException($"Configuration section '{CosmosDbOptions.SectionName}' is required.");
 
-        // ── Register Cosmos Initializer ──────────────────────────────
-        services.AddSingleton<ICosmosDbInitializer>(provider =>
-        {
-            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<CosmosDbInitializer>>();
-            return new CosmosDbInitializer(cosmosOptions, logger);
-        });
+        // ── Register Cosmos Client ───────────────────────────────────
+        services.AddSingleton(new CosmosClient(cosmosOptions.ConnectionString));
 
-        // ── Initialize Cosmos on startup ─────────────────────────────
-        services.AddHostedService<CosmosDbInitializationService>();
-
-        // ── Register Cosmos Container (lazy-loaded from initializer) ─
+        // ── Register Cosmos Container ────────────────────────────────
         services.AddScoped(provider =>
         {
-            var initializer = provider.GetRequiredService<ICosmosDbInitializer>();
-            return initializer.GetContainer();
+            var cosmosClient = provider.GetRequiredService<CosmosClient>();
+            var database = cosmosClient.GetDatabase(cosmosOptions.DatabaseName);
+            return database.GetContainer(cosmosOptions.ContainerName);
         });
 
-        // ── Register Repositories ────────────────────────────────────
-        //services.AddScoped(typeof(IRepository<>), provider =>
-        //{
-        //    // Generic factory for IRepository<T>
-        //    // For now, only AddressDocumentEntity is supported directly.
-        //    throw new NotImplementedException("Use CosmosRepository for AddressDocumentEntity.");
-        //});
-
+        // ── Register Repository ──────────────────────────────────────
         services.AddScoped<IRepository<AddressDocumentEntity>>(provider =>
         {
             var container = provider.GetRequiredService<Container>();

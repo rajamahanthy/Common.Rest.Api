@@ -93,35 +93,6 @@ public class AddressDocumentDbContext(DbContextOptions<AddressDocumentDbContext>
         addressDocumentsBuilder.Property(d => d.RowVersion)
             .IsRowVersion();
 
-        // Computed Columns
-        addressDocumentsBuilder.Property(d => d.UprnIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.uprn')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.PostcodeIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.postcode')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.PostTownIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.streetDescriptor.postTown')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.OrganisationIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.organisation')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.ThoroughfareIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.streetDescriptor.streetDescription')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.LocalityIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.streetDescriptor.locality')", stored: true)
-            .IsRequired(false);
-
-        addressDocumentsBuilder.Property(d => d.DependentLocalityIndex)
-            .HasComputedColumnSql("JSON_VALUE([JsonData], '$.address.streetDescriptor.dependentLocality')", stored: true)
-            .IsRequired(false);
-
         // Indexes
         addressDocumentsBuilder.HasIndex(d => d.PartitionKey)
             .HasDatabaseName("IX_Documents_PartitionKey");
@@ -134,27 +105,5 @@ public class AddressDocumentDbContext(DbContextOptions<AddressDocumentDbContext>
 
         addressDocumentsBuilder.HasIndex(d => new { d.PartitionKey, d.DocumentType })
             .HasDatabaseName("IX_Documents_PartitionKey_DocumentType");
-
-        // Indexes on computed columns for efficient querying
-        addressDocumentsBuilder.HasIndex(d => d.UprnIndex)
-            .HasDatabaseName("IX_Documents_UprnIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.PostcodeIndex)
-            .HasDatabaseName("IX_Documents_PostcodeIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.PostTownIndex)
-            .HasDatabaseName("IX_Documents_PostTownIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.OrganisationIndex)
-            .HasDatabaseName("IX_Documents_OrganisationIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.ThoroughfareIndex)
-            .HasDatabaseName("IX_Documents_ThoroughfareIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.LocalityIndex)
-            .HasDatabaseName("IX_Documents_LocalityIndex");
-
-        addressDocumentsBuilder.HasIndex(d => d.DependentLocalityIndex)
-            .HasDatabaseName("IX_Documents_DependentLocalityIndex");
     }
 }

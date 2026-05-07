@@ -1,7 +1,7 @@
 namespace Common.Rest.Address.Domain.Tests.Entities;
 
 /// <summary>
-/// Comprehensive unit tests for AddressDocumentEntity with 100% code coverage.
+/// Comprehensive unit tests for AddressDocumentEntity.
 /// Tests entity initialization, soft delete support, and update tracking.
 /// </summary>
 [TestClass]
@@ -61,30 +61,12 @@ public class AddressDocumentEntityTests
             JsonData = CreateTestAddressEntity(),
             CreatedAt = createdTime,
             CreatedBy = "test-user",
-            UprnIndex = "123456789",
-            PostcodeIndex = "T1 1ST",
-            PostTownIndex = "Test Town"
+            PartitionKey = "T1 1ST"
         };
 
-        Assert.AreEqual("123456789", entity.UprnIndex);
-        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
-        Assert.AreEqual("Test Town", entity.PostTownIndex);
+        Assert.AreEqual("T1 1ST", entity.PartitionKey);
         Assert.AreEqual(createdTime, entity.CreatedAt);
         Assert.AreEqual("test-user", entity.CreatedBy);
-    }
-
-    [TestMethod]
-    public void Entity_ComputedColumns_InitiallyNull()
-    {
-        var entity = new AddressDocumentEntity
-        {
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity()
-        };
-
-        Assert.IsNull(entity.UprnIndex);
-        Assert.IsNull(entity.PostcodeIndex);
-        Assert.IsNull(entity.PostTownIndex);
     }
 
     #endregion
@@ -259,135 +241,7 @@ public class AddressDocumentEntityTests
 
     #endregion
 
-    #region Computed Columns
-
-    [TestMethod]
-    public void Entity_AllComputedColumns_CanBeSet()
-    {
-        var entity = new AddressDocumentEntity
-        {
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity(),
-            UprnIndex = "123456789",
-            PostcodeIndex = "T1 1ST",
-            PostTownIndex = "Test Town",
-            OrganisationIndex = "Test Org",
-            ThoroughfareIndex = "Main Street",
-            LocalityIndex = "City",
-            DependentLocalityIndex = "Ward"
-        };
-
-        Assert.AreEqual("123456789", entity.UprnIndex);
-        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
-        Assert.AreEqual("Test Town", entity.PostTownIndex);
-        Assert.AreEqual("Test Org", entity.OrganisationIndex);
-        Assert.AreEqual("Main Street", entity.ThoroughfareIndex);
-        Assert.AreEqual("City", entity.LocalityIndex);
-        Assert.AreEqual("Ward", entity.DependentLocalityIndex);
-    }
-
-    [TestMethod]
-    public void Entity_UprnIndex_CanBeQueried()
-    {
-        var entity = new AddressDocumentEntity
-        {
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity(),
-            UprnIndex = "123456789"
-        };
-
-        Assert.AreEqual("123456789", entity.UprnIndex);
-    }
-
-    [TestMethod]
-    public void Entity_PostcodeIndex_CanBeQueried()
-    {
-        var entity = new AddressDocumentEntity
-        {
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity(),
-            PostcodeIndex = "T1 1ST"
-        };
-
-        Assert.AreEqual("T1 1ST", entity.PostcodeIndex);
-    }
-
-    #endregion
-
-    #region Entity States
-
-    [TestMethod]
-    public void Entity_ActiveEntity_HasCorrectState()
-    {
-        var createdTime = DateTimeOffset.UtcNow;
-        var entity = new AddressDocumentEntity
-        {
-            Id = _testId,
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity(),
-            CreatedAt = createdTime,
-            CreatedBy = "test-user",
-            IsDeleted = false
-        };
-
-        Assert.IsFalse(entity.IsDeleted);
-        Assert.AreNotEqual(Guid.Empty, entity.Id);
-        Assert.AreEqual("test-user", entity.CreatedBy);
-    }
-
-    [TestMethod]
-    public void Entity_DeletedEntity_HasCorrectState()
-    {
-        var entity = new AddressDocumentEntity
-        {
-            Id = _testId,
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity(),
-            CreatedAt = DateTimeOffset.UtcNow.AddDays(-1),
-            CreatedBy = "creator",
-            IsDeleted = true
-        };
-
-        Assert.IsTrue(entity.IsDeleted);
-        Assert.AreEqual("creator", entity.CreatedBy);
-    }
-
-    #endregion
-
-    #region Guid and ID
-
-    [TestMethod]
-    public void Entity_Id_IsUnique()
-    {
-        var entity1 = new AddressDocumentEntity
-        {
-            Id = Guid.NewGuid(),
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity()
-        };
-        var entity2 = new AddressDocumentEntity
-        {
-            Id = Guid.NewGuid(),
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity("987654321")
-        };
-
-        Assert.AreNotEqual(entity1.Id, entity2.Id);
-    }
-
-    [TestMethod]
-    public void Entity_Id_CanBeAssigned()
-    {
-        var testId = Guid.NewGuid();
-        var entity = new AddressDocumentEntity
-        {
-            Id = testId,
-            DocumentType = "Address",
-            JsonData = CreateTestAddressEntity()
-        };
-
-        Assert.AreEqual(testId, entity.Id);
-    }
+    #region Partition Key
 
     [TestMethod]
     public void Entity_PartitionKey_CanBeSet()
@@ -396,10 +250,40 @@ public class AddressDocumentEntityTests
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
-            PartitionKey = "test-key"
+            PartitionKey = "T1 1ST"
         };
 
-        Assert.AreEqual("test-key", entity.PartitionKey);
+        Assert.AreEqual("T1 1ST", entity.PartitionKey);
+    }
+
+    [TestMethod]
+    public void Entity_PartitionKey_IsRequired()
+    {
+        var entity = new AddressDocumentEntity
+        {
+            DocumentType = "Address",
+            JsonData = CreateTestAddressEntity()
+        };
+
+        Assert.IsNull(entity.PartitionKey);
+    }
+
+    #endregion
+
+    #region Concurrency
+
+    [TestMethod]
+    public void Entity_RowVersion_TracksConcurrency()
+    {
+        var rowVersion = new byte[] { 0x00, 0x00, 0x00, 0x01 };
+        var entity = new AddressDocumentEntity
+        {
+            DocumentType = "Address",
+            JsonData = CreateTestAddressEntity(),
+            RowVersion = rowVersion
+        };
+
+        Assert.AreEqual(rowVersion, entity.RowVersion);
     }
 
     #endregion

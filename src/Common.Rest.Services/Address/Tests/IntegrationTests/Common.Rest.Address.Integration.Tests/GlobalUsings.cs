@@ -7,7 +7,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;
 
-global using Azure.Cosmos;
+global using Microsoft.Azure.Cosmos;
 global using Moq;
 
 global using Common.Rest.Address.Application.Dtos;

@@ -1,4 +1,4 @@
-namespace Common.Rest.Address.Infrastructure.Configuration;
+namespace Common.Rest.Shared.Persistence.Cosmos;
 
 /// <summary>
 /// Configuration options for Azure Cosmos DB connection and container settings.
@@ -27,7 +27,7 @@ public class CosmosDbOptions
     /// <summary>
     /// Partition key path (e.g., "/postcode").
     /// </summary>
-    public string PartitionKeyPath { get; set; } = "/postcode";
+    public string PartitionKeyPath { get; set; } = "/partitionKey";
 
     /// <summary>
     /// Request units per second for provisioned throughput (null = serverless).

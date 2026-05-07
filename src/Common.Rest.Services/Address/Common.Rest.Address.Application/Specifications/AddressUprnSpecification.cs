@@ -16,6 +16,7 @@ public class AddressUprnSpecification : Specification<AddressDocumentEntity>
     }
     public override Expression<Func<AddressDocumentEntity, bool>> ToExpression()
     {
-        return d => !d.IsDeleted && d.DocumentType == _documentType && d.UprnIndex == _uprn;
+        return d => !d.IsDeleted && d.DocumentType == _documentType && 
+               d.JsonData != null && d.JsonData.Uprn == _uprn;
     }
 }

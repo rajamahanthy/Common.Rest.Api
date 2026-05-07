@@ -32,28 +32,34 @@ public class AddressAdvancedSearchSpecification : Specification<AddressDocumentE
             d.DocumentType == _documentType &&
 
             (string.IsNullOrWhiteSpace(_postcode) ||
-                (d.PostcodeIndex != null &&
-                    d.PostcodeIndex.ToLower() == _postcode.Trim().ToLower())) &&
+                (d.JsonData != null && d.JsonData.AddressInfo != null &&
+                    d.JsonData.AddressInfo.Postcode != null &&
+                    d.JsonData.AddressInfo.Postcode.ToLower() == _postcode.Trim().ToLower())) &&
 
             (string.IsNullOrWhiteSpace(_postTown) ||
-                (d.PostTownIndex != null &&
-                    d.PostTownIndex.ToLower().Contains(_postTown.Trim().ToLower()))) &&
+                (d.JsonData != null && d.JsonData.AddressInfo != null && d.JsonData.AddressInfo.StreetDescriptor != null &&
+                    d.JsonData.AddressInfo.StreetDescriptor.PostTown != null &&
+                    d.JsonData.AddressInfo.StreetDescriptor.PostTown.ToLower().Contains(_postTown.Trim().ToLower()))) &&
 
             (string.IsNullOrWhiteSpace(_organisation) ||
-                (d.OrganisationIndex != null &&
-                    d.OrganisationIndex.ToLower().Contains(_organisation.Trim().ToLower()))) &&
+                (d.JsonData != null && d.JsonData.AddressInfo != null &&
+                    d.JsonData.AddressInfo.Organisation != null &&
+                    d.JsonData.AddressInfo.Organisation.ToLower().Contains(_organisation.Trim().ToLower()))) &&
 
             (string.IsNullOrWhiteSpace(_thoroughfare) ||
-                (d.ThoroughfareIndex != null &&
-                    d.ThoroughfareIndex.ToLower().Contains(_thoroughfare.Trim().ToLower()))) &&
+                (d.JsonData != null && d.JsonData.AddressInfo != null && d.JsonData.AddressInfo.StreetDescriptor != null &&
+                    d.JsonData.AddressInfo.StreetDescriptor.StreetDescription != null &&
+                    d.JsonData.AddressInfo.StreetDescriptor.StreetDescription.ToLower().Contains(_thoroughfare.Trim().ToLower()))) &&
 
             (string.IsNullOrWhiteSpace(_locality) ||
                 (
-                    (d.LocalityIndex != null &&
-                        d.LocalityIndex.ToLower().Contains(_locality.Trim().ToLower()))
+                    (d.JsonData != null && d.JsonData.AddressInfo != null && d.JsonData.AddressInfo.StreetDescriptor != null &&
+                        d.JsonData.AddressInfo.StreetDescriptor.Locality != null &&
+                        d.JsonData.AddressInfo.StreetDescriptor.Locality.ToLower().Contains(_locality.Trim().ToLower()))
                     ||
-                    (d.DependentLocalityIndex != null &&
-                        d.DependentLocalityIndex.ToLower().Contains(_locality.Trim().ToLower()))
+                    (d.JsonData != null && d.JsonData.AddressInfo != null && d.JsonData.AddressInfo.StreetDescriptor != null &&
+                        d.JsonData.AddressInfo.StreetDescriptor.DependentLocality != null &&
+                        d.JsonData.AddressInfo.StreetDescriptor.DependentLocality.ToLower().Contains(_locality.Trim().ToLower()))
                 ));
     }
 }

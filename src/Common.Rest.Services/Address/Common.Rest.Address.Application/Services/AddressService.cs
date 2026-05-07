@@ -1,7 +1,11 @@
 namespace Common.Rest.Address.Application.Services;
 
+using Common.Rest.Address.Domain.Entities;
+using Common.Rest.Shared.Persistence.Cosmos;
+using Common.Rest.Shared.Repository;
+
 /// <summary>
-/// Service for managing  address records with CRUD, search, and filter operations.
+/// Service for managing address records with CRUD, search, and filter operations.
 /// </summary>
 public class AddressService(
     IRepository<AddressDocumentEntity> repository,
@@ -81,7 +85,7 @@ public class AddressService(
         document.UpdatedAt = DateTimeOffset.UtcNow;
         document.UpdatedBy = userId;
 
-        // Synchronize denormalized fields from updated JsonData
+        // Synchronize partition key from updated JsonData
         SynchronizeDocument(document);
 
         repository.Update(document);
@@ -196,8 +200,8 @@ public class AddressService(
     }
 
     /// <summary>
-    /// Synchronizes denormalized index fields from JsonData.
-    /// Ensures PartitionKey (postcode) and search indexes match the source JSON.
+    /// Sets the partition key from JsonData.
+    /// Ensures PartitionKey (postcode) is extracted from the address data for Cosmos DB.
     /// </summary>
     private static void SynchronizeDocument(AddressDocumentEntity document)
     {
@@ -206,26 +210,7 @@ public class AddressService(
 
         var json = document.JsonData;
 
-        // Extract and denormalize UPRN
-        document.UprnIndex = json.Uprn;
-
-        // Extract and denormalize postcode (also set as partition key for Cosmos)
-        document.PostcodeIndex = json.AddressInfo?.Postcode;
+        // Set partition key from postcode
         document.PartitionKey = json.AddressInfo?.Postcode;
-
-        // Extract and denormalize PostTown
-        document.PostTownIndex = json.AddressInfo?.StreetDescriptor?.PostTown;
-
-        // Extract and denormalize Organisation
-        document.OrganisationIndex = json.AddressInfo?.Organisation;
-
-        // Extract and denormalize StreetDescription (Thoroughfare)
-        document.ThoroughfareIndex = json.AddressInfo?.StreetDescriptor?.StreetDescription;
-
-        // Extract and denormalize Locality
-        document.LocalityIndex = json.AddressInfo?.StreetDescriptor?.Locality;
-
-        // Extract and denormalize DependentLocality
-        document.DependentLocalityIndex = json.AddressInfo?.StreetDescriptor?.DependentLocality;
     }
 }
