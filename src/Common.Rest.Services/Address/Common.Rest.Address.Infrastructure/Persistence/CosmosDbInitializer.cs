@@ -1,6 +1,6 @@
 namespace Common.Rest.Address.Infrastructure.Persistence;
 
-using Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Common.Rest.Address.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 

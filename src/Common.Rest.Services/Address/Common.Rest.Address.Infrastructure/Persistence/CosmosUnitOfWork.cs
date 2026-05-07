@@ -1,9 +1,10 @@
 namespace Common.Rest.Address.Infrastructure.Persistence;
 
-using Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Common.Rest.Address.Domain.Entities;
 using Common.Rest.Shared.Repository;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 /// <summary>
 /// Cosmos DB Unit of Work implementation for transaction management.
@@ -79,7 +80,7 @@ public class CosmosUnitOfWork : IUnitOfWork
                     changeCount++;
                     _logger.LogInformation("Document deleted. Id: {Id}", entity.Id);
                 }
-                catch (CosmosException ex) when (ex.Status == 404)
+                catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
                     _logger.LogWarning(ex, "Document to delete not found. Id: {Id}", entity.Id);
                 }

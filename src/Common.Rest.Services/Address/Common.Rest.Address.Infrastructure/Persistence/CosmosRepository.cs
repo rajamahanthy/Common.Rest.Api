@@ -1,12 +1,13 @@
 namespace Common.Rest.Address.Infrastructure.Persistence;
 
-using Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Common.Rest.Address.Domain.Entities;
 using Common.Rest.Shared.Repository;
 using Common.Rest.Shared.Specification;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Text.Json;
+using System.Net;
 
 /// <summary>
 /// Cosmos DB repository implementation for AddressDocumentEntity.
@@ -40,9 +41,10 @@ public class CosmosRepository : IRepository<AddressDocumentEntity>
                 new QueryDefinition("SELECT * FROM c WHERE c.id = @id")
                     .WithParameter("@id", id.ToString()));
 
-            await foreach (var page in query.AsPages())
+            while (query.HasMoreResults)
             {
-                foreach (var item in page.Values)
+                var page = await query.ReadNextAsync(ct);
+                foreach (var item in page)
                 {
                     if (item != null)
                     {
@@ -72,9 +74,10 @@ public class CosmosRepository : IRepository<AddressDocumentEntity>
                 new QueryDefinition("SELECT * FROM c"));
 
             var items = new List<AddressDocumentEntity>();
-            await foreach (var page in query.AsPages())
+            while (query.HasMoreResults)
             {
-                items.AddRange(page.Values);
+                var page = await query.ReadNextAsync(ct);
+                items.AddRange(page);
             }
 
             _logger.LogDebug("Fetched {Count} documents", items.Count);
@@ -218,7 +221,7 @@ public class CosmosRepository : IRepository<AddressDocumentEntity>
 
             _logger.LogInformation("Document added successfully. Id: {Id}", entity.Id);
         }
-        catch (CosmosException ex) when (ex.Status == 409)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
             _logger.LogWarning(ex, "Document already exists. Id: {Id}", entity.Id);
             throw new InvalidOperationException($"Document with Id {entity.Id} already exists.", ex);
@@ -273,10 +276,20 @@ public class CosmosRepository : IRepository<AddressDocumentEntity>
                 new QueryDefinition("SELECT VALUE COUNT(1) FROM c"));
 
             var totalCount = 0;
-            await foreach (var page in query.AsPages())
+            while (query.HasMoreResults)
             {
-                if (page.Values.First() is int count)
-                    totalCount = count;
+                var page = await query.ReadNextAsync(ct);
+                foreach (var value in page)
+                {
+                    if (value is int i) totalCount = i;
+                    else if (value is long l) totalCount = Convert.ToInt32(l);
+                    else if (value is double d) totalCount = Convert.ToInt32(d);
+                    else
+                    {
+                        try { totalCount = Convert.ToInt32(value); } catch { }
+                    }
+                    break;
+                }
             }
 
             if (predicate != null)

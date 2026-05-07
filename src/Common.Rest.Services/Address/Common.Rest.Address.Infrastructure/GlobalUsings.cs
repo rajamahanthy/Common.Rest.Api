@@ -1,5 +1,5 @@
 global using System;
-global using Azure.Cosmos;
+global using Microsoft.Azure.Cosmos;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;

@@ -4,7 +4,7 @@ using Common.Rest.Address.Domain.Entities;
 using Common.Rest.Address.Infrastructure.Configuration;
 using Common.Rest.Address.Infrastructure.Persistence;
 using Common.Rest.Shared.Repository;
-using Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
