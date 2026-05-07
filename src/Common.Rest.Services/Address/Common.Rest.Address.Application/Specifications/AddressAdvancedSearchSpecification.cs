@@ -1,6 +1,6 @@
 namespace Common.Rest.Address.Application.Specifications;
 
-public class AddressAdvancedSearchSpecification : Specification<AddressDocumentEntity>
+public class AddressAdvancedSearchSpecification : Specification<DocumentEntity<AddressEntity>>
 {
     private readonly string? _postcode;
     private readonly string? _postTown;
@@ -25,7 +25,7 @@ public class AddressAdvancedSearchSpecification : Specification<AddressDocumentE
         _locality = locality;
     }
 
-    public override Expression<Func<AddressDocumentEntity, bool>> ToExpression()
+    public override Expression<Func<DocumentEntity<AddressEntity>, bool>> ToExpression()
     {
         return d =>
             !d.IsDeleted &&

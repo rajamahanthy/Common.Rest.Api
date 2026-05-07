@@ -1,11 +1,11 @@
 namespace Common.Rest.Address.Domain.Tests.Entities;
 
 /// <summary>
-/// Comprehensive unit tests for AddressDocumentEntity.
+/// Comprehensive unit tests for DocumentEntity<AddressEntity>.
 /// Tests entity initialization, soft delete support, and update tracking.
 /// </summary>
 [TestClass]
-public class AddressDocumentEntityTests
+public class AddressEntityTests
 {
     private Guid _testId;
 
@@ -37,7 +37,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Constructor_CreatesNewEntity()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             Id = _testId,
             DocumentType = "Address",
@@ -54,7 +54,7 @@ public class AddressDocumentEntityTests
     public void Entity_PropertiesCanBeSet()
     {
         var createdTime = DateTimeOffset.UtcNow;
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             Id = _testId,
             DocumentType = "Address",
@@ -76,7 +76,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_MarkAsDeleted_SetsIsDeletedFlag()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
@@ -91,7 +91,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_RestoreDeleted_ClearsIsDeletedFlag()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
@@ -106,7 +106,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_IsDeletedFalseByDefault()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -123,7 +123,7 @@ public class AddressDocumentEntityTests
     public void Entity_CreatedTimestamp_RecordsCreationTime()
     {
         var now = DateTimeOffset.UtcNow;
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
@@ -141,7 +141,7 @@ public class AddressDocumentEntityTests
         var createdTime = DateTimeOffset.UtcNow.AddHours(-1);
         var updatedTime = DateTimeOffset.UtcNow;
 
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
@@ -159,7 +159,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_UpdatedPropertiesNullWhenNotModified()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -172,7 +172,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_CanUpdateMultipleTimes()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -197,7 +197,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_DocumentType_CanBeSet()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -214,7 +214,7 @@ public class AddressDocumentEntityTests
     public void Entity_JsonData_StoresAddressEntity()
     {
         var addressData = CreateTestAddressEntity();
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = addressData
@@ -227,7 +227,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_JsonData_CanBeUpdated()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -246,7 +246,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_PartitionKey_CanBeSet()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),
@@ -259,7 +259,7 @@ public class AddressDocumentEntityTests
     [TestMethod]
     public void Entity_PartitionKey_IsRequired()
     {
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -276,7 +276,7 @@ public class AddressDocumentEntityTests
     public void Entity_RowVersion_TracksConcurrency()
     {
         var rowVersion = new byte[] { 0x00, 0x00, 0x00, 0x01 };
-        var entity = new AddressDocumentEntity
+        var entity = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity(),

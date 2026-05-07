@@ -6,7 +6,7 @@ namespace Common.Rest.Address.Application.Services;
 /// </summary>
 public class AddressMappingService : IAddressMappingService
 {
-    public AddressDocumentDto MapToDto(AddressDocumentEntity document)
+    public AddressDocumentDto MapToDto(DocumentEntity<AddressEntity> document)
     {
         ArgumentNullException.ThrowIfNull(document);
         
@@ -59,7 +59,7 @@ public class AddressMappingService : IAddressMappingService
         return new AddressDocumentDto(document.Id, addressDto);
     }
 
-    public AddressDocumentEntity MapToDomain(CreateUpdateAddress createDto)
+    public DocumentEntity<AddressEntity> MapToDomain(CreateUpdateAddress createDto)
     {
         ArgumentNullException.ThrowIfNull(createDto);
         ArgumentNullException.ThrowIfNull(createDto.AddressInfo);
@@ -111,10 +111,10 @@ public class AddressMappingService : IAddressMappingService
             }
         };
 
-        return new AddressDocumentEntity { DocumentType = "Address", JsonData = addressEntity };
+        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = addressEntity };
     }
 
-    public AddressDocumentEntity UpdateDomain(AddressDocumentEntity addressDocEntity, CreateUpdateAddress updateDto)
+    public DocumentEntity<AddressEntity> UpdateDomain(DocumentEntity<AddressEntity> addressDocEntity, CreateUpdateAddress updateDto)
     {
         ArgumentNullException.ThrowIfNull(addressDocEntity);
         ArgumentNullException.ThrowIfNull(updateDto);
@@ -167,6 +167,6 @@ public class AddressMappingService : IAddressMappingService
             } : existing.Geography
         };
 
-        return new AddressDocumentEntity { DocumentType = "Address", JsonData = updatedEntity };
+        return new DocumentEntity<AddressEntity> { DocumentType = "Address", JsonData = updatedEntity };
     }
 }

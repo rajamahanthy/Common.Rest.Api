@@ -1,3 +1,5 @@
+
+
 namespace Common.Rest.Address.Application.Interfaces;
 
 /// <summary>
@@ -6,17 +8,17 @@ namespace Common.Rest.Address.Application.Interfaces;
 public interface IAddressMappingService
 {
     /// <summary>
-    /// Maps an AddressDocumentEntity to an AddressDto.
+    /// Maps an DocumentEntity<AddressEntity> to an AddressDto.
     /// </summary>
-    AddressDocumentDto MapToDto(AddressDocumentEntity document);
+    AddressDocumentDto MapToDto(DocumentEntity<AddressEntity> document);
 
     /// <summary>
-    /// Maps a CreateUpdateAddress DTO to an AddressDocumentEntity domain entity.
+    /// Maps a CreateUpdateAddress DTO to an DocumentEntity<AddressEntity> domain entity.
     /// </summary>
-    AddressDocumentEntity MapToDomain(CreateUpdateAddress createDto);
+    DocumentEntity<AddressEntity> MapToDomain(CreateUpdateAddress createDto);
 
     /// <summary>
-    /// Updates an AddressDocumentEntity with values from a CreateUpdateAddress DTO.
+    /// Updates an DocumentEntity<AddressEntity> with values from a CreateUpdateAddress DTO.
     /// </summary>
-    AddressDocumentEntity UpdateDomain(AddressDocumentEntity addressDocEntity, CreateUpdateAddress updateDto);
+    DocumentEntity<AddressEntity> UpdateDomain(DocumentEntity<AddressEntity> addressDocEntity, CreateUpdateAddress updateDto);
 }

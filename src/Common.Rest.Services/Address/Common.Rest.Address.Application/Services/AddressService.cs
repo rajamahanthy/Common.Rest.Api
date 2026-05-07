@@ -8,7 +8,7 @@ using Common.Rest.Shared.Repository;
 /// Service for managing address records with CRUD, search, and filter operations.
 /// </summary>
 public class AddressService(
-    IRepository<AddressDocumentEntity> repository,
+    IRepository<DocumentEntity<AddressEntity>> repository,
     IUnitOfWork unitOfWork,
     IAddressMappingService mappingService) : IAddressService
 {
@@ -22,7 +22,7 @@ public class AddressService(
         ArgumentNullException.ThrowIfNull(createDto);
 
         var addressData = mappingService.MapToDomain(createDto);
-        var document = new AddressDocumentEntity()
+        var document = new DocumentEntity<AddressEntity>()
         {
             Id = Guid.NewGuid(),
             DocumentType = DocumentType,
@@ -203,7 +203,7 @@ public class AddressService(
     /// Sets the partition key from JsonData.
     /// Ensures PartitionKey (postcode) is extracted from the address data for Cosmos DB.
     /// </summary>
-    private static void SynchronizeDocument(AddressDocumentEntity document)
+    private static void SynchronizeDocument(DocumentEntity<AddressEntity> document)
     {
         if (document?.JsonData == null)
             return;

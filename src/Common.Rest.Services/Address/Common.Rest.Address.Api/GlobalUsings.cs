@@ -3,7 +3,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.Extensions.Logging;
 global using Asp.Versioning;
-
+global using Common.Rest.Shared.Domain;
 global using Common.Rest.Shared.Models;
 global using Common.Rest.Shared.Dtos;
 global using Common.Rest.Shared.Extensions;

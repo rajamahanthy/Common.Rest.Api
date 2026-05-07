@@ -11,7 +11,7 @@ public interface IAddressDocumentSynchronizer
     /// <summary>
     /// Populates partition key from JsonData.
     /// </summary>
-    void Synchronize(AddressDocumentEntity document);
+    void Synchronize(DocumentEntity<AddressEntity> document);
 }
 
 /// <summary>
@@ -19,14 +19,12 @@ public interface IAddressDocumentSynchronizer
 /// </summary>
 public class AddressDocumentSynchronizer : IAddressDocumentSynchronizer
 {
-    public void Synchronize(AddressDocumentEntity document)
+    public void Synchronize(DocumentEntity<AddressEntity> document)
     {
         if (document?.JsonData == null)
             return;
 
-        var json = document.JsonData;
-
-        // Set partition key from postcode
-        document.PartitionKey = json.AddressInfo?.Postcode;
+        if (document?.JsonData?.AddressInfo?.Postcode == null)
+            throw new ArgumentException("Postcode in JsonData.AddressInfo must be set before persisting to Cosmos.", nameof(document));
     }
 }

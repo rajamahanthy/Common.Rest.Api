@@ -27,9 +27,9 @@ public class CosmosRepositoryTests
         _repository = new CosmosRepository(_mockContainer.Object, _mockLogger.Object);
     }
 
-    private static AddressDocumentEntity CreateEntity(Guid? id = null, string? postcode = null)
+    private static DocumentEntity<AddressEntity> CreateEntity(Guid? id = null, string? postcode = null)
     {
-        return new AddressDocumentEntity
+        return new DocumentEntity<AddressEntity>
         {
             Id = id ?? Guid.NewGuid(),
             DocumentType = "Address",
@@ -62,12 +62,12 @@ public class CosmosRepositoryTests
         var postcode = entity.PartitionKey;
         
         _mockContainer
-            .Setup(c => c.ReadItemAsync<AddressDocumentEntity>(
+            .Setup(c => c.ReadItemAsync<DocumentEntity<AddressEntity>>(
                 _testId.ToString(),
                 new PartitionKey(postcode),
                 It.IsAny<ItemRequestOptions>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Mock<ItemResponse<AddressDocumentEntity>>
+            .ReturnsAsync(new Mock<ItemResponse<DocumentEntity<AddressEntity>>>
             {
                 DefaultValue = DefaultValue.Mock
             }.Object);
@@ -76,7 +76,7 @@ public class CosmosRepositoryTests
         
         // Assert
         _mockContainer.Verify(
-            c => c.ReadItemAsync<AddressDocumentEntity>(
+            c => c.ReadItemAsync<DocumentEntity<AddressEntity>>(
                 It.IsAny<string>(),
                 It.IsAny<PartitionKey>(),
                 It.IsAny<ItemRequestOptions>(),
@@ -101,7 +101,7 @@ public class CosmosRepositoryTests
                 new PartitionKey(partitionKey),
                 It.IsAny<ItemRequestOptions>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Mock<ItemResponse<AddressDocumentEntity>>
+            .ReturnsAsync(new Mock<ItemResponse<DocumentEntity<AddressEntity>>>
             {
                 DefaultValue = DefaultValue.Mock
             }.Object);
@@ -112,7 +112,7 @@ public class CosmosRepositoryTests
         // Assert
         _mockContainer.Verify(
             c => c.UpsertItemAsync(
-                It.IsAny<AddressDocumentEntity>(),
+                It.IsAny<DocumentEntity<AddressEntity>>(),
                 It.IsAny<PartitionKey>(),
                 It.IsAny<ItemRequestOptions>(),
                 It.IsAny<CancellationToken>()),

@@ -10,26 +10,26 @@ using System.Text.Json;
 /// Address-specific Cosmos DB repository implementation.
 /// Extends the generic CosmosRepositoryBase with Address entity serialization logic.
 /// </summary>
-public class CosmosRepository : CosmosRepositoryBase<AddressDocumentEntity>
+public class CosmosRepository : CosmosRepositoryBase<DocumentEntity<AddressEntity>>
 {
     public CosmosRepository(Container container, ILogger<CosmosRepository> logger)
         : base(container, logger)
     {
     }
 
-    public override string GetPartitionKey(AddressDocumentEntity entity)
+    public override string GetPartitionKey(DocumentEntity<AddressEntity> entity)
     {
-        if (string.IsNullOrEmpty(entity.PartitionKey))
-            throw new ArgumentException("PartitionKey must be set before using Cosmos operations.", nameof(entity));
-        return entity.PartitionKey;
+        var partitionKey = entity.JsonData?.AddressInfo?.Postcode;
+        if (string.IsNullOrEmpty(partitionKey))
+            throw new ArgumentException("Postcode in JsonData.AddressInfo must be set before using Cosmos operations.", nameof(entity));
+        return partitionKey;
     }
 
-    public override dynamic ToCosmosItem(AddressDocumentEntity entity)
+    public override dynamic ToCosmosItem(DocumentEntity<AddressEntity> entity)
     {
         return new
         {
             id = entity.Id.ToString(),
-            partitionKey = entity.PartitionKey,
             documentType = entity.DocumentType,
             jsonData = entity.JsonData,
             createdAt = entity.CreatedAt,
@@ -41,15 +41,14 @@ public class CosmosRepository : CosmosRepositoryBase<AddressDocumentEntity>
         };
     }
 
-    public override AddressDocumentEntity FromCosmosItem(dynamic cosmosItem)
+    public override DocumentEntity<AddressEntity> FromCosmosItem(dynamic cosmosItem)
     {
         var json = JsonSerializer.Serialize(cosmosItem);
         var parsed = JsonSerializer.Deserialize<JsonElement>(json);
 
-        return new AddressDocumentEntity
+        return new DocumentEntity<AddressEntity> 
         {
             Id = Guid.Parse(parsed.GetProperty("id").GetString() ?? Guid.Empty.ToString()),
-            PartitionKey = parsed.GetProperty("partitionKey").GetString() ?? string.Empty,
             DocumentType = parsed.GetProperty("documentType").GetString() ?? string.Empty,
             JsonData = JsonSerializer.Deserialize<AddressEntity>(
                 parsed.GetProperty("jsonData").GetRawText(),
@@ -59,8 +58,8 @@ public class CosmosRepository : CosmosRepositoryBase<AddressDocumentEntity>
             IsDeleted = parsed.GetProperty("isDeleted").GetBoolean(),
             CreatedBy = parsed.TryGetProperty("createdBy", out JsonElement creator) ? creator.GetString() : null,
             UpdatedBy = parsed.TryGetProperty("updatedBy", out JsonElement updater) ? updater.GetString() : null,
-            RowVersion = parsed.TryGetProperty("rowVersion", out JsonElement rowVersion) 
-                ? Convert.FromBase64String(rowVersion.GetString() ?? string.Empty) 
+            RowVersion = parsed.TryGetProperty("rowVersion", out JsonElement rowVersion)
+                ? Convert.FromBase64String(rowVersion.GetString() ?? string.Empty)
                 : null
         };
     }

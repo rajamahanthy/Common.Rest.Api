@@ -25,7 +25,7 @@ namespace Common.Rest.Address.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Common.Rest.Address.Domain.Entities.AddressDocumentEntity", b =>
+            modelBuilder.Entity("Common.Rest.Address.Domain.Entities.DocumentEntity<AddressEntity>", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");

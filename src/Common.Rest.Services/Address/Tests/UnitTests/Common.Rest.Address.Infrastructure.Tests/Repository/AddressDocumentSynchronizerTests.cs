@@ -34,7 +34,7 @@ public class AddressDocumentSynchronizerTests
     [TestMethod]
     public void Synchronize_SetsPartitionKeyFromPostcode()
     {
-        var document = new AddressDocumentEntity
+        var document = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = CreateTestAddressEntity()
@@ -48,7 +48,7 @@ public class AddressDocumentSynchronizerTests
     [TestMethod]
     public void Synchronize_WithNullJsonData_DoesNothing()
     {
-        var document = new AddressDocumentEntity
+        var document = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = null!
@@ -65,7 +65,7 @@ public class AddressDocumentSynchronizerTests
         var addressData = CreateTestAddressEntity();
         addressData.AddressInfo = null!;
 
-        var document = new AddressDocumentEntity
+        var document = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = addressData
@@ -82,7 +82,7 @@ public class AddressDocumentSynchronizerTests
         var addressData = CreateTestAddressEntity();
         addressData.AddressInfo.Postcode = null!;
 
-        var document = new AddressDocumentEntity
+        var document = new DocumentEntity<AddressEntity>
         {
             DocumentType = "Address",
             JsonData = addressData

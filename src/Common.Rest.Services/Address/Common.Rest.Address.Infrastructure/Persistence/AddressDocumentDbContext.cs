@@ -15,7 +15,7 @@ public class AddressDocumentDbContext(DbContextOptions<AddressDocumentDbContext>
     /// <summary>
     /// Gets or sets the Address Documents DbSet.
     /// </summary>
-    public DbSet<AddressDocumentEntity> AddressDocuments { get; set; } = null!;
+    public DbSet<DocumentEntity<AddressEntity>> AddressDocuments { get; set; } = null!;
 
     /// <summary>
     /// Configures the model for the database context with address-specific mappings including computed columns.
@@ -25,7 +25,7 @@ public class AddressDocumentDbContext(DbContextOptions<AddressDocumentDbContext>
         base.OnModelCreating(modelBuilder);
 
         // Configure AddressDocuments Table
-        var addressDocumentsBuilder = modelBuilder.Entity<AddressDocumentEntity>();
+        var addressDocumentsBuilder = modelBuilder.Entity<DocumentEntity<AddressEntity>>();
 
         addressDocumentsBuilder.ToTable("Documents");
 

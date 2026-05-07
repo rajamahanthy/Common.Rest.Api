@@ -7,7 +7,7 @@ namespace Common.Rest.Address.Application.Tests.Services;
 [TestClass]
 public class AddressServiceTests
 {
-    private Mock<IRepository<AddressDocumentEntity>> _mockRepository = null!;
+    private Mock<IRepository<DocumentEntity<AddressEntity>>> _mockRepository = null!;
     private Mock<IUnitOfWork> _mockUnitOfWork = null!;
     private Mock<IAddressMappingService> _mockMappingService = null!;
     private AddressService _service = null!;
@@ -30,9 +30,9 @@ public class AddressServiceTests
             _mockMappingService.Object);
     }
 
-    private static AddressDocumentEntity CreateEntity(Guid? id = null)
+    private static DocumentEntity<AddressEntity> CreateEntity(Guid? id = null)
     {
-        return new AddressDocumentEntity
+        return new DocumentEntity<AddressEntity>
         {
             Id = id ?? Guid.NewGuid(),
             DocumentType = "Address",
@@ -90,13 +90,13 @@ public class AddressServiceTests
             .Setup(m => m.MapToDomain(createDto))
             .Returns(CreateEntity(_testId));
         _mockMappingService
-            .Setup(m => m.MapToDto(It.IsAny<AddressDocumentEntity>()))
+            .Setup(m => m.MapToDto(It.IsAny<DocumentEntity<AddressEntity>>()))
             .Returns(expectedDto);
 
         var result = await _service.CreateAddressAsync(createDto, "test-user");
 
         Assert.AreEqual(expectedDto, result);
-        _mockRepository.Verify(r => r.AddAsync(It.IsAny<AddressDocumentEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+        _mockRepository.Verify(r => r.AddAsync(It.IsAny<DocumentEntity<AddressEntity>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AddressDocumentEntity?)null);
+            .ReturnsAsync((DocumentEntity<AddressEntity>?)null);
 
         var result = await _service.GetAddressByIdAsync(_testId);
 
@@ -162,7 +162,7 @@ public class AddressServiceTests
     [TestMethod]
     public async Task GetAllAddressesAsync_DefaultPaging_ReturnsPagedResults()
     {
-        var entities = new List<AddressDocumentEntity>
+        var entities = new List<DocumentEntity<AddressEntity>>
         {
             CreateEntity(),
             CreateEntity()
@@ -171,7 +171,7 @@ public class AddressServiceTests
 
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<AddressDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((entities.AsReadOnly(), 2));
 
@@ -193,14 +193,14 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                2, 20, null, It.IsAny<ISpecification<AddressDocumentEntity>>(), null, false,
+                2, 20, null, It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((new List<AddressDocumentEntity>().AsReadOnly(), 0));
+            .ReturnsAsync((new List<DocumentEntity<AddressEntity>>().AsReadOnly(), 0));
 
         await _service.GetAllAddressesAsync(page: 2, pageSize: 20);
 
         _mockRepository.Verify(r => r.GetPagedAsync(
-            2, 20, null, It.IsAny<ISpecification<AddressDocumentEntity>>(), null, false,
+            2, 20, null, It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), null, false,
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -256,7 +256,7 @@ public class AddressServiceTests
 
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AddressDocumentEntity?)null);
+            .ReturnsAsync((DocumentEntity<AddressEntity>?)null);
 
         var result = await _service.UpdateAddressAsync(_testId, updateDto);
 
@@ -288,7 +288,7 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AddressDocumentEntity?)null);
+            .ReturnsAsync((DocumentEntity<AddressEntity>?)null);
 
         var result = await _service.DeleteAddressAsync(_testId);
 
@@ -319,7 +319,7 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AddressDocumentEntity?)null);
+            .ReturnsAsync((DocumentEntity<AddressEntity>?)null);
 
         var result = await _service.PermanentlyDeleteAddressAsync(_testId);
 
@@ -338,7 +338,7 @@ public class AddressServiceTests
         var expectedDto = CreateDto(_testId);
 
         _mockRepository
-            .Setup(r => r.FindAsync(It.IsAny<ISpecification<AddressDocumentEntity>>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindAsync(It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { entity }.ToList());
         _mockMappingService
             .Setup(m => m.MapToDto(entity))
@@ -355,8 +355,8 @@ public class AddressServiceTests
         const string uprn = "999999999";
 
         _mockRepository
-            .Setup(r => r.FindAsync(It.IsAny<ISpecification<AddressDocumentEntity>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<AddressDocumentEntity>());
+            .Setup(r => r.FindAsync(It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DocumentEntity<AddressEntity>>());
 
         var result = await _service.GetAddressByUprnAsync(uprn);
 
@@ -370,12 +370,12 @@ public class AddressServiceTests
     [TestMethod]
     public async Task AdvancedSearchAsync_WithFilters_ReturnsFiltered()
     {
-        var entities = new List<AddressDocumentEntity> { CreateEntity(_testId) };
+        var entities = new List<DocumentEntity<AddressEntity>> { CreateEntity(_testId) };
         var dtos = new List<AddressDocumentDto> { CreateDto(_testId) };
 
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<AddressDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((entities.AsReadOnly(), 1));
         _mockMappingService
@@ -394,9 +394,9 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<AddressDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((new List<AddressDocumentEntity>().AsReadOnly(), 0));
+            .ReturnsAsync((new List<DocumentEntity<AddressEntity>>().AsReadOnly(), 0));
 
         var result = await _service.AdvancedSearchAsync();
 
@@ -414,7 +414,7 @@ public class AddressServiceTests
          var entities = Enumerable.Range(1, expectedCount).Select(i => CreateEntity()).ToList();
 
          _mockRepository
-             .Setup(r => r.FindAsync(It.IsAny<ISpecification<AddressDocumentEntity>>(), It.IsAny<CancellationToken>()))
+             .Setup(r => r.FindAsync(It.IsAny<ISpecification<DocumentEntity<AddressEntity>>>(), It.IsAny<CancellationToken>()))
              .ReturnsAsync(entities);
 
          var result = await _service.GetAddressCountAsync();
@@ -448,7 +448,7 @@ public class AddressServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AddressDocumentEntity?)null);
+            .ReturnsAsync((DocumentEntity<AddressEntity>?)null);
 
         var result = await _service.RestoreAddressAsync(_testId);
 
@@ -479,12 +479,12 @@ public class AddressServiceTests
             .Setup(m => m.MapToDomain(It.IsAny<CreateUpdateAddress>()))
             .Returns(CreateEntity());
         _mockMappingService
-            .Setup(m => m.MapToDto(It.IsAny<AddressDocumentEntity>()))
+            .Setup(m => m.MapToDto(It.IsAny<DocumentEntity<AddressEntity>>()))
             .Returns(expectedDto);
 
         await _service.CreateAddressAsync(createDto, "test-user", cts.Token);
 
-        _mockRepository.Verify(r => r.AddAsync(It.IsAny<AddressDocumentEntity>(), cts.Token), Times.Once);
+        _mockRepository.Verify(r => r.AddAsync(It.IsAny<DocumentEntity<AddressEntity>>(), cts.Token), Times.Once);
     }
 
     #endregion

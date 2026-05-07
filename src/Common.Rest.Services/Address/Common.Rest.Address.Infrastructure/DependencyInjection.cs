@@ -30,7 +30,7 @@ public static class DependencyInjection
         });
 
         // ── Register Repository ──────────────────────────────────────
-        services.AddScoped<IRepository<AddressDocumentEntity>>(provider =>
+        services.AddScoped<IRepository<DocumentEntity<AddressEntity>>>(provider =>
         {
             var container = provider.GetRequiredService<Container>();
             var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<CosmosRepository>>();

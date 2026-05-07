@@ -20,14 +20,14 @@ public class CosmosDbOptions
     public required string DatabaseName { get; set; }
 
     /// <summary>
-    /// Container name (e.g., "AddressContainer").
+    /// Container name (e.g., "AddressContainer2").
     /// </summary>
     public required string ContainerName { get; set; }
 
     /// <summary>
-    /// Partition key path (e.g., "/postcode").
+    /// Partition key path (e.g., "/jsonData/AddressInfo/Postcode").
     /// </summary>
-    public string PartitionKeyPath { get; set; } = "/partitionKey";
+    public string PartitionKeyPath { get; set; } = "/jsonData/AddressInfo/Postcode";
 
     /// <summary>
     /// Request units per second for provisioned throughput (null = serverless).
