@@ -6,17 +6,17 @@ namespace Common.Rest.Hereditament.Application.Interfaces;
 public interface IHereditamentMappingService
 {
     /// <summary>
-    /// Maps an HereditamentDocumentEntity to an HereditamentDto.
+    /// Maps an  DocumentEntity<HereditamentEntity> to an HereditamentDto.
     /// </summary>
-    HereditamentDocumentDto MapToDto(HereditamentDocumentEntity document);
+    HereditamentDocumentDto MapToDto( DocumentEntity<HereditamentEntity> document);
 
     /// <summary>
-    /// Maps a CreateUpdateHereditament DTO to an HereditamentDocumentEntity domain entity.
+    /// Maps a CreateUpdateHereditament DTO to an  DocumentEntity<HereditamentEntity> domain entity.
     /// </summary>
-    HereditamentDocumentEntity MapToDomain(CreateUpdateHereditament createDto);
+     DocumentEntity<HereditamentEntity> MapToDomain(CreateUpdateHereditament createDto);
 
     /// <summary>
-    /// Updates an HereditamentDocumentEntity with values from a CreateUpdateHereditament DTO.
+    /// Updates an  DocumentEntity<HereditamentEntity> with values from a CreateUpdateHereditament DTO.
     /// </summary>
-    HereditamentDocumentEntity UpdateDomain(HereditamentDocumentEntity HereditamentDocEntity, CreateUpdateHereditament updateDto);
+     DocumentEntity<HereditamentEntity> UpdateDomain( DocumentEntity<HereditamentEntity> HereditamentDocEntity, CreateUpdateHereditament updateDto);
 }

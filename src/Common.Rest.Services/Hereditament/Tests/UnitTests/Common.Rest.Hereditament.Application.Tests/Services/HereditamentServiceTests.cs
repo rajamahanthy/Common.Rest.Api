@@ -1,3 +1,5 @@
+
+
 namespace Common.Rest.Hereditament.Application.Tests.Services;
 
 /// <summary>
@@ -7,7 +9,7 @@ namespace Common.Rest.Hereditament.Application.Tests.Services;
 [TestClass]
 public class HereditamentServiceTests
 {
-    private Mock<IRepository<HereditamentDocumentEntity>> _mockRepository = null!;
+    private Mock<IRepository< DocumentEntity<HereditamentEntity>>> _mockRepository = null!;
     private Mock<IUnitOfWork> _mockUnitOfWork = null!;
     private Mock<IHereditamentMappingService> _mockMappingService = null!;
     private HereditamentService _service = null!;
@@ -30,9 +32,9 @@ public class HereditamentServiceTests
             _mockMappingService.Object);
     }
 
-    private static HereditamentDocumentEntity CreateEntity(Guid? id = null)
+    private static  DocumentEntity<HereditamentEntity> CreateEntity(Guid? id = null)
     {
-        return new HereditamentDocumentEntity
+        return new  DocumentEntity<HereditamentEntity>
         {
             Id = id ?? Guid.NewGuid(),
             DocumentType = "Hereditament",
@@ -77,13 +79,13 @@ public class HereditamentServiceTests
             .Setup(m => m.MapToDomain(createDto))
             .Returns(CreateEntity(_testId));
         _mockMappingService
-            .Setup(m => m.MapToDto(It.IsAny<HereditamentDocumentEntity>()))
+            .Setup(m => m.MapToDto(It.IsAny< DocumentEntity<HereditamentEntity>>()))
             .Returns(expectedDto);
 
         var result = await _service.CreateHereditamentAsync(createDto, "test-user");
 
         Assert.AreEqual(expectedDto, result);
-        _mockRepository.Verify(r => r.AddAsync(It.IsAny<HereditamentDocumentEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+        _mockRepository.Verify(r => r.AddAsync(It.IsAny< DocumentEntity<HereditamentEntity>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [TestMethod]
@@ -120,7 +122,7 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HereditamentDocumentEntity?)null);
+            .ReturnsAsync(( DocumentEntity<HereditamentEntity>?)null);
 
         var result = await _service.GetHereditamentByIdAsync(_testId);
 
@@ -149,7 +151,7 @@ public class HereditamentServiceTests
     [TestMethod]
     public async Task GetAllHereditamentesAsync_DefaultPaging_ReturnsPagedResults()
     {
-        var entities = new List<HereditamentDocumentEntity>
+        var entities = new List< DocumentEntity<HereditamentEntity>>
         {
             CreateEntity(),
             CreateEntity()
@@ -158,7 +160,7 @@ public class HereditamentServiceTests
 
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<HereditamentDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((entities.AsReadOnly(), 2));
 
@@ -180,14 +182,14 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                2, 20, null, It.IsAny<ISpecification<HereditamentDocumentEntity>>(), null, false,
+                2, 20, null, It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((new List<HereditamentDocumentEntity>().AsReadOnly(), 0));
+            .ReturnsAsync((new List< DocumentEntity<HereditamentEntity>>().AsReadOnly(), 0));
 
         await _service.GetAllHereditamentesAsync(page: 2, pageSize: 20);
 
         _mockRepository.Verify(r => r.GetPagedAsync(
-            2, 20, null, It.IsAny<ISpecification<HereditamentDocumentEntity>>(), null, false,
+            2, 20, null, It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), null, false,
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -235,7 +237,7 @@ public class HereditamentServiceTests
 
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HereditamentDocumentEntity?)null);
+            .ReturnsAsync(( DocumentEntity<HereditamentEntity>?)null);
 
         var result = await _service.UpdateHereditamentAsync(_testId, updateDto);
 
@@ -267,7 +269,7 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HereditamentDocumentEntity?)null);
+            .ReturnsAsync(( DocumentEntity<HereditamentEntity>?)null);
 
         var result = await _service.DeleteHereditamentAsync(_testId);
 
@@ -298,7 +300,7 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HereditamentDocumentEntity?)null);
+            .ReturnsAsync(( DocumentEntity<HereditamentEntity>?)null);
 
         var result = await _service.PermanentlyDeleteHereditamentAsync(_testId);
 
@@ -312,12 +314,12 @@ public class HereditamentServiceTests
     [TestMethod]
     public async Task AdvancedSearchAsync_WithFilters_ReturnsFiltered()
     {
-        var entities = new List<HereditamentDocumentEntity> { CreateEntity(_testId) };
+        var entities = new List< DocumentEntity<HereditamentEntity>> { CreateEntity(_testId) };
         var dtos = new List<HereditamentDocumentDto> { CreateDto(_testId) };
 
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<HereditamentDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((entities.AsReadOnly(), 1));
         _mockMappingService
@@ -335,9 +337,9 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetPagedAsync(
-                1, 10, null, It.IsAny<ISpecification<HereditamentDocumentEntity>>(), null, false,
+                1, 10, null, It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), null, false,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((new List<HereditamentDocumentEntity>().AsReadOnly(), 0));
+            .ReturnsAsync((new List< DocumentEntity<HereditamentEntity>>().AsReadOnly(), 0));
 
         var result = await _service.AdvancedSearchAsync();
 
@@ -355,7 +357,7 @@ public class HereditamentServiceTests
          var entities = Enumerable.Range(1, expectedCount).Select(i => CreateEntity()).ToList();
 
          _mockRepository
-             .Setup(r => r.FindAsync(It.IsAny<ISpecification<HereditamentDocumentEntity>>(), It.IsAny<CancellationToken>()))
+             .Setup(r => r.FindAsync(It.IsAny<ISpecification< DocumentEntity<HereditamentEntity>>>(), It.IsAny<CancellationToken>()))
              .ReturnsAsync(entities);
 
          var result = await _service.GetHereditamentCountAsync();
@@ -389,7 +391,7 @@ public class HereditamentServiceTests
     {
         _mockRepository
             .Setup(r => r.GetByIdAsync(_testId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HereditamentDocumentEntity?)null);
+            .ReturnsAsync(( DocumentEntity<HereditamentEntity>?)null);
 
         var result = await _service.RestoreHereditamentAsync(_testId);
 
@@ -416,12 +418,12 @@ public class HereditamentServiceTests
             .Setup(m => m.MapToDomain(It.IsAny<CreateUpdateHereditament>()))
             .Returns(CreateEntity());
         _mockMappingService
-            .Setup(m => m.MapToDto(It.IsAny<HereditamentDocumentEntity>()))
+            .Setup(m => m.MapToDto(It.IsAny< DocumentEntity<HereditamentEntity>>()))
             .Returns(expectedDto);
 
         await _service.CreateHereditamentAsync(createDto, "test-user", cts.Token);
 
-        _mockRepository.Verify(r => r.AddAsync(It.IsAny<HereditamentDocumentEntity>(), cts.Token), Times.Once);
+        _mockRepository.Verify(r => r.AddAsync(It.IsAny< DocumentEntity<HereditamentEntity>>(), cts.Token), Times.Once);
     }
 
     #endregion

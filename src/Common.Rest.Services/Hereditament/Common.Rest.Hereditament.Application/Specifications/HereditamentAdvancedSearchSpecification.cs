@@ -1,6 +1,6 @@
 namespace Common.Rest.Hereditament.Application.Specifications;
 
-public class HereditamentAdvancedSearchSpecification : Specification<HereditamentDocumentEntity>
+public class HereditamentAdvancedSearchSpecification : Specification< DocumentEntity<HereditamentEntity>>
 {
     private readonly string? _name;
     private readonly string? _status;
@@ -19,22 +19,23 @@ public class HereditamentAdvancedSearchSpecification : Specification<Hereditamen
         _effectiveFrom = effectiveFrom;
     }
 
-    public override Expression<Func<HereditamentDocumentEntity, bool>> ToExpression()
+    public override Expression<Func< DocumentEntity<HereditamentEntity>, bool>> ToExpression()
     {
         return d =>
             !d.IsDeleted &&
             d.DocumentType == _documentType &&
 
             (string.IsNullOrWhiteSpace(_name) ||
-                (d.NameIndex != null &&
-                    d.NameIndex.ToLower() == _name.Trim().ToLower())) &&
+                (d.JsonData != null &&
+                    d.JsonData.Name.ToLower() == _name.Trim().ToLower())) &&
 
             (string.IsNullOrWhiteSpace(_status) ||
-                (d.StatusIndex != null &&
-                    d.StatusIndex.ToLower().Contains(_status.Trim().ToLower()))) &&
+                (d.JsonData != null &&
+                    d.JsonData.Status.ToLower().Contains(_status.Trim().ToLower()))) &&
 
             (_effectiveFrom == null ||
-                (d.EffectiveFromIndex != null &&
-                    d.EffectiveFromIndex.Equals(_effectiveFrom))); 
+                (d.JsonData != null &&
+                    d.JsonData.EffectiveFrom.Equals(_effectiveFrom))); 
     }
 }
+

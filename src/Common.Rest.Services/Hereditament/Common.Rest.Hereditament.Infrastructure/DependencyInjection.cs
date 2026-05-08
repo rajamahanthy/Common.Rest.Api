@@ -3,7 +3,8 @@ namespace Common.Rest.Hereditament.Infrastructure;
 using Common.Rest.Hereditament.Domain.Entities;
 using Common.Rest.Hereditament.Infrastructure.Persistence;
 using Common.Rest.Shared.Repository;
-using Microsoft.EntityFrameworkCore;
+using Common.Rest.Shared.Persistence.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,37 +12,43 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        const string dbConnStrKey = "HereditamentDb";
+        // ── Bind Cosmos Configuration ────────────────────────────────
+        services.Configure<CosmosDbOptions>(configuration.GetSection(CosmosDbOptions.SectionName));
 
-        // ?? DbContext ???????????????????????????????????????????????????
-        services.AddDbContext<HereditamentDocumentDbContext>(options =>
+        var cosmosOptions = configuration.GetSection(CosmosDbOptions.SectionName).Get<CosmosDbOptions>()
+            ?? throw new InvalidOperationException($"Configuration section '{CosmosDbOptions.SectionName}' is required.");
+
+        // ── Register Cosmos Client ───────────────────────────────────
+        services.AddSingleton(new CosmosClient(cosmosOptions.ConnectionString));
+
+        // ── Register Cosmos Container ────────────────────────────────
+        services.AddScoped(provider =>
         {
-            var connectionString = configuration.GetConnectionString(dbConnStrKey);
-            if (string.IsNullOrEmpty(connectionString) || connectionString.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
-            {
-                options.UseInMemoryDatabase(dbConnStrKey);
-            }
-            else
-            {
-                options.UseSqlServer(connectionString, sqlOptions =>
-                {
-                    sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(30), null);
-                });
-            }
+            var cosmosClient = provider.GetRequiredService<CosmosClient>();
+            var database = cosmosClient.GetDatabase(cosmosOptions.DatabaseName);
+            return database.GetContainer(cosmosOptions.ContainerName);
         });
 
-        // ?? Register DbContext base class for repository injection ????????
-        services.AddScoped<DbContext>(provider => provider.GetRequiredService<HereditamentDocumentDbContext>());
+        // ── Register Unit of Work ────────────────────────────────────
+        services.AddScoped<IUnitOfWork>(provider =>
+        {
+            var container = provider.GetRequiredService<Container>();
+            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<CosmosUnitOfWork>>();
+            return new CosmosUnitOfWork(container, logger);
+        });
 
-        // ?? Repositories (Generic) ??????????????????????????????????????
-        services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-
-        // ?? Unit of Work (Generic) ???????????????????????????????????????
-        services.AddScoped<IUnitOfWork, UnitOfWork>(provider =>
-            new UnitOfWork(provider.GetRequiredService<HereditamentDocumentDbContext>()));
+        // ── Register Repository ──────────────────────────────────────
+        services.AddScoped<IRepository< DocumentEntity<HereditamentEntity>>>(provider =>
+        {
+            var container = provider.GetRequiredService<Container>();
+            var unitOfWork = provider.GetRequiredService<IUnitOfWork>();
+            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<CosmosRepository>>();
+            return new CosmosRepository(container, logger, unitOfWork);
+        });
 
         return services;
     }
 }
+
 
 

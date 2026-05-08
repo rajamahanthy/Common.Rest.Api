@@ -1,11 +1,11 @@
 namespace Common.Rest.Hereditament.Domain.Tests.Entities;
 
 /// <summary>
-/// Comprehensive unit tests for HereditamentDocumentEntity with 100% code coverage.
+/// Comprehensive unit tests for  DocumentEntity<HereditamentEntity> with 100% code coverage.
 /// Tests entity initialization, soft delete support, and update tracking.
 /// </summary>
 [TestClass]
-public class HereditamentDocumentEntityTests
+public class  HereditamentEntityTests
 {
     private Guid _testId;
 
@@ -32,7 +32,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Constructor_CreatesNewEntity()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             Id = _testId,
             DocumentType = "Hereditament",
@@ -49,37 +49,17 @@ public class HereditamentDocumentEntityTests
     public void Entity_PropertiesCanBeSet()
     {
         var createdTime = DateTimeOffset.UtcNow;
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             Id = _testId,
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),
             CreatedAt = createdTime,
-            CreatedBy = "test-user",
-            NameIndex = "Test Hereditament",
-            StatusIndex = HereditamentStatus.Active,
-            EffectiveFromIndex = DateOnly.FromDateTime(DateTime.UtcNow)
+            CreatedBy = "test-user"
         };
 
-        Assert.AreEqual("Test Hereditament", entity.NameIndex);
-        Assert.AreEqual(HereditamentStatus.Active, entity.StatusIndex);
-        Assert.IsNotNull(entity.EffectiveFromIndex);
         Assert.AreEqual(createdTime, entity.CreatedAt);
         Assert.AreEqual("test-user", entity.CreatedBy);
-    }
-
-    [TestMethod]
-    public void Entity_ComputedColumns_InitiallyNull()
-    {
-        var entity = new HereditamentDocumentEntity
-        {
-            DocumentType = "Hereditament",
-            JsonData = CreateTestHereditamentEntity()
-        };
-
-        Assert.IsNull(entity.NameIndex);
-        Assert.IsNull(entity.StatusIndex);
-        Assert.IsNull(entity.EffectiveFromIndex);
     }
 
     #endregion
@@ -89,7 +69,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_MarkAsDeleted_SetsIsDeletedFlag()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),
@@ -104,7 +84,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_RestoreDeleted_ClearsIsDeletedFlag()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),
@@ -119,7 +99,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_IsDeletedFalseByDefault()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
@@ -136,7 +116,7 @@ public class HereditamentDocumentEntityTests
     public void Entity_CreatedTimestamp_RecordsCreationTime()
     {
         var now = DateTimeOffset.UtcNow;
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),
@@ -154,7 +134,7 @@ public class HereditamentDocumentEntityTests
         var createdTime = DateTimeOffset.UtcNow.AddHours(-1);
         var updatedTime = DateTimeOffset.UtcNow;
 
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),
@@ -172,7 +152,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_UpdatedPropertiesNullWhenNotModified()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
@@ -185,7 +165,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_CanUpdateMultipleTimes()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
@@ -210,7 +190,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_DocumentType_CanBeSet()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
@@ -227,7 +207,7 @@ public class HereditamentDocumentEntityTests
     public void Entity_JsonData_StoresHereditamentEntity()
     {
         var hereditamentData = CreateTestHereditamentEntity();
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = hereditamentData
@@ -240,7 +220,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_JsonData_CanBeUpdated()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
@@ -254,47 +234,13 @@ public class HereditamentDocumentEntityTests
 
     #endregion
 
-    #region Computed Columns
-
-    [TestMethod]
-    public void Entity_AllComputedColumns_CanBeSet()
-    {
-        var entity = new HereditamentDocumentEntity
-        {
-            DocumentType = "Hereditament",
-            JsonData = CreateTestHereditamentEntity(),
-            NameIndex = "Test Hereditament",
-            StatusIndex = HereditamentStatus.Active,
-            EffectiveFromIndex = DateOnly.FromDateTime(DateTime.UtcNow)
-        };
-
-        Assert.AreEqual("Test Hereditament", entity.NameIndex);
-        Assert.AreEqual(HereditamentStatus.Active, entity.StatusIndex);
-        Assert.IsNotNull(entity.EffectiveFromIndex);
-    }
-
-    [TestMethod]
-    public void Entity_NameIndex_CanBeQueried()
-    {
-        var entity = new HereditamentDocumentEntity
-        {
-            DocumentType = "Hereditament",
-            JsonData = CreateTestHereditamentEntity(),
-            NameIndex = "Test Hereditament"
-        };
-
-        Assert.AreEqual("Test Hereditament", entity.NameIndex);
-    }
-
-    #endregion
-
     #region Entity States
 
     [TestMethod]
     public void Entity_ActiveEntity_HasCorrectState()
     {
         var createdTime = DateTimeOffset.UtcNow;
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             Id = _testId,
             DocumentType = "Hereditament",
@@ -312,7 +258,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_DeletedEntity_HasCorrectState()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             Id = _testId,
             DocumentType = "Hereditament",
@@ -333,13 +279,13 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_Id_IsUnique()
     {
-        var entity1 = new HereditamentDocumentEntity
+        var entity1 = new  DocumentEntity<HereditamentEntity>
         {
             Id = Guid.NewGuid(),
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity()
         };
-        var entity2 = new HereditamentDocumentEntity
+        var entity2 = new  DocumentEntity<HereditamentEntity>
         {
             Id = Guid.NewGuid(),
             DocumentType = "Hereditament",
@@ -353,7 +299,7 @@ public class HereditamentDocumentEntityTests
     public void Entity_Id_CanBeAssigned()
     {
         var testId = Guid.NewGuid();
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             Id = testId,
             DocumentType = "Hereditament",
@@ -366,7 +312,7 @@ public class HereditamentDocumentEntityTests
     [TestMethod]
     public void Entity_PartitionKey_CanBeSet()
     {
-        var entity = new HereditamentDocumentEntity
+        var entity = new  DocumentEntity<HereditamentEntity>
         {
             DocumentType = "Hereditament",
             JsonData = CreateTestHereditamentEntity(),

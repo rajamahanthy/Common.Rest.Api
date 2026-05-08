@@ -3,10 +3,10 @@ using System.Net;
 namespace Common.Rest.Hereditament.Application.Services;
 
 /// <summary>
-/// Service for managing  Hereditament records with CRUD, search, and filter operations.
+/// Service for managing Hereditament records with CRUD, search, and filter operations.
 /// </summary>
 public class HereditamentService(
-    IRepository<HereditamentDocumentEntity> repository,
+    IRepository< DocumentEntity<HereditamentEntity>> repository,
     IUnitOfWork unitOfWork,
     IHereditamentMappingService mappingService) : IHereditamentService
 {
@@ -26,9 +26,9 @@ public class HereditamentService(
             createDto.Status = HereditamentStatus.Active;
         }
         var HereditamentData = mappingService.MapToDomain(createDto);
-        
-        
-        var document = new HereditamentDocumentEntity()
+
+
+        var document = new  DocumentEntity<HereditamentEntity>()
         {
             Id = Guid.NewGuid(),
             DocumentType = DocumentType,
@@ -190,3 +190,4 @@ public class HereditamentService(
         return true;
     }
 }
+

@@ -13,3 +13,4 @@ global using Common.Rest.Shared.Dtos;
 global using Common.Rest.Shared.Models;
 global using Common.Rest.Shared.Repository;
 global using Common.Rest.Shared.Specification;
+global using Common.Rest.Shared.Domain;

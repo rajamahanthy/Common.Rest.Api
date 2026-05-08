@@ -6,7 +6,7 @@ namespace Common.Rest.Hereditament.Application.Services;
 /// </summary>
 public class HereditamentMappingService : IHereditamentMappingService
 {
-    public HereditamentDocumentDto MapToDto(HereditamentDocumentEntity document)
+    public HereditamentDocumentDto MapToDto( DocumentEntity<HereditamentEntity> document)
     {
         ArgumentNullException.ThrowIfNull(document);
         
@@ -24,7 +24,7 @@ public class HereditamentMappingService : IHereditamentMappingService
         return new HereditamentDocumentDto(document.Id, HereditamentDto);
     }
 
-    public HereditamentDocumentEntity MapToDomain(CreateUpdateHereditament createDto)
+    public  DocumentEntity<HereditamentEntity> MapToDomain(CreateUpdateHereditament createDto)
     {
         ArgumentNullException.ThrowIfNull(createDto);
 
@@ -37,14 +37,14 @@ public class HereditamentMappingService : IHereditamentMappingService
             AddressId = createDto.AddressId
         };
 
-        return new HereditamentDocumentEntity 
+        return new  DocumentEntity<HereditamentEntity> 
         { 
             DocumentType = "Hereditament", 
             JsonData = hereditamentEntity 
         };
     }
 
-    public HereditamentDocumentEntity UpdateDomain(HereditamentDocumentEntity HereditamentDocEntity, CreateUpdateHereditament updateDto)
+    public  DocumentEntity<HereditamentEntity> UpdateDomain( DocumentEntity<HereditamentEntity> HereditamentDocEntity, CreateUpdateHereditament updateDto)
     {
         ArgumentNullException.ThrowIfNull(HereditamentDocEntity);
         ArgumentNullException.ThrowIfNull(updateDto);
@@ -61,7 +61,7 @@ public class HereditamentMappingService : IHereditamentMappingService
             AddressId = updateDto.AddressId
         };
 
-        return new HereditamentDocumentEntity 
+        return new  DocumentEntity<HereditamentEntity> 
         { 
             DocumentType = "Hereditament", 
             JsonData = updatedEntity 
