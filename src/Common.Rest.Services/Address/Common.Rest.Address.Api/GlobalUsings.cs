@@ -12,7 +12,6 @@ global using Common.Rest.Shared.Exceptions;
 global using Common.Rest.Address.Application.Dtos;
 global using Common.Rest.Address.Application.Interfaces;
 global using Common.Rest.Address.Application.Services;
-global using Common.Rest.Address.Infrastructure;
 
 
 

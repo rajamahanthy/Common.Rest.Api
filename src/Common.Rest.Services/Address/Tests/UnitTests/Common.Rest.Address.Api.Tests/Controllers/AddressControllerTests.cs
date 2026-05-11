@@ -33,7 +33,11 @@ public class AddressControllerTests : ControllerTestBase
         var createdResult = (CreatedAtActionResult)result.Result!;
         Assert.AreEqual(nameof(Controller.GetAllAddresses), createdResult.ActionName);
         Assert.AreEqual(StatusCodes.Status201Created, createdResult.StatusCode);
-        
+        Assert.IsInstanceOfType(createdResult.Value, typeof(ApiResponse<AddressDocumentDto>));
+        var response = (ApiResponse<AddressDocumentDto>)createdResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(resultDto, response.Data);
+
         MockAddressService.Verify(
             s => s.CreateAddressAsync(It.IsAny<CreateUpdateAddress>(), "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -73,6 +77,11 @@ public class AddressControllerTests : ControllerTestBase
         var result = await Controller.GetAddressById(_testId);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<AddressDocumentDto>));
+        var response = (ApiResponse<AddressDocumentDto>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(addressDto, response.Data);
         MockAddressService.Verify(
             s => s.GetAddressByIdAsync(_testId, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -110,6 +119,11 @@ public class AddressControllerTests : ControllerTestBase
         var result = await Controller.GetAllAddresses();
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(PagedApiResponse<AddressDocumentDto>));
+        var pagedResponse = (PagedApiResponse<AddressDocumentDto>)okResult.Value!;
+        Assert.AreEqual(2, pagedResponse.Data.Count);
+        Assert.AreEqual(2, pagedResponse.TotalCount);
         MockAddressService.Verify(
             s => s.GetAllAddressesAsync(1, 10, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -148,6 +162,11 @@ public class AddressControllerTests : ControllerTestBase
         var result = await Controller.UpdateAddress(_testId, updateDto);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<AddressDocumentDto>));
+        var response = (ApiResponse<AddressDocumentDto>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(resultDto, response.Data);
         MockAddressService.Verify(
             s => s.UpdateAddressAsync(_testId, It.IsAny<CreateUpdateAddress>(), "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -240,6 +259,9 @@ public class AddressControllerTests : ControllerTestBase
         var result = await Controller.SearchByUprn(uprn);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<AddressDocumentDto>));
+        Assert.IsTrue(((ApiResponse<AddressDocumentDto>)okResult.Value!).Success);
     }
 
     [TestMethod]
@@ -288,6 +310,11 @@ public class AddressControllerTests : ControllerTestBase
             pageSize: 10);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(PagedApiResponse<AddressDocumentDto>));
+        var pagedResponse = (PagedApiResponse<AddressDocumentDto>)okResult.Value!;
+        Assert.AreEqual(1, pagedResponse.Data.Count);
+        Assert.AreEqual(1, pagedResponse.TotalCount);
     }
 
     [TestMethod]
@@ -325,6 +352,11 @@ public class AddressControllerTests : ControllerTestBase
         var result = await Controller.GetAddressCount();
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<int>));
+        var response = (ApiResponse<int>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(42, response.Data);
         MockAddressService.Verify(
             s => s.GetAddressCountAsync(It.IsAny<CancellationToken>()),
             Times.Once);

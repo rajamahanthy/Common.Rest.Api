@@ -33,7 +33,11 @@ public class HereditamentControllerTests : ControllerTestBase
         var createdResult = (CreatedAtActionResult)result.Result!;
         Assert.AreEqual(nameof(Controller.GetAllHereditamentes), createdResult.ActionName);
         Assert.AreEqual(StatusCodes.Status201Created, createdResult.StatusCode);
-        
+        Assert.IsInstanceOfType(createdResult.Value, typeof(ApiResponse<HereditamentDocumentDto>));
+        var response = (ApiResponse<HereditamentDocumentDto>)createdResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(resultDto, response.Data);
+
         MockHereditamentService.Verify(
             s => s.CreateHereditamentAsync(It.IsAny<CreateUpdateHereditament>(), "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -73,6 +77,11 @@ public class HereditamentControllerTests : ControllerTestBase
         var result = await Controller.GetHereditamentById(_testId);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<HereditamentDocumentDto>));
+        var response = (ApiResponse<HereditamentDocumentDto>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(HereditamentDto, response.Data);
         MockHereditamentService.Verify(
             s => s.GetHereditamentByIdAsync(_testId, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -110,6 +119,11 @@ public class HereditamentControllerTests : ControllerTestBase
         var result = await Controller.GetAllHereditamentes();
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(PagedApiResponse<HereditamentDocumentDto>));
+        var pagedResponse = (PagedApiResponse<HereditamentDocumentDto>)okResult.Value!;
+        Assert.AreEqual(2, pagedResponse.Data.Count);
+        Assert.AreEqual(2, pagedResponse.TotalCount);
         MockHereditamentService.Verify(
             s => s.GetAllHereditamentesAsync(1, 10, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -148,6 +162,11 @@ public class HereditamentControllerTests : ControllerTestBase
         var result = await Controller.UpdateHereditament(_testId, updateDto);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<HereditamentDocumentDto>));
+        var response = (ApiResponse<HereditamentDocumentDto>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(resultDto, response.Data);
         MockHereditamentService.Verify(
             s => s.UpdateHereditamentAsync(_testId, It.IsAny<CreateUpdateHereditament>(), "test-user", It.IsAny<CancellationToken>()),
             Times.Once);
@@ -250,6 +269,11 @@ public class HereditamentControllerTests : ControllerTestBase
             pageSize: 10);
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(PagedApiResponse<HereditamentDocumentDto>));
+        var pagedResponse = (PagedApiResponse<HereditamentDocumentDto>)okResult.Value!;
+        Assert.AreEqual(1, pagedResponse.Data.Count);
+        Assert.AreEqual(1, pagedResponse.TotalCount);
     }
 
     [TestMethod]
@@ -287,6 +311,11 @@ public class HereditamentControllerTests : ControllerTestBase
         var result = await Controller.GetHereditamentCount();
 
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result.Result!;
+        Assert.IsInstanceOfType(okResult.Value, typeof(ApiResponse<int>));
+        var response = (ApiResponse<int>)okResult.Value!;
+        Assert.IsTrue(response.Success);
+        Assert.AreEqual(42, response.Data);
         MockHereditamentService.Verify(
             s => s.GetHereditamentCountAsync(It.IsAny<CancellationToken>()),
             Times.Once);

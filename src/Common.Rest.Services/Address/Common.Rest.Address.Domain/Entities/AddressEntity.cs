@@ -2,6 +2,7 @@ namespace Common.Rest.Address.Domain.Entities;
 
 using Common.Rest.Shared.CustomValidations;
 using Common.Rest.Shared.Persistence.Cosmos;
+using Common.Rest.Shared.Repository;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

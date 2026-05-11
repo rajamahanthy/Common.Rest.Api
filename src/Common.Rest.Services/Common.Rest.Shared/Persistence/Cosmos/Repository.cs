@@ -1,23 +1,23 @@
-namespace Common.Rest.Hereditament.Infrastructure.Persistence;
+namespace Common.Rest.Shared.Persistence.Cosmos;
 
-using Common.Rest.Shared.Persistence.Cosmos;
+using Common.Rest.Shared.Domain;
 using Common.Rest.Shared.Repository;
 using Common.Rest.Shared.Specification;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-//using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Text.Json;
 
 /// <summary>
-/// Generic Cosmos DB repository base implementation supporting any DocumentEntity.
+/// Generic Cosmos DB repository implementation supporting any DocumentEntity.
 /// Provides CRUD, query, and pagination operations for Cosmos DB containers.
+/// Serves as the base class for entity-specific repository implementations.
 /// </summary>
-public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : class
+public abstract class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly Container Container;
-    protected readonly ILogger<CosmosRepositoryBase<T>> Logger;
-    private readonly IUnitOfWork? _unitOfWork;
+    protected readonly Container _container;
+    protected readonly ILogger<Repository<T>> _logger;
+    protected readonly IUnitOfWork _unitOfWork;
 
     protected static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -25,35 +25,29 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
         WriteIndented = false
     };
 
-    protected CosmosRepositoryBase(Container container, ILogger<CosmosRepositoryBase<T>> logger, IUnitOfWork? unitOfWork)
+    protected Repository(Container container, ILogger<Repository<T>> logger, IUnitOfWork unitOfWork = null)
     {
-        Container = container ?? throw new ArgumentNullException(nameof(container));
-        Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _container = container ?? throw new ArgumentNullException(nameof(container));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Gets the partition key value for an entity. Must be implemented by derived classes.
-    /// </summary>
-    public abstract string GetPartitionKey(T entity);
+    public string GetPartitionKey(T entity)
+        => (entity as BaseEntity)?.PartitionKey ?? string.Empty;
 
-    /// <summary>
-    /// Converts entity to Cosmos-compatible dynamic object. Must be implemented by derived classes.
-    /// </summary>
-    public abstract dynamic ToCosmosItem(T entity);
+    public dynamic ToCosmosItem(T entity)
+        => entity!;
 
-    /// <summary>
-    /// Converts Cosmos item back to entity. Must be implemented by derived classes.
-    /// </summary>
-    public abstract T FromCosmosItem(dynamic cosmosItem);
+    public T FromCosmosItem(dynamic cosmosItem)
+        => (T)cosmosItem;
 
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         try
         {
-            Logger.LogDebug("Fetching document with Id: {Id}", id);
+            _logger.LogDebug("Fetching document with Id: {Id}", id);
 
-            var query = Container.GetItemQueryIterator<T>(
+            var query = _container.GetItemQueryIterator<T>(
                 new QueryDefinition("SELECT * FROM c WHERE c.id = @id")
                     .WithParameter("@id", id.ToString()));
 
@@ -64,18 +58,18 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
                 {
                     if (item != null)
                     {
-                        Logger.LogDebug("Found document with Id: {Id}", id);
+                        _logger.LogDebug("Found document with Id: {Id}", id);
                         return item;
                     }
                 }
             }
 
-            Logger.LogDebug("Document with Id: {Id} not found.", id);
+            _logger.LogDebug("Document with Id: {Id} not found.", id);
             return null;
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error fetching document with Id: {Id}", id);
+            _logger.LogError(ex, "Error fetching document with Id: {Id}", id);
             throw;
         }
     }
@@ -84,9 +78,9 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
     {
         try
         {
-            Logger.LogDebug("Fetching all documents");
+            _logger.LogDebug("Fetching all documents");
 
-            var query = Container.GetItemQueryIterator<T>(
+            var query = _container.GetItemQueryIterator<T>(
                 new QueryDefinition("SELECT * FROM c"));
 
             var items = new List<T>();
@@ -96,12 +90,12 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
                 items.AddRange(page);
             }
 
-            Logger.LogDebug("Fetched {Count} documents", items.Count);
+            _logger.LogDebug("Fetched {Count} documents", items.Count);
             return items.AsReadOnly();
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error fetching all documents");
+            _logger.LogError(ex, "Error fetching all documents");
             throw;
         }
     }
@@ -112,18 +106,18 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
     {
         try
         {
-            Logger.LogDebug("Finding documents with predicate");
+            _logger.LogDebug("Finding documents with predicate");
 
             var allItems = await GetAllAsync(ct);
             var compiled = predicate.Compile();
             var filtered = allItems.Where(compiled).ToList();
 
-            Logger.LogDebug("Found {Count} documents matching predicate", filtered.Count);
+            _logger.LogDebug("Found {Count} documents matching predicate", filtered.Count);
             return filtered.AsReadOnly();
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error finding documents");
+            _logger.LogError(ex, "Error finding documents");
             throw;
         }
     }
@@ -134,19 +128,19 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
     {
         try
         {
-            Logger.LogDebug("Finding documents with specification");
+            _logger.LogDebug("Finding documents with specification");
 
             var allItems = await GetAllAsync(ct);
             var expression = specification.ToExpression();
             var compiled = expression.Compile();
             var filtered = allItems.Where(compiled).ToList();
 
-            Logger.LogDebug("Found {Count} documents matching specification", filtered.Count);
+            _logger.LogDebug("Found {Count} documents matching specification", filtered.Count);
             return filtered.AsReadOnly();
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error finding documents with specification");
+            _logger.LogError(ex, "Error finding documents with specification");
             throw;
         }
     }
@@ -162,7 +156,7 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
     {
         try
         {
-            Logger.LogDebug("Fetching paged documents: page={Page}, pageSize={PageSize}", page, pageSize);
+            _logger.LogDebug("Fetching paged documents: page={Page}, pageSize={PageSize}", page, pageSize);
 
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
@@ -197,14 +191,14 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
                 .Take(pageSize)
                 .ToList();
 
-            Logger.LogDebug("Fetched {Count} items for page {Page}, total count: {TotalCount}", 
+            _logger.LogDebug("Fetched {Count} items for page {Page}, total count: {TotalCount}", 
                 items.Count, page, totalCount);
 
             return (items.AsReadOnly(), totalCount);
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error fetching paged documents");
+            _logger.LogError(ex, "Error fetching paged documents");
             throw;
         }
     }
@@ -219,63 +213,65 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
             if (string.IsNullOrEmpty(partitionKey))
                 throw new ArgumentException("PartitionKey must be set before adding to Cosmos.", nameof(entity));
 
-            Logger.LogDebug("Adding document with PartitionKey: {PartitionKey}", partitionKey);
+            _logger.LogDebug("Adding document with PartitionKey: {PartitionKey}", partitionKey);
 
             var cosmosItem = ToCosmosItem(entity);
 
-            var response = await Container.ReadContainerAsync();
-
-            await Container.CreateItemAsync(
+            await _container.CreateItemAsync(
                 cosmosItem,
                 new PartitionKey(partitionKey),
                 cancellationToken: ct);
 
-            Logger.LogInformation("Document added successfully.");
+            _logger.LogInformation("Document added successfully.");
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
         {
-            Logger.LogWarning(ex, "Document already exists.");
+            _logger.LogWarning(ex, "Document already exists.");
             throw new InvalidOperationException($"Document already exists.", ex);
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error adding document");
+            _logger.LogError(ex, "Error adding document");
             throw;
         }
     }
 
     public virtual void Update(T entity)
     {
-        if (_unitOfWork is CosmosUnitOfWork cosmosUnitOfWork)
+        var partitionKey = GetPartitionKey(entity);
+        var cosmosItem = ToCosmosItem(entity);
+        var entityId = (entity as BaseEntity)?.Id;
+        if (entityId.HasValue)
         {
-            var partitionKey = GetPartitionKey(entity);
-            var cosmosItem = ToCosmosItem(entity);
-            var entityId = (entity as BaseEntity).Id;
-            cosmosUnitOfWork.MarkModified(entityId.ToString(), partitionKey, cosmosItem);
+            _unitOfWork.MarkModified(entityId.ToString()!, partitionKey, cosmosItem);
         }
     }
 
     public virtual void Remove(T entity)
     {
-        // In Cosmos, deletions are handled via DeleteItemAsync during SaveChanges.
-        // This is a no-op for compatibility with IRepository contract.
+        var partitionKey = GetPartitionKey(entity);
+        var entityId = (entity as BaseEntity)?.Id;
+        if (entityId.HasValue)
+        {
+            _unitOfWork.MarkDeleted(entityId.ToString()!, partitionKey);
+        }
     }
 
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default)
     {
         try
         {
-            Logger.LogDebug("Checking if any document matches predicate");
+            _logger.LogDebug("Checking if any document matches predicate");
 
             var items = await FindAsync(predicate, ct);
             var exists = items.Any();
 
-            Logger.LogDebug("Document exists: {Exists}", exists);
+            _logger.LogDebug("Document exists: {Exists}", exists);
             return exists;
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error checking document existence");
+            _logger.LogError(ex, "Error checking document existence");
             throw;
         }
     }
@@ -284,9 +280,9 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
     {
         try
         {
-            Logger.LogDebug("Counting documents");
+            _logger.LogDebug("Counting documents");
 
-            var query = Container.GetItemQueryIterator<dynamic>(
+            var query = _container.GetItemQueryIterator<dynamic>(
                 new QueryDefinition("SELECT VALUE COUNT(1) FROM c"));
 
             var totalCount = 0;
@@ -303,12 +299,12 @@ public abstract class CosmosRepositoryBase<T> : ICosmosRepository<T> where T : c
                 return items.Count;
             }
 
-            Logger.LogDebug("Total document count: {Count}", totalCount);
+            _logger.LogDebug("Total document count: {Count}", totalCount);
             return totalCount;
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error counting documents");
+            _logger.LogError(ex, "Error counting documents");
             throw;
         }
     }

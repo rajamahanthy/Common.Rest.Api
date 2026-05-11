@@ -1,4 +1,4 @@
-namespace Common.Rest.Address.Infrastructure.Persistence;
+namespace Common.Rest.Shared.Persistence.Cosmos;
 
 using Common.Rest.Shared.Repository;
 using Microsoft.Azure.Cosmos;
@@ -6,19 +6,19 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 
 /// <summary>
-/// Cosmos DB Unit of Work implementation for transaction management.
+/// Generic Cosmos DB Unit of Work implementation for transaction management.
 /// Tracks added, modified, and deleted entities and applies changes to Cosmos.
 /// </summary>
-public class CosmosUnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
     private readonly Container _container;
-    private readonly ILogger<CosmosUnitOfWork> _logger;
+    private readonly ILogger<UnitOfWork> _logger;
 
     // Track entities for batch operations
     private readonly List<(string Id, string PartitionKey)> _deletedEntities = [];
     private readonly List<(string Id, string PartitionKey, dynamic Item)> _modifiedEntities = [];
 
-    public CosmosUnitOfWork(Container container, ILogger<CosmosUnitOfWork> logger)
+    public UnitOfWork(Container container, ILogger<UnitOfWork> logger)
     {
         _container = container ?? throw new ArgumentNullException(nameof(container));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

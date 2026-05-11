@@ -21,15 +21,24 @@ public interface IRepository<T> where T : class
     void Remove(T entity);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default);
     Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null, CancellationToken ct = default);
+
+
+    /// <summary>
+    /// Gets the partition key value for an entity.
+    /// </summary>
+    string GetPartitionKey(T entity);
+
+    /// <summary>
+    /// Converts entity to Cosmos-compatible format.
+    /// </summary>
+    dynamic ToCosmosItem(T entity);
+
+    /// <summary>
+    /// Converts Cosmos item back to entity.
+    /// </summary>
+    T FromCosmosItem(dynamic cosmosItem);
 }
 
-/// <summary>
-/// Unit of Work interface for coordinating repository transactions.
-/// </summary>
-public interface IUnitOfWork : IDisposable
+public interface IDocumentData
 {
-    Task<int> SaveChangesAsync(CancellationToken ct = default);
-    Task BeginTransactionAsync(CancellationToken ct = default);
-    Task CommitTransactionAsync(CancellationToken ct = default);
-    Task RollbackTransactionAsync(CancellationToken ct = default);
 }

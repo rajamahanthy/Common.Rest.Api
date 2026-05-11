@@ -1,0 +1,31 @@
+global using System.Linq.Expressions;
+global using System.Net;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Http.HttpResults;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.Azure.Cosmos;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Filters;
+global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Options;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Moq;
+
+global using Common.Rest.Shared.CustomValidations;
+global using Common.Rest.Shared.Domain;
+global using Common.Rest.Shared.Dtos;
+global using Common.Rest.Shared.Exceptions;
+global using Common.Rest.Shared.Extensions;
+global using Common.Rest.Shared.Health;
+global using Common.Rest.Shared.Middleware;
+global using Common.Rest.Shared.Models;
+global using Common.Rest.Shared.Persistence.Cosmos;
+global using Common.Rest.Shared.Resilience;
+global using Common.Rest.Shared.Specification;

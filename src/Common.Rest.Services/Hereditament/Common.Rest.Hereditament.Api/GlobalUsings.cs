@@ -12,7 +12,6 @@ global using Common.Rest.Shared.Exceptions;
 global using Common.Rest.Hereditament.Application.Dtos;
 global using Common.Rest.Hereditament.Application.Interfaces;
 global using Common.Rest.Hereditament.Application.Services;
-global using Common.Rest.Hereditament.Infrastructure;
 
 
 
