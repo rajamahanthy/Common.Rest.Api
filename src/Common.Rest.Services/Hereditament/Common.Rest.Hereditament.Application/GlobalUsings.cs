@@ -5,7 +5,6 @@ global using Common.Rest.Shared.Dtos;
 global using Common.Rest.Shared.Repository;
 global using Common.Rest.Shared.Specification;
 global using Common.Rest.Shared.CustomValidations;
-global using System;
 global using System.ComponentModel.DataAnnotations;
 global using System.Linq.Expressions;
 global using System.Text.Json.Serialization;

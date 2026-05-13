@@ -1,3 +1,4 @@
+
 namespace Common.Rest.Address.Api.Tests.Controllers;
 
 /// <summary>

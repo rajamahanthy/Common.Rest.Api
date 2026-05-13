@@ -1,4 +1,3 @@
-using System.Net;
 
 namespace Common.Rest.Hereditament.Application.Services;
 
@@ -36,6 +35,8 @@ public class HereditamentService(
             CreatedBy = userId,
             CreatedAt = DateTimeOffset.UtcNow
         };
+
+        SynchronizeDocument(document);
 
         await repository.AddAsync(document, ct);
         await unitOfWork.SaveChangesAsync(ct);
@@ -184,10 +185,28 @@ public class HereditamentService(
         document.UpdatedAt = DateTimeOffset.UtcNow;
         document.UpdatedBy = userId;
 
+        SynchronizeDocument(document);
+
         repository.Update(document);
         await unitOfWork.SaveChangesAsync(ct);
 
         return true;
+    }
+
+
+    /// <summary>
+    /// Sets the partition key from JsonData.
+    /// Ensures PartitionKey (postcode) is extracted from the address data for Cosmos DB.
+    /// </summary>
+    private static void SynchronizeDocument(DocumentEntity<HereditamentEntity> document)
+    {
+        if (document?.JsonData == null)
+            return;
+
+        var json = document.JsonData;
+
+        // Set partition key from postcode
+        document.PartitionKey = json.AddressId?.ToString();
     }
 }
 

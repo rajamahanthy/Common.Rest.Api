@@ -16,7 +16,17 @@ public static class DependencyInjection
         var cosmosOptions = configuration.GetSection(CosmosDbOptions.SectionName).Get<CosmosDbOptions>()
             ?? throw new InvalidOperationException($"Configuration section '{CosmosDbOptions.SectionName}' is required.");
 
-        services.AddSingleton(new CosmosClient(cosmosOptions.ConnectionString));
+        // Configure Cosmos Client with custom JSON serialization options
+        var cosmosClientOptions = new CosmosClientOptions
+        {
+            SerializerOptions = new CosmosSerializationOptions
+            {
+                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase,
+                IgnoreNullValues = false
+            }
+        };
+
+        services.AddSingleton(new CosmosClient(cosmosOptions.ConnectionString, cosmosClientOptions));
 
         services.AddScoped(provider =>
         {

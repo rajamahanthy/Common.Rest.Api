@@ -1,8 +1,3 @@
-using System;
-using System.Linq.Expressions;
-using Common.Rest.Address.Domain.Entities;
-using Common.Rest.Shared.Specification;
-
 namespace Common.Rest.Address.Application.Specifications;
 
 public class AddressUprnSpecification : Specification<DocumentEntity<AddressEntity>>

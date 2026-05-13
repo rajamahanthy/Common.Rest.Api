@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Dtos\" />
+    <Folder Include="Tests\Persistence\" />
   </ItemGroup>
 
 </Project>

@@ -15,3 +15,4 @@ global using Common.Rest.Address.Application.Interfaces;
 global using Common.Rest.Address.Application.Services;
 global using Common.Rest.Shared.Models;
 global using Common.Rest.Shared.Domain;
+global using Common.Rest.Shared.Models;

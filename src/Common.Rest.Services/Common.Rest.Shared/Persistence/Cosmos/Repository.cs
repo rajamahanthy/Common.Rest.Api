@@ -1,19 +1,12 @@
 namespace Common.Rest.Shared.Persistence.Cosmos;
 
-using Common.Rest.Shared.Domain;
-using Common.Rest.Shared.Repository;
-using Common.Rest.Shared.Specification;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
-using System.Text.Json;
 
 /// <summary>
 /// Generic Cosmos DB repository implementation supporting any DocumentEntity.
 /// Provides CRUD, query, and pagination operations for Cosmos DB containers.
-/// Serves as the base class for entity-specific repository implementations.
+/// Can be used directly via dependency injection for any entity type.
 /// </summary>
-public abstract class Repository<T> : IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly Container _container;
     protected readonly ILogger<Repository<T>> _logger;
@@ -25,10 +18,10 @@ public abstract class Repository<T> : IRepository<T> where T : class
         WriteIndented = false
     };
 
-    protected Repository(Container container, ILogger<Repository<T>> logger, IUnitOfWork unitOfWork = null)
+    public Repository(Container container, ILogger<Repository<T>> logger, IUnitOfWork unitOfWork)
     {
-        _container = container ?? throw new ArgumentNullException(nameof(container));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _container = container;
+        _logger = logger;
         _unitOfWork = unitOfWork;
     }
 
@@ -216,6 +209,8 @@ public abstract class Repository<T> : IRepository<T> where T : class
             _logger.LogDebug("Adding document with PartitionKey: {PartitionKey}", partitionKey);
 
             var cosmosItem = ToCosmosItem(entity);
+
+            var response = await _container.ReadContainerAsync();
 
             await _container.CreateItemAsync(
                 cosmosItem,

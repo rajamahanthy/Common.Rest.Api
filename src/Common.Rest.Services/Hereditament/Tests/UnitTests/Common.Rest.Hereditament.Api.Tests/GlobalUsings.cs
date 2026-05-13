@@ -11,3 +11,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
 global using System.Security.Claims;
+global using Common.Rest.Shared.Models;

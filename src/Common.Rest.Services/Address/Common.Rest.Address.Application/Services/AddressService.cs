@@ -1,8 +1,6 @@
 namespace Common.Rest.Address.Application.Services;
 
-using Common.Rest.Address.Domain.Entities;
-using Common.Rest.Shared.Persistence.Cosmos;
-using Common.Rest.Shared.Repository;
+
 
 /// <summary>
 /// Service for managing address records with CRUD, search, and filter operations.
